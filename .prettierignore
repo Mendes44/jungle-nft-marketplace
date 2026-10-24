@@ -1,0 +1,10 @@
+node_modules
+dist
+public/mockServiceWorker.js
+playwright-report
+test-results
+relatorios
+output
+tmp
+enunciado-original.md
+package-lock.json

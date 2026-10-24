@@ -1,0 +1,286 @@
+{
+  "origem": "https://kurio-jungle.vercel.app",
+  "verificacoes": [
+    {
+      "caminho": "/",
+      "largura": 390,
+      "contexto": "viewport padrão",
+      "conteudo": 390,
+      "viewport": 390
+    },
+    {
+      "caminho": "/nft/1",
+      "largura": 390,
+      "contexto": "viewport padrão",
+      "conteudo": 390,
+      "viewport": 390
+    },
+    {
+      "caminho": "/carrinho",
+      "largura": 390,
+      "contexto": "viewport padrão",
+      "conteudo": 390,
+      "viewport": 390
+    },
+    {
+      "caminho": "/pagamento",
+      "largura": 390,
+      "contexto": "viewport padrão",
+      "conteudo": 390,
+      "viewport": 390
+    },
+    {
+      "caminho": "/login",
+      "largura": 390,
+      "contexto": "viewport padrão",
+      "conteudo": 390,
+      "viewport": 390
+    },
+    {
+      "caminho": "/cadastro",
+      "largura": 390,
+      "contexto": "viewport padrão",
+      "conteudo": 390,
+      "viewport": 390
+    },
+    {
+      "caminho": "/perfil",
+      "largura": 390,
+      "contexto": "viewport padrão",
+      "conteudo": 390,
+      "viewport": 390
+    },
+    {
+      "caminho": "/carteiras",
+      "largura": 390,
+      "contexto": "viewport padrão",
+      "conteudo": 390,
+      "viewport": 390
+    },
+    {
+      "caminho": "/pedidos",
+      "largura": 390,
+      "contexto": "viewport padrão",
+      "conteudo": 390,
+      "viewport": 390
+    },
+    {
+      "caminho": "/pedido/KUR-00001",
+      "largura": 390,
+      "contexto": "viewport padrão",
+      "conteudo": 390,
+      "viewport": 390
+    },
+    {
+      "caminho": "/",
+      "largura": 768,
+      "contexto": "viewport padrão",
+      "conteudo": 768,
+      "viewport": 768
+    },
+    {
+      "caminho": "/nft/1",
+      "largura": 768,
+      "contexto": "viewport padrão",
+      "conteudo": 768,
+      "viewport": 768
+    },
+    {
+      "caminho": "/carrinho",
+      "largura": 768,
+      "contexto": "viewport padrão",
+      "conteudo": 768,
+      "viewport": 768
+    },
+    {
+      "caminho": "/pagamento",
+      "largura": 768,
+      "contexto": "viewport padrão",
+      "conteudo": 768,
+      "viewport": 768
+    },
+    {
+      "caminho": "/login",
+      "largura": 768,
+      "contexto": "viewport padrão",
+      "conteudo": 768,
+      "viewport": 768
+    },
+    {
+      "caminho": "/cadastro",
+      "largura": 768,
+      "contexto": "viewport padrão",
+      "conteudo": 768,
+      "viewport": 768
+    },
+    {
+      "caminho": "/perfil",
+      "largura": 768,
+      "contexto": "viewport padrão",
+      "conteudo": 768,
+      "viewport": 768
+    },
+    {
+      "caminho": "/carteiras",
+      "largura": 768,
+      "contexto": "viewport padrão",
+      "conteudo": 768,
+      "viewport": 768
+    },
+    {
+      "caminho": "/pedidos",
+      "largura": 768,
+      "contexto": "viewport padrão",
+      "conteudo": 768,
+      "viewport": 768
+    },
+    {
+      "caminho": "/pedido/KUR-00001",
+      "largura": 768,
+      "contexto": "viewport padrão",
+      "conteudo": 768,
+      "viewport": 768
+    },
+    {
+      "caminho": "/",
+      "largura": 1440,
+      "contexto": "viewport padrão",
+      "conteudo": 1440,
+      "viewport": 1440
+    },
+    {
+      "caminho": "/nft/1",
+      "largura": 1440,
+      "contexto": "viewport padrão",
+      "conteudo": 1440,
+      "viewport": 1440
+    },
+    {
+      "caminho": "/carrinho",
+      "largura": 1440,
+      "contexto": "viewport padrão",
+      "conteudo": 1440,
+      "viewport": 1440
+    },
+    {
+      "caminho": "/pagamento",
+      "largura": 1440,
+      "contexto": "viewport padrão",
+      "conteudo": 1440,
+      "viewport": 1440
+    },
+    {
+      "caminho": "/login",
+      "largura": 1440,
+      "contexto": "viewport padrão",
+      "conteudo": 1440,
+      "viewport": 1440
+    },
+    {
+      "caminho": "/cadastro",
+      "largura": 1440,
+      "contexto": "viewport padrão",
+      "conteudo": 1440,
+      "viewport": 1440
+    },
+    {
+      "caminho": "/perfil",
+      "largura": 1440,
+      "contexto": "viewport padrão",
+      "conteudo": 1440,
+      "viewport": 1440
+    },
+    {
+      "caminho": "/carteiras",
+      "largura": 1440,
+      "contexto": "viewport padrão",
+      "conteudo": 1440,
+      "viewport": 1440
+    },
+    {
+      "caminho": "/pedidos",
+      "largura": 1440,
+      "contexto": "viewport padrão",
+      "conteudo": 1440,
+      "viewport": 1440
+    },
+    {
+      "caminho": "/pedido/KUR-00001",
+      "largura": 1440,
+      "contexto": "viewport padrão",
+      "conteudo": 1440,
+      "viewport": 1440
+    },
+    {
+      "caminho": "/",
+      "largura": 720,
+      "contexto": "1440 px a 200%: largura CSS equivalente",
+      "conteudo": 720,
+      "viewport": 720
+    },
+    {
+      "caminho": "/nft/1",
+      "largura": 720,
+      "contexto": "1440 px a 200%: largura CSS equivalente",
+      "conteudo": 720,
+      "viewport": 720
+    },
+    {
+      "caminho": "/carrinho",
+      "largura": 720,
+      "contexto": "1440 px a 200%: largura CSS equivalente",
+      "conteudo": 720,
+      "viewport": 720
+    },
+    {
+      "caminho": "/pagamento",
+      "largura": 720,
+      "contexto": "1440 px a 200%: largura CSS equivalente",
+      "conteudo": 720,
+      "viewport": 720
+    },
+    {
+      "caminho": "/login",
+      "largura": 720,
+      "contexto": "1440 px a 200%: largura CSS equivalente",
+      "conteudo": 720,
+      "viewport": 720
+    },
+    {
+      "caminho": "/cadastro",
+      "largura": 720,
+      "contexto": "1440 px a 200%: largura CSS equivalente",
+      "conteudo": 720,
+      "viewport": 720
+    },
+    {
+      "caminho": "/perfil",
+      "largura": 720,
+      "contexto": "1440 px a 200%: largura CSS equivalente",
+      "conteudo": 720,
+      "viewport": 720
+    },
+    {
+      "caminho": "/carteiras",
+      "largura": 720,
+      "contexto": "1440 px a 200%: largura CSS equivalente",
+      "conteudo": 720,
+      "viewport": 720
+    },
+    {
+      "caminho": "/pedidos",
+      "largura": 720,
+      "contexto": "1440 px a 200%: largura CSS equivalente",
+      "conteudo": 720,
+      "viewport": 720
+    },
+    {
+      "caminho": "/pedido/KUR-00001",
+      "largura": 720,
+      "contexto": "1440 px a 200%: largura CSS equivalente",
+      "conteudo": 720,
+      "viewport": 720
+    }
+  ],
+  "observacao": "O caso de zoom verifica a largura CSS resultante de 1440 px a 200%; não automatiza o atalho de zoom do navegador."
+}

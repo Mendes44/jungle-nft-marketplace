@@ -1,0 +1,9 @@
+* text=auto eol=lf
+*.png binary
+*.webp binary
+*.pdf binary
+*.woff2 binary
+relatorios/** linguist-generated=true
+playwright-report/** linguist-generated=true
+public/mockServiceWorker.js linguist-generated=true
+package-lock.json linguist-generated=true

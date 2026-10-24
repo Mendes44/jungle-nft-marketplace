@@ -1,0 +1,168 @@
+{
+  "origem": "https://kurio-jungle.vercel.app",
+  "verificadoEm": "2026-10-24T18:46:41.774Z",
+  "arquivos": [
+    {
+      "caminho": "/assets/index-D7Z0Czzp.js",
+      "igual": true,
+      "sha256": "d35b3dba743bf2856e51693b4391198524b8339810e3f9969aa6ba3b16dc4704"
+    },
+    {
+      "caminho": "/assets/preload-helper-BLdHbfdN.js",
+      "igual": true,
+      "sha256": "8aec9ff75ffa86a03d51268b63126abadb3754aa5a6b6c5bb16e4e2446a63dee"
+    },
+    {
+      "caminho": "/assets/index-C4njXWM4.css",
+      "igual": true,
+      "sha256": "c3991b78dd8e1ca8bace4e3920d503d6bdb2e770215fbcf7dfe89a12c9f55676"
+    },
+    {
+      "caminho": "/assets/aplicacao-C9TBdiNu.js",
+      "igual": true,
+      "sha256": "8a83bac577a1c690e3102edc06698073a9c255c1d1529103ff2159a7b5db220b"
+    },
+    {
+      "caminho": "/assets/catalogo-o-Vf95sO.js",
+      "igual": true,
+      "sha256": "c2af47da1b9e67a25a6d3909b857e721103f876687cc9e43bda561584a90fe78"
+    },
+    {
+      "caminho": "/assets/compra-DYw-xsLi.js",
+      "igual": true,
+      "sha256": "9818a71fdb385ba0946ee18062e6255357d1b739cf07358d701e00df2481d016"
+    },
+    {
+      "caminho": "/assets/comuns-C-vyT1SX.js",
+      "igual": true,
+      "sha256": "af85325473b7bef89c25420fe93e18ccd367d1a1c7487144616554af487961b1"
+    },
+    {
+      "caminho": "/assets/configuracao-XXSJpMxW.js",
+      "igual": true,
+      "sha256": "3676d6fef867a96ffc22a90ddcb28f9e75c502d36d95fa3a9872b8fcda834737"
+    },
+    {
+      "caminho": "/assets/conta-DMIXw9Sg.js",
+      "igual": true,
+      "sha256": "73ce56a383481a90f66ee55cf255e678d303c3b79bdf067a0b2866c61ec70225"
+    },
+    {
+      "caminho": "/assets/contratos-EgEWu1Ap.js",
+      "igual": true,
+      "sha256": "ada9c305df65626debe201ef5c5b6ef4d66058518dea06bf1453ddeb533ed69b"
+    },
+    {
+      "caminho": "/assets/esm-B6DvIUmM.js",
+      "igual": true,
+      "sha256": "960a925bbe453bdb10fb16e5d171d3ff781f823604e698728b2c349eacd6729e"
+    },
+    {
+      "caminho": "/assets/esm-D88WmSba.js",
+      "igual": true,
+      "sha256": "5d414c6cf568a6cb60ac7aede539da842ba06738eac42fb209ccae32dc896f43"
+    },
+    {
+      "caminho": "/assets/rede-CTZp-p9W.js",
+      "igual": true,
+      "sha256": "d0188ae018fab74ec8ecf40816f3ff9482538990cea0a6848ba7bfe7a1f205a8"
+    },
+    {
+      "caminho": "/assets/rolldown-runtime-XKyaHtl9.js",
+      "igual": true,
+      "sha256": "548d1dbf321e7d2ae804fcc158b588706a7c52f8ca175de1490c6ccb4dbe55b7"
+    },
+    {
+      "caminho": "/assets/valores-CnfMgf_a.js",
+      "igual": true,
+      "sha256": "f98eeda732cc29db33c0d2060eb0929f9b1ffdff72be17d7e430047498163c32"
+    },
+    {
+      "caminho": "/imagens/colecao-0.webp",
+      "igual": true,
+      "sha256": "58f4f8e2818712da878d7751dc079829ecfd7b97e9ffa21b9fa21ccc59c3b781"
+    },
+    {
+      "caminho": "/imagens/colecao-1.webp",
+      "igual": true,
+      "sha256": "995578dcd98b356022259bb8a63273f5d27250c98b49d504b574bde738d4d1fc"
+    },
+    {
+      "caminho": "/imagens/colecao-2.webp",
+      "igual": true,
+      "sha256": "742c3a802beb64fb4c2d954234774f67c24e6d08c2e8a69d9e27e0ea37af3989"
+    },
+    {
+      "caminho": "/imagens/colecao-3.webp",
+      "igual": true,
+      "sha256": "2a8bdfc24c4e83f209896f718b22742c68924ffcb8e4821c52fd451afca71719"
+    },
+    {
+      "caminho": "/fontes/ibm-plex-mono-latin.woff2",
+      "igual": true,
+      "sha256": "08949f728dc52d528e69b1667d15c89a5686a4ee9a296ff90983985f99c380f7"
+    },
+    {
+      "caminho": "/fontes/ibm-plex-mono-negrito.woff2",
+      "igual": true,
+      "sha256": "4f84d86cfd060f4ded334358ff8a4c81d4db2ed5addd568359d693f44a87765a"
+    },
+    {
+      "caminho": "/mockServiceWorker.js",
+      "igual": true,
+      "sha256": "26171599d94d5445297303f3a1f1cedec26835ea3d0057dcfa92ec520cb35cca"
+    }
+  ],
+  "rotas": [
+    {
+      "caminho": "/",
+      "status": 200,
+      "possuiEntrada": true
+    },
+    {
+      "caminho": "/nft/1",
+      "status": 200,
+      "possuiEntrada": true
+    },
+    {
+      "caminho": "/carrinho",
+      "status": 200,
+      "possuiEntrada": true
+    },
+    {
+      "caminho": "/pagamento",
+      "status": 200,
+      "possuiEntrada": true
+    },
+    {
+      "caminho": "/login",
+      "status": 200,
+      "possuiEntrada": true
+    },
+    {
+      "caminho": "/cadastro",
+      "status": 200,
+      "possuiEntrada": true
+    },
+    {
+      "caminho": "/perfil",
+      "status": 200,
+      "possuiEntrada": true
+    },
+    {
+      "caminho": "/carteiras",
+      "status": 200,
+      "possuiEntrada": true
+    },
+    {
+      "caminho": "/pedidos",
+      "status": 200,
+      "possuiEntrada": true
+    },
+    {
+      "caminho": "/pedido/KUR-00001",
+      "status": 200,
+      "possuiEntrada": true
+    }
+  ]
+}
