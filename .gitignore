@@ -5,3 +5,7 @@ test-results/
 .vercel/
 *.tsbuildinfo
 tmp/
+docs/
+output/
+scripts/gerar-guia.py
+relatorios/diagnostico/

@@ -7,3 +7,5 @@ playwright-report
 test-results
 output
 assets/originais
+docs
+scripts/gerar-guia.py

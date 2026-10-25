@@ -12,7 +12,8 @@ import axios from 'axios';
 import { z } from 'zod';
 import { filtrosSchema, type Filtros } from './dominio/contratos';
 import { buscarSessao } from './infraestrutura/api';
-import { Estrutura, NaoEncontrado } from './componentes/estrutura';
+import { Estrutura } from './componentes/estrutura';
+import { NaoEncontrado } from './componentes/nao-encontrado';
 import { Inicio, DetalheNft } from './funcionalidades/catalogo';
 import { Falha } from './componentes/comuns';
 import { Button } from './componentes/ui/button';
@@ -31,7 +32,7 @@ function ErroDaRota({ error, reset }: ErrorComponentProps) {
 
 const raiz = createRootRoute({
   component: Estrutura,
-  notFoundComponent: NaoEncontrado,
+  notFoundComponent: () => <NaoEncontrado />,
   errorComponent: ErroDaRota,
 });
 const inicio = createRoute({
@@ -50,7 +51,10 @@ const carrinho = createRoute({
   path: '/carrinho',
   component: lazyRouteComponent(() => import('./funcionalidades/compra'), 'Carrinho'),
 });
-const retornoSchema = z.object({ retorno: z.string().catch('/') });
+const retornoSchema = z.object({
+  retorno: z.string().catch('/'),
+  motivo: z.literal('sessao-expirada').optional(),
+});
 const login = createRoute({
   getParentRoute: () => raiz,
   path: '/login',

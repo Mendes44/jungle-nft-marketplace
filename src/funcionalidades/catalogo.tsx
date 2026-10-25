@@ -1,9 +1,11 @@
 /** Descoberta e detalhe: estado de pesquisa pertence à URL; consultas obsoletas são canceladas. */
+import axios from 'axios';
+import { NaoEncontrado } from '../componentes/nao-encontrado';
 import { useState } from 'react';
 import { Link, useNavigate, useSearch, useParams } from '@tanstack/react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
-import { ArrowRight, Heart, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Eye, Heart, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   catalogoSchema,
   carrinhoSchema,
@@ -27,7 +29,7 @@ export function CartaoNft({ nft }: { nft: Nft }) {
         </div>
         <div className="flex justify-between gap-2 mt-4">
           <h3>{nft.nome}</h3>
-          <ArrowRight size={16} aria-hidden="true" />
+          <Eye size={16} aria-hidden="true" />
         </div>
       </Link>
       <p className="text-[var(--cobre)] mt-1">{exibirEth(nft.edicoes[0].preco)}</p>
@@ -59,7 +61,7 @@ function FiltrosCatalogo({
             onClick={() => mudar({ categoria })}
           >
             {categoria || 'Todas as coleções'}
-            <span>{categoria ? '↗' : '12'}</span>
+            {!categoria && <span>12</span>}
           </button>
         ))}
       </div>
@@ -193,9 +195,7 @@ export function Inicio() {
             </span>
           </p>
           <Button asChild>
-            <a href="#catalogo">
-              EXPLORAR COLEÇÕES <ArrowRight size={17} />
-            </a>
+            <a href="#catalogo">EXPLORAR COLEÇÕES</a>
           </Button>
           <p className="hero-nota">
             <span>12</span> obras selecionadas <span>02</span> redes para explorar
@@ -223,7 +223,7 @@ export function Inicio() {
           />
           <div>
             <span>MACACO ESMERALDA #042</span>
-            <span>↗</span>
+            <Eye size={18} aria-hidden="true" />
           </div>
         </Link>
       </section>
@@ -360,7 +360,7 @@ export function Inicio() {
         <p>Cada obra tem uma história. Encontre a sua.</p>
         <Button asChild variant="outline">
           <Link to="/nft/$nftId" params={{ nftId: '1' }}>
-            Conhecer a coleção <ArrowRight size={18} />
+            Conhecer a coleção
           </Link>
         </Button>
       </section>
@@ -456,7 +456,12 @@ export function DetalheNft() {
     },
   });
   if (nft.isPending) return <EsqueletoDoNft />;
-  if (nft.isError) return <Falha erro={nft.error} tentar={() => void nft.refetch()} />;
+  if (nft.isError)
+    return axios.isAxiosError(nft.error) && nft.error.response?.status === 404 ? (
+      <NaoEncontrado recurso="NFT" />
+    ) : (
+      <Falha erro={nft.error} tentar={() => void nft.refetch()} />
+    );
   const edicao = nft.data.edicoes.find((edicao) => edicao.id === edicaoId) ?? nft.data.edicoes[0];
   return (
     <>

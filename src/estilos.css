@@ -1670,3 +1670,211 @@ footer {
     font-size: 10px;
   }
 }
+
+/* A ausência de um recurso possui composição própria, sem ocultar a navegação do marketplace. */
+.nao-encontrado {
+  max-width: 760px;
+  margin: 64px auto 88px;
+  padding: 48px 28px;
+  text-align: center;
+  border: 1px solid var(--borda);
+  background: radial-gradient(ellipse at top, #332015, transparent 70%);
+  border-radius: 24px;
+}
+.emblema-ausente {
+  display: inline-flex;
+  color: var(--cobre);
+  padding: 22px;
+  background: var(--painel);
+  border: 1px solid var(--borda);
+  border-radius: 50%;
+  margin-bottom: 24px;
+}
+.nao-encontrado > p:not(.sobretitulo) {
+  color: var(--suave);
+  font-size: 14px;
+  line-height: 1.9;
+  margin: 22px auto 30px;
+  max-width: 530px;
+}
+.acoes-ausente {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+}
+@media (max-width: 600px) {
+  .nao-encontrado {
+    padding: 32px 18px;
+    margin: 32px 0 48px;
+  }
+  .nao-encontrado h1 {
+    font-size: 26px;
+  }
+  .acoes-ausente > a {
+    width: 100%;
+  }
+}
+
+/* O acesso direto preserva a URL; o formulário desktop segue a composição modal do Figma. */
+.fundo-autenticacao {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 450px;
+  gap: 48px;
+  padding: 24px 0;
+  align-items: center;
+}
+.fundo-autenticacao h2 {
+  font-size: 43px;
+  line-height: 70px;
+  margin: 22px 0;
+}
+.fundo-autenticacao p {
+  color: var(--suave);
+  font-size: 13px;
+  line-height: 1.9;
+}
+.fundo-autenticacao img {
+  width: 100%;
+  border-radius: 24px;
+}
+.vitrine-autenticacao {
+  grid-column: 1/-1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  padding-left: 267px;
+  margin-top: 32px;
+}
+.autenticacao-conteudo {
+  position: fixed;
+  z-index: 51;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--painel);
+  border-bottom: 7px solid var(--cobre);
+  border-radius: 8px;
+  padding: 36px 48px;
+  width: min(92vw, 500px);
+  max-height: 90dvh;
+  overflow: auto;
+  box-shadow: 0 24px 90px #0009;
+}
+.autenticacao-conteudo .autenticacao-layout {
+  display: block;
+  padding: 0;
+}
+.autenticacao-conteudo .arte-autenticacao,
+.autenticacao-conteudo .sobretitulo {
+  display: none;
+}
+.autenticacao-conteudo .autenticacao-layout h1 {
+  font-size: 24px;
+  text-align: center;
+  letter-spacing: 0;
+}
+.autenticacao-conteudo .descricao {
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.autenticacao-conteudo .text-sm,
+.autenticacao-conteudo .text-xs {
+  text-align: center;
+}
+main:has(> .navegacao-conta) {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 0 32px;
+  align-content: start;
+  align-items: start;
+}
+main:has(> .navegacao-conta) > :not(.navegacao-conta) {
+  grid-column: 2;
+}
+main:has(> .navegacao-conta) > .navegacao-conta {
+  grid-column: 1;
+  grid-row: 1 / span 8;
+  flex-direction: column;
+  gap: 0;
+  padding: 22px;
+  background: var(--painel);
+  border: 0;
+}
+main:has(> .navegacao-conta) > .titulo-pagina {
+  font-size: 23px;
+  margin-top: 24px;
+}
+main:has(> .navegacao-conta) .conta-layout {
+  display: block;
+}
+main:has(> .navegacao-conta) .conta-layout > aside {
+  display: none;
+}
+.recibo {
+  max-width: 600px;
+  background: var(--painel);
+  border-radius: 10px;
+  border-bottom: 7px solid var(--cobre);
+  padding: 28px;
+}
+.recibo h1 {
+  font-size: 23px;
+  letter-spacing: -0.5px;
+}
+.recibo .painel-resumo {
+  border: 0;
+  padding: 12px 0;
+}
+@media (max-width: 800px) {
+  main:has(> .navegacao-conta) {
+    display: block;
+  }
+  main:has(> .navegacao-conta) > .navegacao-conta {
+    flex-direction: row;
+    padding: 12px;
+    gap: 18px;
+  }
+  .fundo-autenticacao {
+    grid-template-columns: 1fr 1fr;
+  }
+  .fundo-autenticacao h2 {
+    font-size: 28px;
+    line-height: 1.5;
+  }
+}
+@media (max-width: 600px) {
+  .fundo-autenticacao {
+    display: none;
+  }
+  .autenticacao-conteudo {
+    inset: 0;
+    width: 100%;
+    max-height: 100dvh;
+    transform: none;
+    border: 0;
+    border-radius: 0;
+    background: var(--fundo);
+    padding: 72px 26px 32px;
+  }
+  .autenticacao-conteudo::before {
+    content: 'KURIO';
+    display: block;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    margin-bottom: 40px;
+  }
+  .autenticacao-conteudo .autenticacao-layout {
+    padding: 0;
+  }
+  .autenticacao-conteudo input {
+    min-height: 48px;
+  }
+  .recibo {
+    padding: 24px 18px;
+  }
+}

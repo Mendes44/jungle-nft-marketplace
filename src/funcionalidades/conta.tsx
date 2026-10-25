@@ -3,7 +3,8 @@ import { useState, type FormEvent } from 'react';
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
-import { Wallet, Pencil, Plus } from 'lucide-react';
+import * as Dialog from '@radix-ui/react-dialog';
+import { Wallet, Pencil, Plus, X } from 'lucide-react';
 import {
   cadastroSchema,
   carteiraSchema,
@@ -29,7 +30,7 @@ function retornoSeguro(retorno: string) {
 }
 /** Login e cadastro compartilham a estrutura visual e mantêm o contexto anterior. */
 export function Autenticacao({ cadastro = false }: { cadastro?: boolean }) {
-  const { retorno } = useSearch({ strict: false });
+  const { retorno, motivo } = useSearch({ strict: false });
   const navegar = useNavigate();
   const [erros, definirErros] = useState<Record<string, string>>({});
   const autenticar = useMutation({
@@ -72,102 +73,160 @@ export function Autenticacao({ cadastro = false }: { cadastro?: boolean }) {
     autenticar.mutate(resultado.data);
   }
   return (
-    <section className="autenticacao-layout">
-      <div>
-        <p className="sobretitulo">SUA COLEÇÃO COMEÇA AQUI</p>
-        <h1>{cadastro ? 'Crie sua conta.' : 'Bem-vindo de volta.'}</h1>
-        <p className="descricao">
-          {cadastro
-            ? 'Faça parte de uma nova forma de colecionar arte.'
-            : 'Entre para explorar, colecionar e acompanhar suas obras.'}
-        </p>
-        <form onSubmit={enviar} noValidate>
-          {cadastro && (
-            <Campo rotulo="Nome completo" erro={erros.nome}>
-              {(id, erroId) => (
-                <input
-                  id={id}
-                  name="nome"
-                  autoComplete="name"
-                  required
-                  minLength={3}
-                  aria-invalid={Boolean(erros.nome)}
-                  aria-describedby={erroId}
-                />
-              )}
-            </Campo>
-          )}
-          <Campo rotulo="E-mail" erro={erros.email}>
-            {(id, erroId) => (
-              <input
-                id={id}
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                aria-invalid={Boolean(erros.email)}
-                aria-describedby={erroId}
-              />
-            )}
-          </Campo>
-          <Campo rotulo="Senha" erro={erros.senha}>
-            {(id, erroId) => (
-              <input
-                id={id}
-                name="senha"
-                type="password"
-                autoComplete={cadastro ? 'new-password' : 'current-password'}
-                required
-                aria-invalid={Boolean(erros.senha)}
-                aria-describedby={erroId}
-              />
-            )}
-          </Campo>
-          {cadastro && (
-            <Campo rotulo="Confirmar senha" erro={erros.confirmacao}>
-              {(id, erroId) => (
-                <input
-                  id={id}
-                  name="confirmacao"
-                  type="password"
-                  autoComplete="new-password"
-                  aria-invalid={Boolean(erros.confirmacao)}
-                  aria-describedby={erroId}
-                />
-              )}
-            </Campo>
-          )}
-          {autenticar.isError && <Falha erro={autenticar.error} />}
-          <Button className="w-full mt-4" disabled={autenticar.isPending}>
-            {autenticar.isPending ? 'Aguarde…' : cadastro ? 'Criar conta' : 'Entrar'}
-          </Button>
-        </form>
-        <p className="text-sm mt-6">
-          {cadastro ? 'Já tem uma conta? ' : 'Ainda não tem uma conta? '}
-          <Link
-            className="link-texto"
-            to={cadastro ? '/login' : '/cadastro'}
-            search={{ retorno: retorno ?? '/' }}
-          >
-            {cadastro ? 'Entrar' : 'Cadastre-se'}
-          </Link>
-        </p>
-        <p className="text-xs text-[var(--suave)] mt-8">
-          Demonstração: ana@exemplo.com ou bruno@exemplo.com
-          <br />
-          Senha fictícia: Colecao123
-        </p>
+    <>
+      <div className="fundo-autenticacao" aria-hidden="true" inert>
+        <div>
+          <p>Bem-vindo à Kurio</p>
+          <h2>
+            SEJA DONO DO FUTURO
+            <br />
+            DA ARTE DIGITAL
+          </h2>
+          <p>Descubra NFTs selecionados de criadores emergentes e consagrados.</p>
+        </div>
+        <img src="/imagens/colecao-0.webp" alt="" width="450" height="450" />
+        <div className="vitrine-autenticacao">
+          {[0, 1, 2, 1, 3, 2].map((retrato, indice) => (
+            <img
+              key={indice}
+              src={`/imagens/colecao-${retrato}.webp`}
+              alt=""
+              width="240"
+              height="240"
+            />
+          ))}
+        </div>
       </div>
-      <div className="arte-autenticacao">
-        <img
-          src="/imagens/colecao-0.webp"
-          width="480"
-          height="480"
-          alt="Macaco Esmeralda da coleção Kurio"
-        />
-        <p>ARTE DIGITAL. IDENTIDADE REAL.</p>
-      </div>
-    </section>
+      <Dialog.Root
+        open
+        onOpenChange={(aberto) => {
+          if (!aberto) void navegar({ href: retornoSeguro(retorno ?? '/') });
+        }}
+      >
+        <Dialog.Portal>
+          <Dialog.Overlay className="dialogo-fundo" />
+          <Dialog.Content className="autenticacao-conteudo">
+            <Dialog.Title className="sr-only">
+              {cadastro ? 'Criar conta de colecionador' : 'Acessar sua conta'}
+            </Dialog.Title>
+            <Dialog.Description className="sr-only">
+              Entre ou cadastre-se para gerenciar suas obras e carteiras.
+            </Dialog.Description>
+            <Dialog.Close asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="dialogo-fechar"
+                aria-label="Fechar autenticação"
+              >
+                <X size={18} />
+              </Button>
+            </Dialog.Close>
+            <section className="autenticacao-layout">
+              {motivo === 'sessao-expirada' && (
+                <p className="mensagem" role="status">
+                  Sua sessão expirou. Entre novamente para continuar de onde parou.
+                </p>
+              )}
+              <div>
+                <p className="sobretitulo">SUA COLEÇÃO COMEÇA AQUI</p>
+                <h1>{cadastro ? 'Crie sua conta.' : 'Bem-vindo de volta.'}</h1>
+                <p className="descricao">
+                  {cadastro
+                    ? 'Faça parte de uma nova forma de colecionar arte.'
+                    : 'Entre para explorar, colecionar e acompanhar suas obras.'}
+                </p>
+                <form onSubmit={enviar} noValidate>
+                  {cadastro && (
+                    <Campo rotulo="Nome completo" erro={erros.nome}>
+                      {(id, erroId) => (
+                        <input
+                          id={id}
+                          name="nome"
+                          autoComplete="name"
+                          required
+                          minLength={3}
+                          aria-invalid={Boolean(erros.nome)}
+                          aria-describedby={erroId}
+                        />
+                      )}
+                    </Campo>
+                  )}
+                  <Campo rotulo="E-mail" erro={erros.email}>
+                    {(id, erroId) => (
+                      <input
+                        id={id}
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        required
+                        aria-invalid={Boolean(erros.email)}
+                        aria-describedby={erroId}
+                      />
+                    )}
+                  </Campo>
+                  <Campo rotulo="Senha" erro={erros.senha}>
+                    {(id, erroId) => (
+                      <input
+                        id={id}
+                        name="senha"
+                        type="password"
+                        autoComplete={cadastro ? 'new-password' : 'current-password'}
+                        required
+                        aria-invalid={Boolean(erros.senha)}
+                        aria-describedby={erroId}
+                      />
+                    )}
+                  </Campo>
+                  {cadastro && (
+                    <Campo rotulo="Confirmar senha" erro={erros.confirmacao}>
+                      {(id, erroId) => (
+                        <input
+                          id={id}
+                          name="confirmacao"
+                          type="password"
+                          autoComplete="new-password"
+                          aria-invalid={Boolean(erros.confirmacao)}
+                          aria-describedby={erroId}
+                        />
+                      )}
+                    </Campo>
+                  )}
+                  {autenticar.isError && <Falha erro={autenticar.error} />}
+                  <Button className="w-full mt-4" disabled={autenticar.isPending}>
+                    {autenticar.isPending ? 'Aguarde…' : cadastro ? 'Criar conta' : 'Entrar'}
+                  </Button>
+                </form>
+                <p className="text-sm mt-6">
+                  {cadastro ? 'Já tem uma conta? ' : 'Ainda não tem uma conta? '}
+                  <Link
+                    className="link-texto"
+                    to={cadastro ? '/login' : '/cadastro'}
+                    search={{ retorno: retorno ?? '/' }}
+                  >
+                    {cadastro ? 'Entrar' : 'Cadastre-se'}
+                  </Link>
+                </p>
+                <p className="text-xs text-[var(--suave)] mt-8">
+                  Demonstração: ana@exemplo.com ou bruno@exemplo.com
+                  <br />
+                  Senha fictícia: Colecao123
+                </p>
+              </div>
+              <div className="arte-autenticacao">
+                <img
+                  src="/imagens/colecao-0.webp"
+                  width="480"
+                  height="480"
+                  alt="Macaco Esmeralda da coleção Kurio"
+                />
+                <p>ARTE DIGITAL. IDENTIDADE REAL.</p>
+              </div>
+            </section>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+    </>
   );
 }
 /** Entrada independente permite baixar a tela de cadastro somente ao navegar até ela. */
@@ -566,7 +625,7 @@ export function MeusPedidos() {
             >
               <h2>{pedido.id}</h2>
               <p>Estado: {pedido.estado}</p>
-              <p>{pedido.cotacao.itens.length} obra(s) · Ver pedido →</p>
+              <p>{pedido.cotacao.itens.length} obra(s) · Ver pedido</p>
             </Link>
           ))}
         </div>

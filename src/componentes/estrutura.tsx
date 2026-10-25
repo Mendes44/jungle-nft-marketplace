@@ -47,15 +47,22 @@ function PainelSimulacao() {
         {(id) => (
           <select
             id={id}
-            value={consulta.data?.cenario ?? 'padrao'}
+            value={consulta.data?.cenario ?? ''}
+            disabled={consulta.isPending || consulta.isError || mudar.isPending}
             onChange={(evento) => mudar.mutate({ cenario: evento.target.value })}
           >
+            {!consulta.data && (
+              <option value="">
+                {consulta.isError ? 'Consulta indisponível' : 'Consultando cenário…'}
+              </option>
+            )}
             {cenarios.map((item) => (
               <option key={item}>{item}</option>
             ))}
           </select>
         )}
       </Campo>
+      {consulta.isError && <Falha erro={consulta.error} tentar={() => void consulta.refetch()} />}
       <div className="grade-simulacao">
         {[
           { acao: 'preco', nome: 'Alterar preço do NFT 1' },
@@ -105,7 +112,7 @@ export function Estrutura() {
   useEffect(() => {
     /** A expiração mantém o endereço do fluxo privado para retomada depois do login. */
     function autenticar() {
-      void navegar({ to: '/login', search: { retorno: local.href } });
+      void navegar({ to: '/login', search: { retorno: local.href, motivo: 'sessao-expirada' } });
     }
     window.addEventListener('kurio:autenticar', autenticar);
     return () => window.removeEventListener('kurio:autenticar', autenticar);
@@ -122,7 +129,7 @@ export function Estrutura() {
       <div className="pagina">
         <header className="cabecalho">
           <Link to="/" className="marca" aria-label="KURIO início">
-            KURIO<span>®</span>
+            KURIO
           </Link>
           <nav className="navegacao-desktop" aria-label="Principal">
             <Link to="/" activeProps={{ className: 'ativo' }} activeOptions={{ exact: true }}>
@@ -235,7 +242,7 @@ export function Estrutura() {
               <h2>Antecipe sua próxima coleção</h2>
               <p>Descubra os lançamentos e acompanhe suas obras favoritas.</p>
               <Link to="/" className="link-texto">
-                Explorar o mercado →
+                Explorar o mercado
               </Link>
             </div>
           </div>
@@ -287,6 +294,7 @@ export function Estrutura() {
             <span>Compras e transações inteiramente simuladas.</span>
             {import.meta.env.VITE_MOCKS !== 'false' && (
               <Dialogo
+                key={local.pathname}
                 titulo="Cenários da demonstração"
                 descricao="Reproduza latência, falhas e eventos da API simulada."
                 gatilho={
@@ -317,19 +325,5 @@ export function Estrutura() {
         </Link>
       </nav>
     </>
-  );
-}
-
-/** Rotas inexistentes mantêm navegação útil e não aparentam conteúdo válido. */
-export function NaoEncontrado() {
-  return (
-    <div className="vazio">
-      <p className="sobretitulo">404</p>
-      <h1>Esta página não foi encontrada.</h1>
-      <p>Volte ao mercado para continuar sua descoberta.</p>
-      <Button asChild>
-        <Link to="/">Voltar ao início</Link>
-      </Button>
-    </div>
   );
 }

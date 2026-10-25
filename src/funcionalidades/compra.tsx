@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
 import axios from 'axios';
-import { CheckCircle2, Clock3, ShieldCheck, Trash2, Wallet, XCircle } from 'lucide-react';
+import { CheckCircle2, Clock3, ShieldCheck, Trash2, Wallet, XCircle, Search } from 'lucide-react';
 import {
   carteiraSchema,
   carrinhoSchema,
@@ -20,6 +20,7 @@ import { alterar, cache, consultar } from '../infraestrutura/api';
 import { useSessao } from '../infraestrutura/sessao';
 import { Button } from '../componentes/ui/button';
 import { Campo, Dialogo, Esqueleto, Falha } from '../componentes/comuns';
+import { NaoEncontrado } from '../componentes/nao-encontrado';
 import { MaisDaColecao } from './catalogo';
 
 /** Chaves incluem o dono; carrinhos de visitantes nunca reutilizam o cache de uma conta. */
@@ -229,7 +230,7 @@ export function Carrinho() {
             ))}
             {mudar.isError && <Falha erro={mudar.error} />}
             <Link to="/" className="link-texto">
-              ← Continuar explorando
+              Continuar explorando
             </Link>
           </section>
           <aside className="painel-resumo">
@@ -327,7 +328,8 @@ function FormularioPagamento() {
     mutationFn: (atual: Tentativa) =>
       alterar('POST', '/pedidos', atual.dados, pedidoSchema, atual.chave),
     onError: (erro: unknown) => {
-      // Erros definitivos não criaram pedido; timeouts preservam a tentativa original para replay.
+      // Uma resposta definitiva encerra este envio; timeouts preservam a tentativa para replay.
+      // Um conflito de chave pode indicar pedido anterior existente, recuperável pelo histórico.
       if (
         axios.isAxiosError(erro) &&
         erro.response &&
@@ -432,6 +434,12 @@ function FormularioPagamento() {
     return (
       <div className="vazio">
         <h1>Seu carrinho está vazio</h1>
+        {enviar.isError && <Falha erro={enviar.error} />}
+        {enviar.isError && (
+          <Link to="/pedidos" className="link-texto">
+            Consultar meus pedidos
+          </Link>
+        )}
         <Button asChild>
           <Link to="/">Explorar NFTs</Link>
         </Button>
@@ -448,7 +456,7 @@ function FormularioPagamento() {
       {pendente && (
         <p className="mensagem">
           <Link to="/pedido/$pedidoId" params={{ pedidoId: pendente.id }}>
-            Você tem um pedido pendente. Acompanhar {pendente.id} →
+            Você tem um pedido pendente. Acompanhar {pendente.id}
           </Link>
         </p>
       )}
@@ -567,8 +575,7 @@ function FormularioPagamento() {
             </>
           ) : (
             <p className="mensagem">
-              Cadastre uma carteira para continuar.{' '}
-              <Link to="/carteiras">Gerenciar carteiras →</Link>
+              Cadastre uma carteira para continuar. <Link to="/carteiras">Gerenciar carteiras</Link>
             </p>
           )}
           <Button disabled={!conectado || revisar.isPending || Boolean(tentativa)}>
@@ -640,7 +647,12 @@ export function AcompanharPedido() {
     refetchInterval: (consulta) => (consulta.state.data?.estado === 'pendente' ? 1200 : false),
   });
   if (pedido.isPending) return <Esqueleto detalhe />;
-  if (pedido.isError) return <Falha erro={pedido.error} tentar={() => void pedido.refetch()} />;
+  if (pedido.isError)
+    return axios.isAxiosError(pedido.error) && pedido.error.response?.status === 404 ? (
+      <NaoEncontrado recurso="pedido" />
+    ) : (
+      <Falha erro={pedido.error} tentar={() => void pedido.refetch()} />
+    );
   const confirmado = pedido.data.estado === 'confirmado';
   const pendente = pedido.data.estado === 'pendente';
   return (
@@ -684,6 +696,12 @@ export function AcompanharPedido() {
         ))}
         <ResumoValores cotacao={pedido.data.cotacao} />
         <p>Carteira: {pedido.data.carteira.nome}</p>
+        <p>
+          Data:{' '}
+          {new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium', timeStyle: 'short' }).format(
+            new Date(pedido.data.criadoEm),
+          )}
+        </p>
         <p>Rede: {pedido.data.carteira.rede}</p>
         {confirmado && (
           <div className="mt-4">
@@ -694,7 +712,7 @@ export function AcompanharPedido() {
               descricao="Esta referência não existe em uma blockchain real."
               gatilho={
                 <Button variant="ghost" size="sm">
-                  Ver referência da transação ↗
+                  <Search size={16} aria-hidden="true" /> Ver referência da transação
                 </Button>
               }
             >

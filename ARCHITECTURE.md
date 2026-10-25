@@ -36,6 +36,8 @@ O carrinho de visitante tem identificador UUID próprio. Login mescla cada chave
 
 Rascunhos e tentativas de checkout ficam na aba, separados por usuário. A tela só os recupera depois de resolver a identidade. Expiração permite retomar campos após login. O reset elimina banco, sessões, sequência, rascunhos e tentativas do namespace Kurio.
 
+O painel de simulação encerra seu ciclo ao mudar de rota. Se uma ação expira a sessão, ele é desmontado antes da interação com o login, evitando dois modais sobrepostos. O teste de expiração verifica que apenas a autenticação permanece e que o rascunho retorna após entrar novamente.
+
 ## Cache, cancelamento e erros
 
 Query usa `staleTime` de 15 segundos, atualização ao focar a janela e retry automático desativado. Mutations também não têm retry automático; o usuário recebe retorno explícito e pode tentar novamente. O timeout Axios é de 4 segundos. GETs recebem o `AbortSignal` da query, evitando que respostas obsoletas ocupem o estado da busca atual.
@@ -64,7 +66,7 @@ As telas de confirmação, perfil e carteiras funcionam em mobile por adaptaçã
 
 Os 15 frames foram exportados, renderizados e revisados. Os quatro retratos originais são reutilizados entre NFTs, como no catálogo da referência. A paleta usa fundo #140D0A, painel #241612, texto #F5F1EB, texto secundário #CFB28C e cobre #D28A4C. O destaque desktop usa 43 px e entrelinha de 70 px; mobile usa escala menor e composição compacta. O menu inferior e os filtros expansíveis preservam acesso aos recursos em telas estreitas.
 
-Desvios do Figma: nomes e descrições traduzidos; fonte IBM Plex Mono substitui a variável não resolvida `font/family`; informações de demonstração e conexão; seleção de rede vinculada à carteira cadastrada; histórico para recuperação. Login e cadastro usam rotas próprias, em vez do modal desktop da referência. Perfil inclui biografia; a organização dos formulários de conta e de revisão foi adaptada aos contratos. O recibo é uma rota recuperável. Seções editoriais fora do escopo são reduzidas, sem cadastro de newsletter ou autenticação social fictícios. A navegação e o rodapé usam destinos reais ou diálogos explicativos. Estas escolhas mantêm os fluxos completos, mas não representam reprodução pixel a pixel.
+Desvios do Figma: nomes e descrições traduzidos; fonte IBM Plex Mono substitui a variável não resolvida `font/family`; informações de demonstração e conexão; seleção de rede vinculada à carteira cadastrada; histórico para recuperação. Login e cadastro mantêm URLs acessíveis diretamente e utilizam um modal com foco preso no desktop; no mobile, o formulário ocupa a tela. Perfil inclui biografia; a organização dos formulários de conta e de revisão foi adaptada aos contratos. O recibo usa um painel com a identidade da referência e uma rota recuperável. Seções editoriais fora do escopo são reduzidas, sem cadastro de newsletter ou autenticação social fictícios. A navegação e o rodapé usam destinos reais ou diálogos explicativos. Estas escolhas mantêm os fluxos completos, mas não representam reprodução pixel a pixel.
 
 ## Carregamento e entrega dos arquivos
 
@@ -78,4 +80,133 @@ Playwright usa contextos isolados, relógio estável em screenshots e ações de
 
 Vercel e Netlify possuem fallback SPA. MSW é ativado por configuração e incluído no build padrão. A origem WebSocket acompanha HTTP/HTTPS da implantação, permitindo funcionamento estático sem um backend privado.
 
-Resultados, limites da referência visual e endereços publicados estão em `docs/validacao.md`. A matriz de requisitos diferencia comportamento implementado de pendências visuais e evidências realmente executadas.
+Os resultados executados estão nos relatórios Playwright e Lighthouse; as URLs e instruções de reprodução estão no README.
+
+### Requisitos e verificação
+
+| Requisito                          | Implementação                                                    | Verificação                                                                                  |
+| ---------------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Catálogo, URL, filtros e histórico | `catalogo.tsx`, Router e consultas Axios canceláveis             | `fluxos.spec.ts`: filtros combinados e respostas obsoletas                                   |
+| Detalhe, estoque e inexistência    | Edições por NFT e páginas 404 compartilhadas                     | `fluxos.spec.ts` e `recuperacao.spec.ts`: acesso direto, esgotamento e 404/503               |
+| Conta, sessão e isolamento         | API autenticada, cache por identidade e limpeza de subscriptions | `fluxos.spec.ts`, `consistencia.spec.ts` e `recuperacao.spec.ts`: troca de conta e expiração |
+| Carrinho e precisão ETH            | Persistência, merge e cálculo em wei com BigInt                  | `fluxos.spec.ts`: 18 casas, cupom, quantidades e refresh                                     |
+| Compra, idempotência e recibo      | Cotação revalidada, reserva, snapshot e tentativa persistida     | `fluxos.spec.ts` e `recuperacao.spec.ts`: recusa, timeout e chave com conteúdo diferente     |
+| Perfil, avatar, senha e carteiras  | Mutations validadas e persistidas pela simulação                 | `fluxos.spec.ts` e `consistencia.spec.ts`: edição, validação e refresh                       |
+| Tempo real e reconciliação         | Cliente Socket.IO, binding MSW, versões e releitura REST         | `fluxos.spec.ts`: preço, duplicatas, eventos antigos e pedido após desconexão                |
+| Falhas e retomada do transporte    | Cenários REST e handshake do worker antes do Axios               | `recuperacao.spec.ts`: encerramento real do worker e pedido preservado                       |
+| Acessibilidade e responsividade    | Labels, foco, Radix, shimmer reduzido e grades adaptáveis        | E2E com axe/teclado, 24 capturas e `verificar-responsividade.mjs`                            |
+| Desempenho e entrega               | Build com assets locais, Lighthouse e fallback SPA               | 12 auditorias, comparação de hashes e E2E na publicação                                      |
+
+A matriz relaciona comportamentos verificáveis. A comparação visual com o Figma continua sujeita aos desvios declarados acima.
+
+## Retomada após inatividade
+
+O navegador pode encerrar um service worker e perder sua lista de clientes ativos. Antes de cada requisição Axios, a demonstração envia MOCK_ACTIVATE e aguarda MOCKING_ENABLED, sem reiniciar handlers, banco ou Socket.IO. Requisições simultâneas compartilham o handshake; há prazo de dois segundos e limpeza dos listeners. A preparação não repete mutations e não altera a chave de idempotência. As credenciais são capturadas antes da espera para que uma troca de conta não reatribua a operação.
+
+Um teste Chromium encerra o worker pelo protocolo do navegador e consulta o catálogo novamente. Outro faz a retomada com um pedido pendente e confirma que há somente uma transação. Expiração da sessão tem mensagem própria no login; respostas HTTP não estruturadas informam seu status, em vez de aparecerem como falta de conexão.
+
+Na corrida em que o worker para entre a confirmação do handshake e o envio da consulta, somente um GET pode ser repetido, uma vez, se receber HTML da hospedagem ou um 404 sem o contrato JSON da API. Erros de negócio estruturados, falhas intencionais de conexão e mutations não recebem essa repetição automática.
+
+A Vercel também pode devolver seu 404 em JSON. A distinção utiliza o contrato `{ mensagem: string }` da API, em vez de presumir que toda resposta JSON veio do mock. O teste do pedido interrompe o worker durante a navegação e verifica a retomada da mesma transação na publicação.
+
+## Recursos inexistentes
+
+Rotas desconhecidas, NFTs ausentes e pedidos inexistentes apresentam páginas 404 com retorno ao início e ao catálogo. A classificação exige status 404 da API: erros 403 e 503 continuam visíveis como falhas de permissão ou indisponibilidade. Uma hospedagem SPA retorna o documento de entrada; o estado 404 da tela é tratado pelo Router e a API simulada retorna o status correspondente.
+
+## Contratos de integração
+
+Os schemas executáveis ficam em `src/dominio/contratos.ts`.
+
+### Regras comuns
+
+- `Authorization: Bearer <token>` nas operações autenticadas. Token ausente/expirado retorna 401.
+- `X-Visitante: <uuid>` identifica o carrinho público antes de login. A sessão autenticada sempre prevalece sobre esse header.
+- Resposta de erro: `{ "mensagem": "Texto em português" }`.
+- ETH: string decimal positiva com até 18 casas. Quantidade: inteiro positivo. Versões: inteiros.
+- Status: 400 identificação inválida, 401 sessão inválida, 403 proprietário/permissão, 404 recurso ausente, 409 conflito, 422 validação, 503 falha transitória.
+- Os POSTs de pedido exigem `Idempotency-Key`; a chave é escopada pelo usuário.
+
+### Recursos
+
+| Método / caminho           | Entrada                                               | Resposta                                                                                        |
+| -------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| POST `/cadastro`           | nome, email, senha                                    | token e perfil público; 409 se e-mail existe                                                    |
+| POST `/login`              | email, senha                                          | token e perfil; 422 para credenciais inválidas                                                  |
+| GET `/sessao`              | token                                                 | perfil público da sessão                                                                        |
+| POST `/logout`             | token                                                 | `{ sucesso: true }`; token revogado                                                             |
+| GET `/nfts`                | busca, categoria, rede, ordem, pagina, minimo, maximo | itens, total, paginas; nove itens por página                                                    |
+| GET `/nfts/:id`            | identificador                                         | NFT com edições e versão; 404 se ausente                                                        |
+| GET `/favoritos`           | token                                                 | lista de identificadores                                                                        |
+| POST / DELETE `/favoritos` | nftId                                                 | lista atualizada; exige sessão                                                                  |
+| GET `/carrinho`            | visitante ou sessão                                   | itens com preço/estoque atuais e cupom                                                          |
+| POST `/carrinho`           | nftId, edicaoId, quantidade                           | soma à linha existente, respeitando estoque                                                     |
+| PATCH `/carrinho`          | nftId, edicaoId, quantidade                           | substitui quantidade; 409 se indisponível                                                       |
+| DELETE `/carrinho`         | nftId, edicaoId                                       | remove a linha composta                                                                         |
+| GET `/cotacao`             | visitante ou sessão                                   | id, itens, cupom, subtotal, desconto, taxa, total                                               |
+| POST `/cotacao`            | cupom, string vazia para remover                      | valida e retorna cotação atual; 422 se inválido/expirado                                        |
+| GET / PATCH `/perfil`      | dados públicos/avatar na alteração                    | perfil persistido; e-mail em conflito retorna 409                                               |
+| PATCH `/senha`             | atual, nova                                           | sucesso; valida hash atual e complexidade                                                       |
+| GET `/carteiras`           | token                                                 | até duas carteiras da conta                                                                     |
+| POST / PATCH `/carteiras`  | id, nome, endereco, rede, tipo, principal             | lista atualizada; endereço hexadecimal 0x de 40 caracteres                                      |
+| POST `/conexao`            | carteiraId, acao: conectar/recusar/desconectar        | estado e carteiraId; conexão é registrada na sessão                                             |
+| GET `/pedidos`             | token                                                 | pedidos somente da conta atual                                                                  |
+| POST `/pedidos`            | corpo abaixo + Idempotency-Key                        | pedido pendente (201), replay do mesmo pedido (200), 409 para chave reutilizada com outro corpo |
+| GET `/pedidos/:id`         | token                                                 | estado e snapshot; 403 se pertence a outra conta                                                |
+| GET / POST `/simulacao`    | cenário e/ou ação                                     | cenário atual; apenas disponível com os mocks                                                   |
+
+```json
+{
+  "cotacaoId": "identificador determinístico retornado pela API",
+  "carteiraId": "ana-principal",
+  "rede": "Ethereum",
+  "conectado": true,
+  "nome": "Ana Oliveira",
+  "email": "ana@exemplo.com",
+  "apelido": "ana.arte",
+  "nomePerfil": "ana.arte",
+  "indicacao": "KURIO",
+  "ens": "ana.eth",
+  "observacao": "",
+  "enderecoSecundario": ""
+}
+```
+
+A API exige que a carteira pertença à conta, corresponda à rede e esteja conectada na sessão. Ela recalcula a cotação antes de reservar estoque. `conectado: true` enviado isoladamente não substitui essa verificação.
+
+Um NFT inclui id, nome, criador, categoria, rede, imagem local, descrição, versão e edições com id, nome, disponibilidade e preço. Uma linha tem chave NFT+edição e quantidade. O pedido inclui usuário, estado, versão, snapshot da cotação, coletor, carteira, referência de transação e tempos da simulação.
+
+### Eventos Socket.IO
+
+Origem da aplicação com transporte `websocket`, path `/socket.io/` e namespace `/`. Token fictício na query do handshake; não usar essa estratégia para segredos de produção.
+
+```json
+{
+  "id": "nft.updated:1:2",
+  "recursoId": "1",
+  "versao": 2
+}
+```
+
+| Evento          | Escopo e reação                                                                   |
+| --------------- | --------------------------------------------------------------------------------- |
+| `nft.updated`   | Público; invalida catálogo, detalhe, carrinho e cotação                           |
+| `order.updated` | Privado; inclui usuarioId e invalida pedido, histórico e carrinho do proprietário |
+
+Identidade é estável para tipo+recurso+versão. O cliente rejeita versões menores ou iguais à já observada. Reconnect relê recursos ativos. Pedidos terminais nunca voltam a pendente. Os eventos não são aplicados diretamente a setters ou usados como substituto do transporte.
+
+### Referências técnicas
+
+- [TanStack Router — Search Params](https://tanstack.com/router/latest/docs/framework/react/guide/search-params)
+- [TanStack Query — Optimistic Updates](https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates)
+- [Axios — Cancellation](https://axios.rest/pages/advanced/cancellation)
+- [Socket.IO — Client Options](https://socket.io/docs/v4/client-options/)
+- [Binding MSW Socket.IO](https://github.com/mswjs/socket.io-binding) e declarações da versão 0.2.0 instalada
+- [shadcn/ui — Button](https://ui.shadcn.com/docs/components/button)
+- [Playwright — Visual Comparisons](https://playwright.dev/docs/test-snapshots)
+- [Lighthouse — Performance Scoring](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring)
+
+## Assets e atribuições
+
+Os quatro retratos em `assets/originais/` foram exportados do Figma do desafio e convertidos para WebP em `public/imagens/`, com largura de 640 px e qualidade 85. A autoria das artes permanece com seus autores. Os criadores e colecionadores das fixtures são fictícios e não constituem créditos das imagens.
+
+IBM Plex Mono é servida localmente nos pesos 400/700, sob a licença SIL OFL em `public/fontes/OFL.txt`. A propriedade de família do Figma expõe `font/family`, sem o valor resolvido; por isso a família local permanece uma substituição declarada. Lucide é utilizado sob licença ISC. Button e Dialog seguem shadcn/ui/Radix, sob MIT, com os tokens do marketplace. O ícone de visualização identifica o acesso aos detalhes; paginação mantém chevrons de navegação.

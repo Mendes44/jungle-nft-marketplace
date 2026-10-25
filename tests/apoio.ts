@@ -16,6 +16,15 @@ export async function cenario(pagina: Page, nome: string) {
 export async function evento(pagina: Page, nome: string) {
   await pagina.getByRole('button', { name: 'Simulação', exact: true }).click();
   await pagina.getByRole('button', { name: nome, exact: true }).click();
+  if (nome === 'Expirar sessão') {
+    // A navegação fecha o painel antes de abrir o login; não tenta fechar um diálogo já desmontado.
+    await expect(pagina).toHaveURL(/\/login/);
+    await expect(
+      pagina.getByRole('heading', { name: 'Cenários da demonstração', includeHidden: true }),
+    ).toHaveCount(0);
+    await expect(pagina.getByRole('dialog')).toHaveCount(1);
+    return;
+  }
   await pagina.getByRole('button', { name: 'Fechar diálogo' }).click();
 }
 /** Usa credenciais fictícias e a sessão retornada pela simulação. */

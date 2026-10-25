@@ -67,7 +67,11 @@ export const colecionadorSchema = z.object({
   apelido: z.string().min(2, 'Informe o nome de usuário.'),
   nomePerfil: z.string().min(2, 'Informe o nome de perfil.'),
   indicacao: z.string().min(3, 'Informe o código de indicação.'),
-  ens: z.string().regex(/^[a-z0-9-]+\.eth$/, 'Informe um nome ENS terminado em .eth.'),
+  ens: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .regex(/^[a-z0-9-]+\.eth$/, 'Informe um nome ENS terminado em .eth, como ana.eth.'),
   observacao: z.string().max(500),
   enderecoSecundario: z
     .string()

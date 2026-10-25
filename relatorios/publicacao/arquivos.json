@@ -1,11 +1,11 @@
 {
   "origem": "https://kurio-jungle.vercel.app",
-  "verificadoEm": "2026-10-24T18:46:41.774Z",
+  "verificadoEm": "2026-10-25T15:46:37.881Z",
   "arquivos": [
     {
-      "caminho": "/assets/index-D7Z0Czzp.js",
+      "caminho": "/assets/index-5Vvf0AS7.js",
       "igual": true,
-      "sha256": "d35b3dba743bf2856e51693b4391198524b8339810e3f9969aa6ba3b16dc4704"
+      "sha256": "1f72297cdefd2e29e346da70766eab1a0ec4dbbf0e941de1780bb1c99f632a7c"
     },
     {
       "caminho": "/assets/preload-helper-BLdHbfdN.js",
@@ -13,29 +13,29 @@
       "sha256": "8aec9ff75ffa86a03d51268b63126abadb3754aa5a6b6c5bb16e4e2446a63dee"
     },
     {
-      "caminho": "/assets/index-C4njXWM4.css",
+      "caminho": "/assets/index-D12APHf0.css",
       "igual": true,
-      "sha256": "c3991b78dd8e1ca8bace4e3920d503d6bdb2e770215fbcf7dfe89a12c9f55676"
+      "sha256": "d4cdf3cfbfbe1cb63971e913278e6065522713ec4da9e920b79c7e03350875f1"
     },
     {
-      "caminho": "/assets/aplicacao-C9TBdiNu.js",
+      "caminho": "/assets/aplicacao-Due_Ium6.js",
       "igual": true,
-      "sha256": "8a83bac577a1c690e3102edc06698073a9c255c1d1529103ff2159a7b5db220b"
+      "sha256": "bbb1375be6b7f7bd155942d5a0b1d0fea3b6c7b3d829534068c33f910c9c4c09"
     },
     {
-      "caminho": "/assets/catalogo-o-Vf95sO.js",
+      "caminho": "/assets/catalogo-CHcNKXaY.js",
       "igual": true,
-      "sha256": "c2af47da1b9e67a25a6d3909b857e721103f876687cc9e43bda561584a90fe78"
+      "sha256": "a5a2fae019ed21632a50b53aa23340bcb750e0552f965c1769115157e6030c2a"
     },
     {
-      "caminho": "/assets/compra-DYw-xsLi.js",
+      "caminho": "/assets/compra-qXbKHRCN.js",
       "igual": true,
-      "sha256": "9818a71fdb385ba0946ee18062e6255357d1b739cf07358d701e00df2481d016"
+      "sha256": "9f125c8b385345884dc2276ea0845a25495256b512fc6062668394a176797410"
     },
     {
-      "caminho": "/assets/comuns-C-vyT1SX.js",
+      "caminho": "/assets/comuns-DItAbaYO.js",
       "igual": true,
-      "sha256": "af85325473b7bef89c25420fe93e18ccd367d1a1c7487144616554af487961b1"
+      "sha256": "4f2f908da2c56f761cebb20284e6fbed5046f7965e0c2d1996a2d0a42ca0afdf"
     },
     {
       "caminho": "/assets/configuracao-XXSJpMxW.js",
@@ -43,14 +43,14 @@
       "sha256": "3676d6fef867a96ffc22a90ddcb28f9e75c502d36d95fa3a9872b8fcda834737"
     },
     {
-      "caminho": "/assets/conta-DMIXw9Sg.js",
+      "caminho": "/assets/conta-BlzKtZZs.js",
       "igual": true,
-      "sha256": "73ce56a383481a90f66ee55cf255e678d303c3b79bdf067a0b2866c61ec70225"
+      "sha256": "3100350c788fc7cf40533e7b953d082614df7ee710702ec6524b715cf9b11dbf"
     },
     {
-      "caminho": "/assets/contratos-EgEWu1Ap.js",
+      "caminho": "/assets/contratos-iOTl6TLQ.js",
       "igual": true,
-      "sha256": "ada9c305df65626debe201ef5c5b6ef4d66058518dea06bf1453ddeb533ed69b"
+      "sha256": "99841e953502187fa6315164c9766353bce4e2053987f35151857a362aa29e36"
     },
     {
       "caminho": "/assets/esm-B6DvIUmM.js",
@@ -63,9 +63,9 @@
       "sha256": "5d414c6cf568a6cb60ac7aede539da842ba06738eac42fb209ccae32dc896f43"
     },
     {
-      "caminho": "/assets/rede-CTZp-p9W.js",
+      "caminho": "/assets/rede-DbHEVO1v.js",
       "igual": true,
-      "sha256": "d0188ae018fab74ec8ecf40816f3ff9482538990cea0a6848ba7bfe7a1f205a8"
+      "sha256": "5cf9e5dba518c3e64c8d4056c53092e082cc2478d6f52c7075645fa7ab46f625"
     },
     {
       "caminho": "/assets/rolldown-runtime-XKyaHtl9.js",

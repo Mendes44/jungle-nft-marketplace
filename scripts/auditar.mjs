@@ -2,10 +2,12 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { createServer } from 'node:net';
+import { setTimeout as aguardar } from 'node:timers/promises';
 import os from 'node:os';
 import lighthouse from 'lighthouse';
 import { chromium } from '@playwright/test';
 import configuracaoDesktop from 'lighthouse/core/config/desktop-config.js';
+import { ReportGenerator } from 'lighthouse/report/generator/report-generator.js';
 
 const diretorio = 'relatorios/lighthouse';
 await mkdir(diretorio, { recursive: true });
@@ -38,6 +40,8 @@ for (const [pagina, caminho] of [
   for (const perfil of ['mobile', 'desktop']) {
     const medicoes = [];
     for (let numero = 1; numero <= 3; numero++) {
+      // Evita sobrepor o encerramento de um navegador à próxima medição no mesmo computador.
+      await aguardar(5000);
       // Playwright inicia o Chromium já verificado neste ambiente Windows.
       const porta = await obterPortaLivre();
       const navegador = await chromium.launch({ args: [`--remote-debugging-port=${porta}`] });
@@ -54,13 +58,28 @@ for (const [pagina, caminho] of [
         );
         if (!resultado) throw new Error('Lighthouse não retornou uma medição.');
         const nome = `${pagina}-${perfil}-${numero}`;
-        await writeFile(`${diretorio}/${nome}.html`, resultado.report[0]);
-        await writeFile(`${diretorio}/${nome}.json`, resultado.report[1]);
+        // Mantém apenas grupos referenciados pelas quatro categorias solicitadas, sem alterar métricas.
+        const gruposUtilizados = new Set(
+          Object.values(resultado.lhr.categories).flatMap((categoria) =>
+            categoria.auditRefs.map((referencia) => referencia.group),
+          ),
+        );
+        resultado.lhr.categoryGroups = Object.fromEntries(
+          Object.entries(resultado.lhr.categoryGroups).filter(([grupo]) =>
+            gruposUtilizados.has(grupo),
+          ),
+        );
+        await writeFile(
+          `${diretorio}/${nome}.html`,
+          ReportGenerator.generateReportHtml(resultado.lhr),
+        );
+        await writeFile(`${diretorio}/${nome}.json`, JSON.stringify(resultado.lhr, null, 2));
         const auditorias = resultado.lhr.audits;
         const medicao = {
           nome,
           versao: resultado.lhr.lighthouseVersion,
           navegador: resultado.lhr.userAgent,
+          indiceCpu: resultado.lhr.environment.benchmarkIndex,
           categorias: Object.fromEntries(
             Object.entries(resultado.lhr.categories).map(([nome, categoria]) => [
               nome,
@@ -106,7 +125,7 @@ for (const [pagina, caminho] of [
             identificadorBuild,
             origem,
             condicoes:
-              'Build Vite otimizado, MSW padrão, fontes e imagens locais, throttling padrão Lighthouse por perfil, navegador limpo por medição.',
+              'Build Vite otimizado, MSW padrão, fontes e imagens locais, throttling padrão Lighthouse por perfil, navegador limpo por medição e intervalo de 5 s entre navegadores.',
           },
           resultados,
         },
