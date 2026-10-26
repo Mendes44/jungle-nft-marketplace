@@ -48,7 +48,7 @@ São dados fictícios. Cada conta possui favoritos, perfil, carteiras, carrinho 
 2. Aplique `KURIO10` para obter 10% de desconto (aceita espaços nas extremidades e letras minúsculas). Use `KURIO!` para **Cupom inválido**, `NAOEXISTE` para **Cupom não existe** e `EXPIRADO` para um cupom vencido. Uma tentativa recusada preserva o desconto já aplicado; **Remover cupom** restaura os totais sem desconto.
 3. Entre na conta. Os itens do visitante serão mesclados com seu carrinho, respeitando o estoque.
 4. Preencha os dados do colecionador. Use `KURIO` no código de indicação e `ana.eth` no nome ENS. O ENS aceita maiúsculas e é normalizado para minúsculas; não consulta um registro real.
-5. No celular, clique em **Continuar** para abrir as carteiras. Escolha uma carteira cadastrada e clique no seu provedor (por exemplo, **MetaMask**) para conectar. No desktop, **Usar outra carteira?** oferece seleção, conexão, recusa e desconexão.
+5. No celular, clique em **Continuar** para abrir as carteiras. Escolha uma carteira cadastrada, selecione **Ethereum** ou **Polygon** em **Rede da conexão** e toque em **WalletConnect**, **MetaMask** ou **Coinbase Wallet** para conectar. No desktop, escolha a rede no campo **Rede** e o provedor nos controles de conexão; **Usar outra carteira?** permite selecionar outra carteira cadastrada, conectar, simular recusa ou desconectar. Qualquer troca de carteira, rede ou provedor exige uma nova conexão antes de confirmar.
 6. Clique em **Confirmar compra** para abrir a revisão. Confira os dados e a cotação da API; confirme no diálogo para enviar o pedido.
 7. Aguarde o estado confirmado e o recibo. O histórico permite recuperar pedidos após refresh.
 
@@ -65,7 +65,8 @@ Abra **Simulação**, no rodapé desktop ou no botão central da navegação mó
 | `lento`                                | Latência de 1,8 s para observar skeletons e shimmer                                                                      |
 | `variavel`                             | Busca curta com 1,2 s e buscas maiores com 80 ms; verifica descarte de respostas antigas                                 |
 | `sem-conexao`                          | Falha de transporte intencional; volte a `padrao` para recuperar                                                         |
-| `erro-500` / `erro-403`                | Indisponibilidade e falta de permissão                                                                                   |
+| `erro-500`                             | Nome do cenário de indisponibilidade; a resposta simulada é HTTP **503** (Service Unavailable)                           |
+| `erro-403`                             | Resposta HTTP **403** por falta de permissão                                                                             |
 | `sessao-expirada`                      | Invalida a sessão; volte a `padrao` antes de entrar novamente                                                            |
 | `favorito-falha`                       | Erro de mutation com rollback do favorito                                                                                |
 | `pagamento-recusado`                   | Recusa preserva os itens e devolve a reserva de estoque                                                                  |
@@ -90,9 +91,22 @@ A simulação persiste neste navegador. Para repetir um cenário desde o início
 npm run typecheck
 npm run lint
 npm run format:check
-npm run format
 npm test
 ```
+
+A formatação automática é opcional e altera os arquivos:
+
+```sh
+npm run format
+```
+
+As evidências registradas abaixo correspondem à versão validada no commit [`73340e1`](https://github.com/Mendes44/jungle-nft-marketplace/commit/73340e1128b7ff6b8a15eb4f2176b888ad52dd3a):
+
+- [GitHub Actions aprovado](https://github.com/Mendes44/jungle-nft-marketplace/actions/runs/40264451583).
+- [Relatório HTML do Playwright](https://github.com/Mendes44/jungle-nft-marketplace/blob/73340e1128b7ff6b8a15eb4f2176b888ad52dd3a/playwright-report/index.html) e [resultado dos testes na publicação](https://github.com/Mendes44/jungle-nft-marketplace/blob/73340e1128b7ff6b8a15eb4f2176b888ad52dd3a/relatorios/publicacao/resultados.json).
+- [Relatórios Lighthouse HTML/JSON](https://github.com/Mendes44/jungle-nft-marketplace/tree/73340e1128b7ff6b8a15eb4f2176b888ad52dd3a/relatorios/lighthouse) e [resumo das medianas](https://github.com/Mendes44/jungle-nft-marketplace/blob/73340e1128b7ff6b8a15eb4f2176b888ad52dd3a/relatorios/lighthouse/resumo.json).
+
+Para visualizar o relatório Playwright no navegador após baixar o repositório, execute `npx playwright show-report playwright-report`. Os links de HTML no GitHub permitem consultar ou baixar os arquivos.
 
 A suíte passou em 68 casos locais e 68 na publicação, sem testes ignorados ou instáveis. A revisão inclui 24 capturas, 70 combinações de tela/largura sem overflow e 81 arquivos publicados com hashes idênticos ao build local.
 
@@ -104,11 +118,20 @@ Os testes adicionais cobrem reprodução automática e pausa, controles, teclado
 
 O identificador aleatório da transação é mascarado no recibo durante a comparação visual; itens, valores, taxas e estado do pedido continuam sendo comparados.
 
-Para medir Lighthouse, mantenha `npm run preview` na porta 4173 e execute:
+Para reproduzir a auditoria Lighthouse a partir de um checkout limpo, execute `npm ci` e `npx playwright install chromium` conforme o setup. Em seguida, no primeiro terminal, gere o build otimizado e mantenha o preview na porta 4173:
+
+```sh
+npm run build
+npm run preview -- --port 4173 --strictPort
+```
+
+Com o preview ativo, abra um segundo terminal na raiz do mesmo repositório e execute:
 
 ```sh
 npm run audit
 ```
+
+Mantenha a porta 4173 livre para esse preview. Se utilizar outra porta, defina `URL_AUDITORIA` com a origem correspondente antes de executar a auditoria.
 
 São três medições por página (início e detalhe) e perfil (mobile e desktop). Os 24 relatórios HTML/JSON e `relatorios/lighthouse/resumo.json` registram as categorias, medianas, LCP, CLS, TBT, versões e ambiente. A auditoria usa o mesmo build funcional, incluindo fontes, imagens e mocks. Execute sem outra suíte pesada simultânea. `URL_AUDITORIA` permite selecionar outra origem.
 
