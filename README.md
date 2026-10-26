@@ -48,15 +48,15 @@ São dados fictícios. Cada conta possui favoritos, perfil, carteiras, carrinho 
 2. Aplique `KURIO10` para obter 10% de desconto. `EXPIRADO` permite testar um cupom vencido.
 3. Entre na conta. Os itens do visitante serão mesclados com seu carrinho, respeitando o estoque.
 4. Preencha os dados do colecionador. Use `KURIO` no código de indicação e `ana.eth` no nome ENS. O ENS aceita maiúsculas e é normalizado para minúsculas; não consulta um registro real.
-5. Escolha uma carteira cadastrada, confira a rede e clique em **Conectar carteira**.
-6. Clique em **Revisar compra** e confira a cotação da API antes de **Confirmar compra**.
+5. No celular, clique em **Continuar** para abrir as carteiras. Escolha uma carteira cadastrada e clique no seu provedor (por exemplo, **MetaMask**) para conectar. No desktop, **Usar outra carteira?** oferece seleção, conexão, recusa e desconexão.
+6. Clique em **Confirmar compra** para abrir a revisão. Confira os dados e a cotação da API; confirme no diálogo para enviar o pedido.
 7. Aguarde o estado confirmado e o recibo. O histórico permite recuperar pedidos após refresh.
 
 O nome ENS e o código de indicação são campos da demonstração. A rede acompanha a carteira selecionada. Quantidades compradas são removidas somente após confirmação; itens adicionados durante um pedido pendente são preservados.
 
 ## Cenários de avaliação
 
-Abra **Simulação**, no rodapé. O painel utiliza endpoints REST para mudar cenários e emitir eventos através do transporte Socket.IO.
+Abra **Simulação**, no rodapé desktop ou no botão central da navegação móvel. O painel utiliza endpoints REST para mudar cenários e emitir eventos através do transporte Socket.IO.
 
 | Cenário ou ação                | Comportamento                                                                                              |
 | ------------------------------ | ---------------------------------------------------------------------------------------------------------- |
@@ -89,11 +89,13 @@ npm run format
 npm test
 ```
 
-A suíte passou em 46 casos locais e 46 na publicação, sem testes ignorados ou instáveis. A revisão inclui 24 capturas, 40 combinações de tela/largura sem overflow e 22 arquivos publicados com hashes idênticos ao build local.
+A suíte passou em 50 casos locais e 50 na publicação, sem testes ignorados ou instáveis. A revisão inclui 24 capturas, 40 combinações de tela/largura sem overflow e 81 arquivos publicados com hashes idênticos ao build local.
 
-Playwright inicia o preview na porta 5174 e executa os cenários em Chromium desktop (1440×1000) e mobile (390×844). Mantenha a porta livre. O relatório fica em `playwright-report/index.html`, o resultado JSON em `relatorios/playwright/resultados.json` e as falhas preservam screenshots e traces em `test-results/`.
+Playwright inicia o preview na porta 5174 e executa os cenários em Chromium desktop (1440×1000) e mobile (414×896). Mantenha a porta livre. O relatório fica em `playwright-report/index.html`, o resultado JSON em `relatorios/playwright/resultados.json` e as falhas preservam screenshots e traces em `test-results/`.
 
 As baselines de início, detalhe, carrinho, pagamento, autenticação, perfil, carteiras, confirmação e páginas 404 estão em `tests/visual.spec.ts-snapshots/`: 24 capturas nos dois perfis. `npm run test:visual` atualiza essas referências e deve ser usado somente após revisar a alteração visual. As capturas foram feitas no Windows, também usado pelo CI; outros sistemas precisam de referências específicas devido a diferenças de renderização.
+
+O identificador aleatório da transação é mascarado no recibo durante a comparação visual; itens, valores, taxas e estado do pedido continuam sendo comparados.
 
 Para medir Lighthouse, mantenha `npm run preview` na porta 4173 e execute:
 
@@ -105,14 +107,14 @@ São três medições por página (início e detalhe) e perfil (mobile e desktop
 
 Medições do build entregue, com Lighthouse 13.5.0, Chromium 156 e throttling padrão de cada perfil:
 
-| Página / perfil | Performance | Acessibilidade | Boas práticas | SEO |    LCP | CLS |   TBT |
-| --------------- | ----------: | -------------: | ------------: | --: | -----: | --: | ----: |
-| Início mobile   |          92 |            100 |           100 | 100 | 3,17 s |   0 | 85 ms |
-| Início desktop  |         100 |            100 |           100 | 100 | 0,66 s |   0 |  0 ms |
-| Detalhe mobile  |          91 |            100 |           100 | 100 | 3,34 s |   0 | 25 ms |
-| Detalhe desktop |         100 |            100 |           100 | 100 | 0,71 s |   0 |  0 ms |
+| Página / perfil | Performance | Acessibilidade | Boas práticas | SEO |    LCP |   CLS |   TBT |
+| --------------- | ----------: | -------------: | ------------: | --: | -----: | ----: | ----: |
+| Início mobile   |          92 |            100 |           100 | 100 | 3,14 s |     0 | 38 ms |
+| Início desktop  |          99 |            100 |           100 | 100 | 0,84 s |     0 |  0 ms |
+| Detalhe mobile  |          90 |            100 |           100 | 100 | 3,38 s |     0 | 47 ms |
+| Detalhe desktop |         100 |            100 |           100 | 100 | 0,80 s | 0,026 |  0 ms |
 
-As medianas atingem as metas das quatro categorias. Os relatórios preservam as três execuções de cada combinação. As medições variam com o ambiente; o índice de CPU fica registrado para permitir essa análise. As substituições de assets e as diferenças de composição em relação ao Figma estão documentadas em `ARCHITECTURE.md`.
+As medianas atingem as metas das quatro categorias. Os relatórios preservam as três execuções de cada combinação. As medições variam com o ambiente; o índice de CPU fica registrado para permitir essa análise. As atribuições dos assets e os ajustes funcionais em relação ao Figma estão documentadas em `ARCHITECTURE.md`.
 
 Para executar E2E na publicação, defina `URL_APLICACAO=https://kurio-jungle.vercel.app` antes de `npm test`. Os resultados são gravados em `relatorios/publicacao/`, preservando os locais. `node scripts/verificar-publicacao.mjs` compara hashes dos arquivos e o acesso direto às rotas; `node scripts/verificar-responsividade.mjs` verifica dez telas em 390, 768 e 1440 px e na largura CSS equivalente a 1440 px com zoom de 200%.
 

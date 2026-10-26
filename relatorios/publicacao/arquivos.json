@@ -1,11 +1,11 @@
 {
   "origem": "https://kurio-jungle.vercel.app",
-  "verificadoEm": "2026-10-25T15:46:37.881Z",
+  "verificadoEm": "2026-10-26T01:08:02.701Z",
   "arquivos": [
     {
-      "caminho": "/assets/index-5Vvf0AS7.js",
+      "caminho": "/assets/index-CEsZwl_w.js",
       "igual": true,
-      "sha256": "1f72297cdefd2e29e346da70766eab1a0ec4dbbf0e941de1780bb1c99f632a7c"
+      "sha256": "dd861a0a2e0ee301e30d03261a41c7bafdfd187d600367d8dc2ebb2b9a953ab8"
     },
     {
       "caminho": "/assets/preload-helper-BLdHbfdN.js",
@@ -13,29 +13,24 @@
       "sha256": "8aec9ff75ffa86a03d51268b63126abadb3754aa5a6b6c5bb16e4e2446a63dee"
     },
     {
-      "caminho": "/assets/index-D12APHf0.css",
+      "caminho": "/assets/index--9czeSJF.css",
       "igual": true,
-      "sha256": "d4cdf3cfbfbe1cb63971e913278e6065522713ec4da9e920b79c7e03350875f1"
+      "sha256": "d2faf649ace78eed790cf5e149c6c33019a19b2c53594cb3e1dfd1c6ffb163c9"
     },
     {
-      "caminho": "/assets/aplicacao-Due_Ium6.js",
+      "caminho": "/assets/aplicacao-ClufUd4p.js",
       "igual": true,
-      "sha256": "bbb1375be6b7f7bd155942d5a0b1d0fea3b6c7b3d829534068c33f910c9c4c09"
+      "sha256": "afeaf217c61540dd0cbd0722483e35c9070bd3a49b5d114fb16bdc8569639231"
     },
     {
-      "caminho": "/assets/catalogo-CHcNKXaY.js",
+      "caminho": "/assets/catalogo-DsJD7z1a.js",
       "igual": true,
-      "sha256": "a5a2fae019ed21632a50b53aa23340bcb750e0552f965c1769115157e6030c2a"
+      "sha256": "f9e24156f1b3c3bd0f8bc1455d457cb316c2c02063935b41d57e56fc85f1413a"
     },
     {
-      "caminho": "/assets/compra-qXbKHRCN.js",
+      "caminho": "/assets/compra-BitN4vBv.js",
       "igual": true,
-      "sha256": "9f125c8b385345884dc2276ea0845a25495256b512fc6062668394a176797410"
-    },
-    {
-      "caminho": "/assets/comuns-DItAbaYO.js",
-      "igual": true,
-      "sha256": "4f2f908da2c56f761cebb20284e6fbed5046f7965e0c2d1996a2d0a42ca0afdf"
+      "sha256": "17a6a162283a063a23dbe7f111a56bf66f057ea24c6d31b743c279d11cdb49b8"
     },
     {
       "caminho": "/assets/configuracao-XXSJpMxW.js",
@@ -43,14 +38,9 @@
       "sha256": "3676d6fef867a96ffc22a90ddcb28f9e75c502d36d95fa3a9872b8fcda834737"
     },
     {
-      "caminho": "/assets/conta-BlzKtZZs.js",
+      "caminho": "/assets/conta-CxN0-OP_.js",
       "igual": true,
-      "sha256": "3100350c788fc7cf40533e7b953d082614df7ee710702ec6524b715cf9b11dbf"
-    },
-    {
-      "caminho": "/assets/contratos-iOTl6TLQ.js",
-      "igual": true,
-      "sha256": "99841e953502187fa6315164c9766353bce4e2053987f35151857a362aa29e36"
+      "sha256": "ca48f165dd093e31470aaef74109789873cd952d0de92368738e717eb4792ac5"
     },
     {
       "caminho": "/assets/esm-B6DvIUmM.js",
@@ -63,9 +53,14 @@
       "sha256": "5d414c6cf568a6cb60ac7aede539da842ba06738eac42fb209ccae32dc896f43"
     },
     {
-      "caminho": "/assets/rede-DbHEVO1v.js",
+      "caminho": "/assets/nomes-DS6g9Dt0.js",
       "igual": true,
-      "sha256": "5cf9e5dba518c3e64c8d4056c53092e082cc2478d6f52c7075645fa7ab46f625"
+      "sha256": "03ce4fc8eac36c91ab0092ea9261118c77f6a91243b7047f145cfd29b2bfc052"
+    },
+    {
+      "caminho": "/assets/rede-CcXmZQ79.js",
+      "igual": true,
+      "sha256": "c932bea9003e1941547de6ec76b3918220ca12db923a087c17407ad9720c6710"
     },
     {
       "caminho": "/assets/rolldown-runtime-XKyaHtl9.js",
@@ -73,9 +68,294 @@
       "sha256": "548d1dbf321e7d2ae804fcc158b588706a7c52f8ca175de1490c6ccb4dbe55b7"
     },
     {
-      "caminho": "/assets/valores-CnfMgf_a.js",
+      "caminho": "/assets/valores-p3N5XUMa.js",
       "igual": true,
-      "sha256": "f98eeda732cc29db33c0d2060eb0929f9b1ffdff72be17d7e430047498163c32"
+      "sha256": "12c140b13983511e4407010d1c166ab7cd3f21deebcc07af26a4ae8eb398e1d9"
+    },
+    {
+      "caminho": "/icones/acesso-facebook.svg",
+      "igual": true,
+      "sha256": "2095b1120aa19a3f879e5a7244399cdcc0e963ef74dd5d75e519c693d9983dd2"
+    },
+    {
+      "caminho": "/icones/acesso-google.svg",
+      "igual": true,
+      "sha256": "5bbad228d510d3307ed99e81fa4b171229b3c9b455b90513ea8d354dc5788761"
+    },
+    {
+      "caminho": "/icones/acesso-google.svg.br",
+      "igual": true,
+      "sha256": "32f2e4d7eac7a2ede640cc3d5f3a2938c4d6b45e45fff2579b704433a1cdf4cc"
+    },
+    {
+      "caminho": "/icones/busca-mobile.svg",
+      "igual": true,
+      "sha256": "bc7262def484673646fd3d399b1827b417f357525bf55210402045b280a20f50"
+    },
+    {
+      "caminho": "/icones/busca.svg",
+      "igual": true,
+      "sha256": "a5271cf35f7f2c1af001b9641ff1cfe40fa3afe7912b8bfc2bc28342eae19771"
+    },
+    {
+      "caminho": "/icones/busca.svg.br",
+      "igual": true,
+      "sha256": "0fd67d2b70b1cac4a49ba0b005a5aca9e3ea8d9af5d52089eb705f0d9889083e"
+    },
+    {
+      "caminho": "/icones/carrinho.svg",
+      "igual": true,
+      "sha256": "cbe2cf441a991e42c8a554720246dc6916f6331d47b9fc77e1763cebc792c3f2"
+    },
+    {
+      "caminho": "/icones/carrinho.svg.br",
+      "igual": true,
+      "sha256": "c687d6a0c7f8a709d2d7f68dc7e4623974dd481215964e11c797361812a3427a"
+    },
+    {
+      "caminho": "/icones/carteira-provedor.svg",
+      "igual": true,
+      "sha256": "280a74fa29892cf0cad34ccac0187b104a747ac7d94d263bffd0017e34a5c6ad"
+    },
+    {
+      "caminho": "/icones/carteira-provedor.svg.br",
+      "igual": true,
+      "sha256": "5ac9f959059e17344ba14b359b7dd0a5517f6266bb79af69735efab07ade6411"
+    },
+    {
+      "caminho": "/icones/conta-atividade.svg",
+      "igual": true,
+      "sha256": "5dfa3d92ef601fe3a35db0096ce4a0c3ea8e34e56f314fed27408bf518b1f4eb"
+    },
+    {
+      "caminho": "/icones/conta-atividade.svg.br",
+      "igual": true,
+      "sha256": "424a7dca6f0eb1b1df7cb5b8604f9db31c8483678f37490dd80791232f67d9ff"
+    },
+    {
+      "caminho": "/icones/conta-carteiras.svg",
+      "igual": true,
+      "sha256": "4504f8c97d2819a46ae4851e5825b72b7ff33d94f9eeb8a2e8a34d3d581a8ddb"
+    },
+    {
+      "caminho": "/icones/conta-carteiras.svg.br",
+      "igual": true,
+      "sha256": "b1b9e42c0cf6f95c931ae7ef82397dec80dc7bb1c4d7de2b8aea45ff5bced3be"
+    },
+    {
+      "caminho": "/icones/conta-downloads.svg",
+      "igual": true,
+      "sha256": "5c131a4d90f742bb8a032da970d18d9664896dcfe263d2fae310fdfd48aaf886"
+    },
+    {
+      "caminho": "/icones/conta-downloads.svg.br",
+      "igual": true,
+      "sha256": "cc9169a7e1004d342be2cd902555ffbc2350647667dd8590155958fcf28217b8"
+    },
+    {
+      "caminho": "/icones/conta-interesse.svg",
+      "igual": true,
+      "sha256": "0a4e49cc372259919a61780797530f4b314f05ddd73f0ae9477f724b92068c27"
+    },
+    {
+      "caminho": "/icones/conta-interesse.svg.br",
+      "igual": true,
+      "sha256": "c4c9eb150cea32c4a1d08bcc5551166b9a013941e1e3ad4e9e25126715eae0f8"
+    },
+    {
+      "caminho": "/icones/conta-ofertas.svg",
+      "igual": true,
+      "sha256": "82f60db2121e7aa128da14fd2a1e1e8b64d20098f91781c2f623771899f83cfb"
+    },
+    {
+      "caminho": "/icones/conta-ofertas.svg.br",
+      "igual": true,
+      "sha256": "b6846da9c9bf6660ea10a93a4485af7942c0eb68fbd1645d06277c220ff7ee1f"
+    },
+    {
+      "caminho": "/icones/conta-perfil.svg",
+      "igual": true,
+      "sha256": "7dc02bf921a36f3ab223264677196f4cf5e4378f5918139fbdb539f80eebbe35"
+    },
+    {
+      "caminho": "/icones/conta-perfil.svg.br",
+      "igual": true,
+      "sha256": "551a1f15ae647429dca6dfcc701054d704350bca13d8ca51941610f468311eba"
+    },
+    {
+      "caminho": "/icones/conta-sair.svg",
+      "igual": true,
+      "sha256": "96dda67cdec708a46022ac217ed602f3d446f122dee07467b257a45379b95fbd"
+    },
+    {
+      "caminho": "/icones/conta-sair.svg.br",
+      "igual": true,
+      "sha256": "57070cdfee3f4c2c5d64c678d496dae53f84c4214110971058db24701a51ee75"
+    },
+    {
+      "caminho": "/icones/conta-suporte.svg",
+      "igual": true,
+      "sha256": "39d2b68323afeec07abfdede66747b97b3f59d4c9b24359b313a7ff0f78c7f94"
+    },
+    {
+      "caminho": "/icones/conta-suporte.svg.br",
+      "igual": true,
+      "sha256": "a6124f851a9203e510270f00b9c5792ac082eeae4ccb33087c71ca5db238f268"
+    },
+    {
+      "caminho": "/icones/coracao.svg",
+      "igual": true,
+      "sha256": "2e5f7d8687c633420e25a977d8c54b95ad474cc0028b9896fdb985cd505490ac"
+    },
+    {
+      "caminho": "/icones/coracao.svg.br",
+      "igual": true,
+      "sha256": "ef012f31254529d733d226ecb406a5c88c6b5129504d14620a1e174ddabda865"
+    },
+    {
+      "caminho": "/icones/digitalizar.svg",
+      "igual": true,
+      "sha256": "2e23aa11ea15b2ce62c1639b47724d743c2b23b62f1f70d932d363f3d6d390ec"
+    },
+    {
+      "caminho": "/icones/digitalizar.svg.br",
+      "igual": true,
+      "sha256": "138f1650e0a4608c13eec79d8ee43f4b00e8b228fec0142fef6d9b6449918684"
+    },
+    {
+      "caminho": "/icones/entrar.svg",
+      "igual": true,
+      "sha256": "a55b01355c18f48cdb3ec06c5bbb898f5ec6e7f9a4299b44256880513ce47bc1"
+    },
+    {
+      "caminho": "/icones/entrar.svg.br",
+      "igual": true,
+      "sha256": "8c4303b70766f9214e308fd27c2160c96d3e96af50c6bab4ac0b7ecfcdc5f4b9"
+    },
+    {
+      "caminho": "/icones/favoritos.svg",
+      "igual": true,
+      "sha256": "b25fb0c1a6514bb6ba66567efba8e3d670919248932b312d699720fbc4e7b676"
+    },
+    {
+      "caminho": "/icones/fechar.svg",
+      "igual": true,
+      "sha256": "e71ce19d4d75760033298c6433cb3a9bb17d35d5f41076095eedea15ac067235"
+    },
+    {
+      "caminho": "/icones/filtros-mobile.png",
+      "igual": true,
+      "sha256": "1800221ea95147e8ac007004a90a7e4aac1e97e6b42216069a04e5b061d1c0ab"
+    },
+    {
+      "caminho": "/icones/filtros.svg",
+      "igual": true,
+      "sha256": "07e00578e01afe55879edb0c57fa8406fd7fa78d61deacf756224e52652166c4"
+    },
+    {
+      "caminho": "/icones/filtros.svg.br",
+      "igual": true,
+      "sha256": "bffe11ca43fe746faa7020582120acfb2bfb03fafa1f00c1d12bab34a354b888"
+    },
+    {
+      "caminho": "/icones/inicio.svg",
+      "igual": true,
+      "sha256": "75584827fc3187a877b0e087b533d541e2e9ad0c5e1302f636ddc5ad5f6acfe3"
+    },
+    {
+      "caminho": "/icones/lixeira.svg",
+      "igual": true,
+      "sha256": "5042159012266650ae35d2716aeb885f5b6b6b8bbef4c12756c8b57bd31d919d"
+    },
+    {
+      "caminho": "/icones/lixeira.svg.br",
+      "igual": true,
+      "sha256": "a262d178f6b2ef254d0c9918c3b8c0b78ba6e4b89c25b11c04643ab23fa58b42"
+    },
+    {
+      "caminho": "/icones/perfil.svg",
+      "igual": true,
+      "sha256": "4964b1d8b0039c0184aa68fec32b851b4b47e062caa89dea6136e4bba27fe863"
+    },
+    {
+      "caminho": "/icones/recibo-confirmado.svg",
+      "igual": true,
+      "sha256": "182d7017270958e3db5f449af4a614c2acb1b6133d5169a287502b6ca70445c9"
+    },
+    {
+      "caminho": "/icones/recibo-confirmado.svg.br",
+      "igual": true,
+      "sha256": "cfe0d3d934e27420fb07dc41cca90266fa220ea6d148df22548a96ac8a9ae231"
+    },
+    {
+      "caminho": "/icones/rede-facebook.svg",
+      "igual": true,
+      "sha256": "32cb9a3d6a128c8ec3e55e94d237780a1b84b9c154d3316f6f09f1ae52d6c8b2"
+    },
+    {
+      "caminho": "/icones/rede-instagram.svg",
+      "igual": true,
+      "sha256": "235ca0aec4025599896f2dfb89ccec1378ce1851b17aa4a3365854b331d786f7"
+    },
+    {
+      "caminho": "/icones/rede-instagram.svg.br",
+      "igual": true,
+      "sha256": "3fe1aed3db418f9c9ea2676bcb1862e9bb77d50dd801dd22dc561a00c2518d31"
+    },
+    {
+      "caminho": "/icones/rede-linkedin.svg",
+      "igual": true,
+      "sha256": "7b50600f5b7969f81533a59a73c024f8fd13deef74863522c4197970c73de68f"
+    },
+    {
+      "caminho": "/icones/rede-twitter.svg",
+      "igual": true,
+      "sha256": "2def5af0af8ac7a5e27493ec50f7b0835fe070d1f29756fd205b06f9e5e802a0"
+    },
+    {
+      "caminho": "/icones/rede-twitter.svg.br",
+      "igual": true,
+      "sha256": "d5e146e24261e995a32de7c693f2e6b57347af934bc3f86bafd0cdeeb2614c8a"
+    },
+    {
+      "caminho": "/icones/rede-youtube.svg",
+      "igual": true,
+      "sha256": "f97abad046035f319162d9de94f10eb7ffc58d389db87b189bad7d40629b7829"
+    },
+    {
+      "caminho": "/icones/rede-youtube.svg.br",
+      "igual": true,
+      "sha256": "49a19257ca2a15a3018111b0169568532f946053f63067e835cde9822492329c"
+    },
+    {
+      "caminho": "/icones/sacola.svg",
+      "igual": true,
+      "sha256": "9a2ec8401bf4747e5cfad91b0eb8ff0c558f3c8aae2e5a36aad1210519b6d0d0"
+    },
+    {
+      "caminho": "/icones/sacola.svg.br",
+      "igual": true,
+      "sha256": "687860590540328d21145727f4b099afd26f1b4174af7f09ebc791231c2957a0"
+    },
+    {
+      "caminho": "/icones/senha-oculta.svg",
+      "igual": true,
+      "sha256": "8e5bb66437ff317e806d1db1551c746da1213e22cafabbc9fb27decede4f0c30"
+    },
+    {
+      "caminho": "/icones/senha-oculta.svg.br",
+      "igual": true,
+      "sha256": "0c7bcf8f45d047fd933ccea8bbae578d4d900ddef970ad80894c0986834e4c9d"
+    },
+    {
+      "caminho": "/icones/voltar.svg",
+      "igual": true,
+      "sha256": "8cb34abc0b3a83ccbb73cefd87cc18e76466d9df20efeea367e96ca97ac7aa2b"
+    },
+    {
+      "caminho": "/icones/voltar.svg.br",
+      "igual": true,
+      "sha256": "b585894ffd0b3c7489b403416619eb6b7988a0bd1a6a72f4f63a17ee58f187d6"
     },
     {
       "caminho": "/imagens/colecao-0.webp",
@@ -98,14 +378,29 @@
       "sha256": "2a8bdfc24c4e83f209896f718b22742c68924ffcb8e4821c52fd451afca71719"
     },
     {
-      "caminho": "/fontes/ibm-plex-mono-latin.woff2",
+      "caminho": "/imagens/hero-movel-base.png",
       "igual": true,
-      "sha256": "08949f728dc52d528e69b1667d15c89a5686a4ee9a296ff90983985f99c380f7"
+      "sha256": "911aebc48de6aba3185d0ea46a4013b096d414b861c4707fd4df7877a9d232da"
     },
     {
-      "caminho": "/fontes/ibm-plex-mono-negrito.woff2",
+      "caminho": "/imagens/hero-movel-halo-1.png",
       "igual": true,
-      "sha256": "4f84d86cfd060f4ded334358ff8a4c81d4db2ed5addd568359d693f44a87765a"
+      "sha256": "5a3ec1c7508b74a9a8d414ff1b642d26eebc4ae9972fdff39bcca8d2e4b497b6"
+    },
+    {
+      "caminho": "/imagens/hero-movel-halo-2.png",
+      "igual": true,
+      "sha256": "c478752255e8cbd36d9c08597ecb52920ff730ab4b837bb0d2b902fb1e0fb6fd"
+    },
+    {
+      "caminho": "/fontes/roboto-mono-latin.woff2",
+      "igual": true,
+      "sha256": "efc3092fc0075413d49d7bf1377548f0eb877d3deb3be8d3caea68270383853f"
+    },
+    {
+      "caminho": "/fontes/roboto-mono-negrito.woff2",
+      "igual": true,
+      "sha256": "6a581e52c1d725eb7f42ebc6bc67830a3a748c262ca4255269e9baab71fafb7c"
     },
     {
       "caminho": "/mockServiceWorker.js",

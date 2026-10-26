@@ -3,7 +3,8 @@
     "argv": [
       "C:\\Program Files\\nodejs\\node.exe",
       "C:\\Temp\\ProjetosPessoais\\desafioTecnicoJungle\\node_modules\\@playwright\\test\\cli.js",
-      "test"
+      "test",
+      "--max-failures=1"
     ],
     "configFile": "C:\\Temp\\ProjetosPessoais\\desafioTecnicoJungle\\playwright.config.ts",
     "rootDir": "C:/Temp/ProjetosPessoais/desafioTecnicoJungle/tests",
@@ -15,7 +16,7 @@
     "globalTimeout": 0,
     "grep": {},
     "grepInvert": null,
-    "maxFailures": 0,
+    "maxFailures": 1,
     "metadata": {
       "actualWorkers": 1
     },
@@ -107,8 +108,8 @@
           "reducedMotion": "reduce",
           "browserName": "chromium",
           "viewport": {
-            "width": 390,
-            "height": 844
+            "width": 414,
+            "height": 896
           },
           "isMobile": true,
           "deviceScaleFactor": 1
@@ -177,12 +178,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 5332,
+                  "duration": 7170,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:46:03.049Z",
+                  "startTime": "2026-10-26T01:08:58.797Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -192,7 +193,7 @@
           ],
           "id": "42bfdbf72efebd265c10-8b66a72c2ffd9ab63d21",
           "file": "consistencia.spec.ts",
-          "line": 5,
+          "line": 15,
           "column": 1
         },
         {
@@ -211,12 +212,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 5893,
+                  "duration": 9289,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:46:08.534Z",
+                  "startTime": "2026-10-26T01:09:06.271Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -226,7 +227,7 @@
           ],
           "id": "42bfdbf72efebd265c10-5785aede94c520bed45a",
           "file": "consistencia.spec.ts",
-          "line": 24,
+          "line": 35,
           "column": 1
         },
         {
@@ -245,12 +246,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3797,
+                  "duration": 6815,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:46:14.448Z",
+                  "startTime": "2026-10-26T01:09:15.589Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -260,7 +261,7 @@
           ],
           "id": "42bfdbf72efebd265c10-118e9d5efed0ba792c16",
           "file": "consistencia.spec.ts",
-          "line": 43,
+          "line": 54,
           "column": 1
         },
         {
@@ -279,12 +280,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4170,
+                  "duration": 6193,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:47:54.503Z",
+                  "startTime": "2026-10-26T01:11:54.473Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -294,7 +295,7 @@
           ],
           "id": "42bfdbf72efebd265c10-05aeb8eb4ff4110bf043",
           "file": "consistencia.spec.ts",
-          "line": 5,
+          "line": 15,
           "column": 1
         },
         {
@@ -313,12 +314,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4726,
+                  "duration": 9554,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:47:59.080Z",
+                  "startTime": "2026-10-26T01:12:01.046Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -328,7 +329,7 @@
           ],
           "id": "42bfdbf72efebd265c10-f83349a6bac53b567c4c",
           "file": "consistencia.spec.ts",
-          "line": 24,
+          "line": 35,
           "column": 1
         },
         {
@@ -347,12 +348,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3016,
+                  "duration": 3807,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:48:03.823Z",
+                  "startTime": "2026-10-26T01:12:10.647Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -362,7 +363,7 @@
           ],
           "id": "42bfdbf72efebd265c10-3b3d3bfa29cfa9086d32",
           "file": "consistencia.spec.ts",
-          "line": 43,
+          "line": 54,
           "column": 1
         }
       ]
@@ -389,12 +390,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3,
+                  "duration": 6,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:46:18.408Z",
+                  "startTime": "2026-10-26T01:09:22.599Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -404,7 +405,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-6ff970e74e30792bb54c",
           "file": "fluxos.spec.ts",
-          "line": 7,
+          "line": 17,
           "column": 1
         },
         {
@@ -423,12 +424,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1935,
+                  "duration": 2271,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:46:18.427Z",
+                  "startTime": "2026-10-26T01:09:22.634Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -438,7 +439,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-7a7084e06f8eb66277d4",
           "file": "fluxos.spec.ts",
-          "line": 12,
+          "line": 22,
           "column": 1
         },
         {
@@ -457,12 +458,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3050,
+                  "duration": 1887,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:46:20.385Z",
+                  "startTime": "2026-10-26T01:09:24.928Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -472,7 +473,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-a7389fcc93e9adc5dfde",
           "file": "fluxos.spec.ts",
-          "line": 33,
+          "line": 47,
           "column": 1
         },
         {
@@ -491,12 +492,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4249,
+                  "duration": 6360,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:46:23.470Z",
+                  "startTime": "2026-10-26T01:09:26.847Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -506,7 +507,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-f067d88295c55f2b5d63",
           "file": "fluxos.spec.ts",
-          "line": 46,
+          "line": 60,
           "column": 1
         },
         {
@@ -525,12 +526,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4702,
+                  "duration": 3805,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:46:27.736Z",
+                  "startTime": "2026-10-26T01:09:33.243Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -540,7 +541,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-90e75f4a3bb9ccd037b4",
           "file": "fluxos.spec.ts",
-          "line": 74,
+          "line": 88,
           "column": 1
         },
         {
@@ -559,12 +560,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3673,
+                  "duration": 4838,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:46:32.459Z",
+                  "startTime": "2026-10-26T01:09:37.102Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -574,7 +575,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-d64cc0f3f6542863282d",
           "file": "fluxos.spec.ts",
-          "line": 96,
+          "line": 110,
           "column": 1
         },
         {
@@ -593,12 +594,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 7904,
+                  "duration": 7941,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:46:36.157Z",
+                  "startTime": "2026-10-26T01:09:41.997Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -608,7 +609,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-11f32e05c7d73c3eb20c",
           "file": "fluxos.spec.ts",
-          "line": 120,
+          "line": 134,
           "column": 1
         },
         {
@@ -627,12 +628,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 7051,
+                  "duration": 6413,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:46:44.076Z",
+                  "startTime": "2026-10-26T01:09:49.985Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -642,7 +643,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-74ff8a4bdb64b15b043b",
           "file": "fluxos.spec.ts",
-          "line": 138,
+          "line": 156,
           "column": 1
         },
         {
@@ -661,12 +662,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 7779,
+                  "duration": 9685,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:46:51.141Z",
+                  "startTime": "2026-10-26T01:09:56.423Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -676,7 +677,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-5f224075b0d52967e494",
           "file": "fluxos.spec.ts",
-          "line": 150,
+          "line": 168,
           "column": 1
         },
         {
@@ -695,12 +696,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3865,
+                  "duration": 11184,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:46:58.930Z",
+                  "startTime": "2026-10-26T01:10:06.152Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -710,7 +711,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-0e4e0a9a5c5adbba8b37",
           "file": "fluxos.spec.ts",
-          "line": 168,
+          "line": 186,
           "column": 1
         },
         {
@@ -729,12 +730,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 5147,
+                  "duration": 6775,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:47:02.811Z",
+                  "startTime": "2026-10-26T01:10:17.384Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -744,7 +745,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-03b627ae43487823a9b9",
           "file": "fluxos.spec.ts",
-          "line": 213,
+          "line": 274,
           "column": 1
         },
         {
@@ -763,12 +764,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4217,
+                  "duration": 7803,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:47:07.977Z",
+                  "startTime": "2026-10-26T01:10:24.211Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -778,7 +779,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-24befb13f773dd4541b3",
           "file": "fluxos.spec.ts",
-          "line": 232,
+          "line": 295,
           "column": 1
         },
         {
@@ -797,12 +798,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1515,
+                  "duration": 5420,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:47:12.205Z",
+                  "startTime": "2026-10-26T01:10:32.045Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -812,7 +813,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-9e701e49760e1db633c2",
           "file": "fluxos.spec.ts",
-          "line": 249,
+          "line": 312,
           "column": 1
         },
         {
@@ -831,12 +832,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 5224,
+                  "duration": 6244,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:47:13.732Z",
+                  "startTime": "2026-10-26T01:10:37.491Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -846,7 +847,75 @@
           ],
           "id": "77ea0229fbaad0de7de8-dc0939b669c2a2e7e006",
           "file": "fluxos.spec.ts",
-          "line": 270,
+          "line": 354,
+          "column": 1
+        },
+        {
+          "title": "filtra lançamentos e em alta pela URL e apresenta contagens reais de rede",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1922,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T01:10:43.775Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "77ea0229fbaad0de7de8-f8b28e1c06013cb67920",
+          "file": "fluxos.spec.ts",
+          "line": 378,
+          "column": 1
+        },
+        {
+          "title": "recusa e desconecta a carteira antes de liberar a revisão da compra",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4687,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T01:10:45.726Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "77ea0229fbaad0de7de8-051e32ab8576d95141a1",
+          "file": "fluxos.spec.ts",
+          "line": 405,
           "column": 1
         },
         {
@@ -865,12 +934,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4,
+                  "duration": 9,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:48:06.979Z",
+                  "startTime": "2026-10-26T01:12:14.822Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -880,7 +949,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-f99c8ce46861c3c3de92",
           "file": "fluxos.spec.ts",
-          "line": 7,
+          "line": 17,
           "column": 1
         },
         {
@@ -899,12 +968,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1898,
+                  "duration": 2635,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:48:06.999Z",
+                  "startTime": "2026-10-26T01:12:14.870Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -914,7 +983,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-10c9abce1b8b636c65a2",
           "file": "fluxos.spec.ts",
-          "line": 12,
+          "line": 22,
           "column": 1
         },
         {
@@ -933,12 +1002,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1162,
+                  "duration": 2017,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:48:08.913Z",
+                  "startTime": "2026-10-26T01:12:17.568Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -948,7 +1017,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-2d765daf9479b7c0c4ec",
           "file": "fluxos.spec.ts",
-          "line": 33,
+          "line": 47,
           "column": 1
         },
         {
@@ -967,12 +1036,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3963,
+                  "duration": 7243,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:48:10.090Z",
+                  "startTime": "2026-10-26T01:12:19.665Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -982,7 +1051,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-d85f80d42f70ff426bd5",
           "file": "fluxos.spec.ts",
-          "line": 46,
+          "line": 60,
           "column": 1
         },
         {
@@ -1001,12 +1070,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 2775,
+                  "duration": 5003,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:48:14.067Z",
+                  "startTime": "2026-10-26T01:12:26.950Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1016,7 +1085,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-10eddc6e997d7b790c94",
           "file": "fluxos.spec.ts",
-          "line": 74,
+          "line": 88,
           "column": 1
         },
         {
@@ -1035,12 +1104,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3737,
+                  "duration": 6430,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:48:16.857Z",
+                  "startTime": "2026-10-26T01:12:31.985Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1050,7 +1119,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-29beae0d03c9d16e85f1",
           "file": "fluxos.spec.ts",
-          "line": 96,
+          "line": 110,
           "column": 1
         },
         {
@@ -1069,12 +1138,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 6836,
+                  "duration": 11076,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:48:20.610Z",
+                  "startTime": "2026-10-26T01:12:38.471Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1084,7 +1153,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-014422f3659d97f5eb8f",
           "file": "fluxos.spec.ts",
-          "line": 120,
+          "line": 134,
           "column": 1
         },
         {
@@ -1103,12 +1172,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 6484,
+                  "duration": 9087,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:48:27.464Z",
+                  "startTime": "2026-10-26T01:12:49.605Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1118,7 +1187,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-f7b6b7452d680d4e8a18",
           "file": "fluxos.spec.ts",
-          "line": 138,
+          "line": 156,
           "column": 1
         },
         {
@@ -1137,12 +1206,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 8408,
+                  "duration": 12731,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:48:33.963Z",
+                  "startTime": "2026-10-26T01:12:58.779Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1152,7 +1221,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-e53c029f99b01534a99a",
           "file": "fluxos.spec.ts",
-          "line": 150,
+          "line": 168,
           "column": 1
         },
         {
@@ -1171,12 +1240,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4366,
+                  "duration": 12471,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:48:42.387Z",
+                  "startTime": "2026-10-26T01:13:11.569Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1186,7 +1255,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-08dd5fa5954d6d86b0c6",
           "file": "fluxos.spec.ts",
-          "line": 168,
+          "line": 186,
           "column": 1
         },
         {
@@ -1205,12 +1274,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4187,
+                  "duration": 7204,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:48:46.766Z",
+                  "startTime": "2026-10-26T01:13:24.138Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1220,7 +1289,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-3885107c0d3e1f97a4ce",
           "file": "fluxos.spec.ts",
-          "line": 213,
+          "line": 274,
           "column": 1
         },
         {
@@ -1239,12 +1308,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 5154,
+                  "duration": 6645,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:48:50.969Z",
+                  "startTime": "2026-10-26T01:13:31.397Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1254,7 +1323,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-bef8b9cf5abde1a3daeb",
           "file": "fluxos.spec.ts",
-          "line": 232,
+          "line": 295,
           "column": 1
         },
         {
@@ -1273,12 +1342,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 2696,
+                  "duration": 5043,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:48:56.137Z",
+                  "startTime": "2026-10-26T01:13:38.065Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1288,7 +1357,7 @@
           ],
           "id": "77ea0229fbaad0de7de8-a8f69277afe3b2b72c33",
           "file": "fluxos.spec.ts",
-          "line": 249,
+          "line": 312,
           "column": 1
         },
         {
@@ -1307,12 +1376,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3978,
+                  "duration": 5062,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:48:58.850Z",
+                  "startTime": "2026-10-26T01:13:43.127Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1322,7 +1391,75 @@
           ],
           "id": "77ea0229fbaad0de7de8-5e450f605d49d41960f3",
           "file": "fluxos.spec.ts",
-          "line": 270,
+          "line": 354,
+          "column": 1
+        },
+        {
+          "title": "filtra lançamentos e em alta pela URL e apresenta contagens reais de rede",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2315,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T01:13:48.209Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "77ea0229fbaad0de7de8-c0b70aa64c6f42c80b96",
+          "file": "fluxos.spec.ts",
+          "line": 378,
+          "column": 1
+        },
+        {
+          "title": "recusa e desconecta a carteira antes de liberar a revisão da compra",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5861,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T01:13:50.562Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "77ea0229fbaad0de7de8-3046433225ac339f17a3",
+          "file": "fluxos.spec.ts",
+          "line": 405,
           "column": 1
         }
       ]
@@ -1349,12 +1486,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 672,
+                  "duration": 1430,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:47:19.043Z",
+                  "startTime": "2026-10-26T01:10:50.894Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1364,7 +1501,7 @@
           ],
           "id": "b9ae121b8bb5f95a5eb8-4bdafb2ee77b8535ce2a",
           "file": "recuperacao.spec.ts",
-          "line": 6,
+          "line": 16,
           "column": 1
         },
         {
@@ -1383,12 +1520,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3620,
+                  "duration": 5965,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:47:19.726Z",
+                  "startTime": "2026-10-26T01:10:52.379Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1398,7 +1535,7 @@
           ],
           "id": "b9ae121b8bb5f95a5eb8-2e76a46b7cb4c7447fb8",
           "file": "recuperacao.spec.ts",
-          "line": 22,
+          "line": 33,
           "column": 1
         },
         {
@@ -1417,12 +1554,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 5151,
+                  "duration": 5986,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:47:23.371Z",
+                  "startTime": "2026-10-26T01:10:58.368Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1432,7 +1569,7 @@
           ],
           "id": "b9ae121b8bb5f95a5eb8-b39fc2847afbb5b921a1",
           "file": "recuperacao.spec.ts",
-          "line": 52,
+          "line": 63,
           "column": 1
         },
         {
@@ -1451,12 +1588,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 2337,
+                  "duration": 4262,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:47:28.550Z",
+                  "startTime": "2026-10-26T01:11:04.395Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1466,7 +1603,7 @@
           ],
           "id": "b9ae121b8bb5f95a5eb8-d4409a7866e1aded85dd",
           "file": "recuperacao.spec.ts",
-          "line": 74,
+          "line": 86,
           "column": 1
         },
         {
@@ -1485,12 +1622,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 8859,
+                  "duration": 11826,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:47:30.900Z",
+                  "startTime": "2026-10-26T01:11:08.690Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1500,7 +1637,7 @@
           ],
           "id": "b9ae121b8bb5f95a5eb8-a0688b645666d0430f27",
           "file": "recuperacao.spec.ts",
-          "line": 92,
+          "line": 104,
           "column": 1
         },
         {
@@ -1519,12 +1656,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 859,
+                  "duration": 1561,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:49:02.962Z",
+                  "startTime": "2026-10-26T01:13:57.203Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1534,7 +1671,7 @@
           ],
           "id": "b9ae121b8bb5f95a5eb8-1db053100db935e16b10",
           "file": "recuperacao.spec.ts",
-          "line": 6,
+          "line": 16,
           "column": 1
         },
         {
@@ -1553,12 +1690,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4248,
+                  "duration": 8270,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:49:03.845Z",
+                  "startTime": "2026-10-26T01:13:58.874Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1568,7 +1705,7 @@
           ],
           "id": "b9ae121b8bb5f95a5eb8-eeef68eba2d0ae3b658f",
           "file": "recuperacao.spec.ts",
-          "line": 22,
+          "line": 33,
           "column": 1
         },
         {
@@ -1587,12 +1724,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3082,
+                  "duration": 6362,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:49:08.109Z",
+                  "startTime": "2026-10-26T01:14:07.187Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1602,7 +1739,7 @@
           ],
           "id": "b9ae121b8bb5f95a5eb8-6f8542cfed4e344ad899",
           "file": "recuperacao.spec.ts",
-          "line": 52,
+          "line": 63,
           "column": 1
         },
         {
@@ -1621,12 +1758,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 2688,
+                  "duration": 3886,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:49:11.205Z",
+                  "startTime": "2026-10-26T01:14:13.595Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1636,7 +1773,7 @@
           ],
           "id": "b9ae121b8bb5f95a5eb8-45879ae7845a9003ef3f",
           "file": "recuperacao.spec.ts",
-          "line": 74,
+          "line": 86,
           "column": 1
         },
         {
@@ -1655,12 +1792,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 8662,
+                  "duration": 9415,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:49:13.907Z",
+                  "startTime": "2026-10-26T01:14:17.526Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1670,7 +1807,7 @@
           ],
           "id": "b9ae121b8bb5f95a5eb8-26235078b01f5672cfac",
           "file": "recuperacao.spec.ts",
-          "line": 92,
+          "line": 104,
           "column": 1
         }
       ]
@@ -1697,12 +1834,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 12671,
+                  "duration": 31833,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:47:39.780Z",
+                  "startTime": "2026-10-26T01:11:20.588Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1731,12 +1868,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 10021,
+                  "duration": 11437,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-25T15:49:22.624Z",
+                  "startTime": "2026-10-26T01:14:27.025Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1754,9 +1891,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-10-25T15:45:51.145Z",
-    "duration": 223519.672,
-    "expected": 46,
+    "startTime": "2026-10-26T01:08:33.421Z",
+    "duration": 366657.42199999996,
+    "expected": 50,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0
