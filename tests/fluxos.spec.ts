@@ -328,6 +328,27 @@ test('valida teclado, foco de diálogo, acessibilidade e larguras 390/768/1440',
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true);
   }
+  for (const [largura, altura] of [
+    [390, 844],
+    [720, 450],
+  ]) {
+    await page.setViewportSize({ width: largura, height: altura });
+    await page.goto('/cadastro');
+    await page.getByRole('dialog').waitFor();
+    await page.mouse.move(largura / 2, altura / 2);
+    await page.mouse.wheel(0, 1400);
+    const acao =
+      largura === 390
+        ? page.locator('.alternar-autenticacao a')
+        : page.getByRole('button', { name: 'Continuar com Facebook', exact: true });
+    await expect(acao).toBeInViewport({ ratio: 1 });
+    await acao.click();
+    if (largura === 390) await expect(page).toHaveURL(/login/);
+    else
+      await expect(
+        page.getByRole('dialog', { name: 'Continuar com Facebook', exact: true }),
+      ).toBeVisible();
+  }
 });
 
 test('exibe skeletons, erro de rede e recuperação, descartando respostas obsoletas', async ({

@@ -33,9 +33,18 @@ try {
     await pagina.setViewportSize({ width: largura, height: largura === 720 ? 450 : 1000 });
     for (const caminho of caminhos) {
       await pagina.goto(caminho);
-      await pagina.getByRole('heading', { level: 1 }).waitFor();
+      if (caminho === '/login' || caminho === '/cadastro')
+        await pagina.getByRole('dialog').waitFor();
+      else await pagina.getByRole('heading', { level: 1 }).waitFor();
       await expect(pagina.locator('.esqueleto')).toHaveCount(0);
       await pagina.evaluate(() => document.fonts.ready);
+      if (caminho === '/login' || caminho === '/cadastro') {
+        await pagina.mouse.move(largura / 2, Math.min(300, pagina.viewportSize().height / 2));
+        await pagina.mouse.wheel(0, 1400);
+        await expect(
+          pagina.getByRole('button', { name: 'Continuar com Facebook', exact: true }),
+        ).toBeInViewport({ ratio: 1 });
+      }
       const medidas = await pagina.evaluate(() => ({
         conteudo: document.documentElement.scrollWidth,
         viewport: window.innerWidth,
