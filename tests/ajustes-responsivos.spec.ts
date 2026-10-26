@@ -42,7 +42,12 @@ test('carrossel navega por controles, teclado, gesto e abre a obra selecionada',
   await abrir(page);
   const imagem = page.locator('.hero-arte > img').first();
   await expect(imagem).toHaveAttribute('alt', 'Emerald Ape #042');
-  await page.getByRole('button', { name: 'Próximo destaque', exact: true }).click();
+  await page
+    .getByRole('button', {
+      name: isMobile ? 'Mostrar destaque 2' : 'Próximo destaque',
+      exact: true,
+    })
+    .click();
   await expect(imagem).toHaveAttribute('alt', 'Sage Nomad #009');
   await page.getByRole('button', { name: 'Mostrar destaque 3' }).click();
   await expect(page.getByRole('button', { name: 'Mostrar destaque 3' })).toHaveAttribute(
@@ -68,9 +73,7 @@ test('destaque reserva espaço para texto e imagem entre 320 e 1440 pixels', asy
     await semRecorte(page, '.hero h1, .hero .descricao, .hero .botao-explorar');
     const texto = await page.locator('.hero > div').boundingBox();
     const imagem = await page.locator('.hero-arte').boundingBox();
-    expect(
-      texto && imagem && (texto.x + texto.width <= imagem.x || texto.y + texto.height <= imagem.y),
-    ).toBeTruthy();
+    expect(texto && imagem && texto.x + texto.width <= imagem.x).toBeTruthy();
   }
 });
 

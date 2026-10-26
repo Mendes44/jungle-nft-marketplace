@@ -115,6 +115,7 @@ export const envioPedidoSchema = colecionadorSchema.extend({
   cotacaoId: z.string(),
   carteiraId: z.string(),
   rede: z.string(),
+  provedor: carteiraSchema.shape.tipo.optional(),
   conectado: z.literal(true),
 });
 export const pedidoSchema = z.object({

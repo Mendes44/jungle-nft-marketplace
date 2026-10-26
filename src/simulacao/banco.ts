@@ -21,7 +21,13 @@ const bancoSchema = z.object({
   usuarios: z.array(usuarioSchema),
   sessoes: z.record(
     z.string(),
-    z.object({ usuarioId: z.string(), expiraEm: z.number(), carteiraId: z.string().optional() }),
+    z.object({
+      usuarioId: z.string(),
+      expiraEm: z.number(),
+      carteiraId: z.string().optional(),
+      rede: carteiraSchema.shape.rede.optional(),
+      provedor: carteiraSchema.shape.tipo.optional(),
+    }),
   ),
   carrinhos: z.record(z.string(), z.object({ itens: z.array(itemSchema), cupom: z.string() })),
   favoritos: z.record(z.string(), z.array(z.string())),

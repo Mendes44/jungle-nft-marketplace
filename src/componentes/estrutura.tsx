@@ -30,6 +30,9 @@ function PainelSimulacao() {
         for (const chave of Object.keys(sessionStorage)) {
           if (chave.startsWith('kurio.')) sessionStorage.removeItem(chave);
         }
+        for (const chave of Object.keys(localStorage)) {
+          if (chave.startsWith('kurio.rascunho:')) localStorage.removeItem(chave);
+        }
         window.location.assign('/');
       } else if (!variaveis.acao || variaveis.acao === 'expirar') await cache.invalidateQueries();
     },

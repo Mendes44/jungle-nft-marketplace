@@ -3,6 +3,7 @@ import { HttpResponse } from 'msw';
 import { z } from 'zod';
 import {
   cadastroSchema,
+  carteiraSchema,
   dadosCarteiraSchema,
   dadosPerfilSchema,
   perfilSchema,
@@ -51,13 +52,20 @@ export async function alterarConexao(contexto: ContextoRequisicao): Promise<Resp
   const { banco, requisicao, dono, lerCorpo } = contexto;
 
   const dados = z
-    .object({ carteiraId: z.string(), acao: z.enum(['conectar', 'recusar', 'desconectar']) })
+    .object({
+      carteiraId: z.string(),
+      acao: z.enum(['conectar', 'recusar', 'desconectar']),
+      rede: carteiraSchema.shape.rede.optional(),
+      provedor: carteiraSchema.shape.tipo.optional(),
+    })
     .parse(await lerCorpo());
   const token = requisicao.headers.get('Authorization')?.replace('Bearer ', '') ?? '';
   const sessao = banco.sessoes[token];
-  if (!sessao || !banco.carteiras[dono]?.some((carteira) => carteira.id === dados.carteiraId))
-    throw new FalhaApi(422, 'Selecione uma carteira cadastrada.');
+  const carteira = banco.carteiras[dono]?.find((carteira) => carteira.id === dados.carteiraId);
+  if (!sessao || !carteira) throw new FalhaApi(422, 'Selecione uma carteira cadastrada.');
   sessao.carteiraId = dados.acao === 'conectar' ? dados.carteiraId : undefined;
+  sessao.rede = dados.acao === 'conectar' ? (dados.rede ?? carteira.rede) : undefined;
+  sessao.provedor = dados.acao === 'conectar' ? (dados.provedor ?? carteira.tipo) : undefined;
   salvarBanco(banco);
   return HttpResponse.json({
     estado:
@@ -67,6 +75,8 @@ export async function alterarConexao(contexto: ContextoRequisicao): Promise<Resp
           ? 'recusada'
           : 'desconectada',
     carteiraId: dados.carteiraId,
+    rede: dados.rede ?? carteira.rede,
+    provedor: dados.provedor ?? carteira.tipo,
   });
 }
 

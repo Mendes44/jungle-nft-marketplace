@@ -273,12 +273,14 @@ function lerTentativa(chave: string): Tentativa | null {
     return null;
   }
 }
-/** Rascunhos de checkout são recuperáveis somente na mesma aba e para a mesma conta. */
+/** Recupera o rascunho da conta neste navegador, incluindo abas anteriores. */
 function lerRascunho(chave: string): Record<string, string> {
   try {
     const resultado = z
       .record(z.string(), z.string())
-      .safeParse(JSON.parse(sessionStorage.getItem(chave) ?? 'null'));
+      .safeParse(
+        JSON.parse(localStorage.getItem(chave) ?? sessionStorage.getItem(chave) ?? 'null'),
+      );
     return resultado.success ? resultado.data : {};
   } catch {
     return {};
@@ -313,6 +315,8 @@ function FormularioPagamento() {
     queryFn: ({ signal }) => consultar('/pedidos', z.array(pedidoSchema), signal),
   });
   const [carteiraId, definirCarteira] = useState(rascunho.carteiraId ?? '');
+  const [redeEscolhida, definirRede] = useState(rascunho.rede ?? '');
+  const [provedorEscolhido, definirProvedor] = useState(rascunho.provedor ?? '');
   const [revisao, definirRevisao] = useState<Cotacao | null>(null);
   const [dadosRevisados, definirDadosRevisados] = useState<z.infer<
     typeof colecionadorSchema
@@ -322,20 +326,34 @@ function FormularioPagamento() {
     carteiras.data?.find((item) => item.id === carteiraId) ??
     carteiras.data?.find((item) => item.principal) ??
     carteiras.data?.[0];
+  const rede = redeEscolhida || carteira?.rede || 'Ethereum';
+  const provedor = provedorEscolhido || carteira?.tipo || 'MetaMask';
   const conexao = useMutation({
-    mutationFn: (acao: 'conectar' | 'recusar' | 'desconectar') =>
+    mutationFn: (
+      pedido: 'conectar' | 'recusar' | 'desconectar' | { acao: 'conectar'; provedor: string },
+    ) =>
       alterar(
         'POST',
         '/conexao',
-        { carteiraId: carteira?.id ?? '', acao },
+        {
+          carteiraId: carteira?.id ?? '',
+          acao: typeof pedido === 'string' ? pedido : pedido.acao,
+          rede,
+          provedor: typeof pedido === 'string' ? provedor : pedido.provedor,
+        },
         z.object({
           estado: z.enum(['conectada', 'recusada', 'desconectada']),
           carteiraId: z.string(),
+          rede: carteiraSchema.shape.rede,
+          provedor: carteiraSchema.shape.tipo,
         }),
       ),
   });
   const conectado =
-    conexao.data?.estado === 'conectada' && conexao.data.carteiraId === carteira?.id;
+    conexao.data?.estado === 'conectada' &&
+    conexao.data.carteiraId === carteira?.id &&
+    conexao.data.rede === rede &&
+    conexao.data.provedor === provedor;
   const enviar = useMutation({
     mutationFn: (atual: Tentativa) =>
       alterar('POST', '/pedidos', atual.dados, pedidoSchema, atual.chave),
@@ -357,6 +375,10 @@ function FormularioPagamento() {
     },
     onSuccess: async (pedido) => {
       sessionStorage.removeItem(chavePersistencia);
+      localStorage.setItem(
+        chaveRascunho,
+        JSON.stringify({ ...lerRascunho(chaveRascunho), etapa: 'dados' }),
+      );
       sessionStorage.removeItem(chaveRascunho);
       definirTentativa(null);
       await atualizarCarrinho();
@@ -389,9 +411,15 @@ function FormularioPagamento() {
     definirDadosRevisados(resultado.data);
     if (window.matchMedia('(max-width: 600px)').matches && etapaMovel === 'dados') {
       definirEtapaMovel('carteira');
-      sessionStorage.setItem(
+      localStorage.setItem(
         chaveRascunho,
-        JSON.stringify({ ...valores, etapa: 'carteira', carteiraId: carteira?.id ?? '' }),
+        JSON.stringify({
+          ...valores,
+          etapa: 'carteira',
+          carteiraId: carteira?.id ?? '',
+          rede,
+          provedor,
+        }),
       );
       window.scrollTo(0, 0);
       return;
@@ -416,7 +444,8 @@ function FormularioPagamento() {
         ...dadosRevisados,
         cotacaoId: revisao.id,
         carteiraId: carteira.id,
-        rede: carteira.rede,
+        rede,
+        provedor: carteiraSchema.shape.tipo.parse(provedor),
         conectado: true,
       },
     };
@@ -457,9 +486,17 @@ function FormularioPagamento() {
   /** A escolha de outra carteira invalida conexão e revisão ligadas ao endereço anterior. */
   function escolherCarteira(id: string) {
     definirCarteira(id);
-    sessionStorage.setItem(
+    const escolhida = carteiras.data?.find((item) => item.id === id);
+    definirRede(escolhida?.rede ?? 'Ethereum');
+    definirProvedor(escolhida?.tipo ?? 'MetaMask');
+    localStorage.setItem(
       chaveRascunho,
-      JSON.stringify({ ...lerRascunho(chaveRascunho), carteiraId: id }),
+      JSON.stringify({
+        ...lerRascunho(chaveRascunho),
+        carteiraId: id,
+        rede: escolhida?.rede ?? 'Ethereum',
+        provedor: escolhida?.tipo ?? 'MetaMask',
+      }),
     );
     definirRevisao(null);
     conexao.reset();
@@ -468,7 +505,7 @@ function FormularioPagamento() {
   function editarDados() {
     definirEtapaMovel('dados');
     const dados = lerRascunho(chaveRascunho);
-    sessionStorage.setItem(chaveRascunho, JSON.stringify({ ...dados, etapa: 'dados' }));
+    localStorage.setItem(chaveRascunho, JSON.stringify({ ...dados, etapa: 'dados' }));
   }
   if (carrinho.isPending || cotacao.isPending || carteiras.isPending) return <Esqueleto detalhe />;
   if (carrinho.isError || cotacao.isError || carteiras.isError)
@@ -541,9 +578,10 @@ function FormularioPagamento() {
           noValidate
           onSubmit={prepararRevisao}
           onChange={(evento) =>
-            sessionStorage.setItem(
+            localStorage.setItem(
               chaveRascunho,
               JSON.stringify({
+                ...lerRascunho(chaveRascunho),
                 ...Object.fromEntries(new FormData(evento.currentTarget)),
                 etapa: etapaMovel,
               }),
@@ -555,8 +593,21 @@ function FormularioPagamento() {
           {campoTexto('apelido', 'Nome do usuário', perfil?.apelido)}
           <Campo classe="campo-rede" rotulo="Rede" obrigatorio>
             {(id) => (
-              <select id={id} value={carteira?.rede ?? ''} onChange={() => definirRevisao(null)}>
-                <option>{carteira?.rede ?? 'Selecione uma rede'}</option>
+              <select
+                id={id}
+                value={rede}
+                onChange={(evento) => {
+                  definirRede(evento.target.value);
+                  definirRevisao(null);
+                  conexao.reset();
+                  localStorage.setItem(
+                    chaveRascunho,
+                    JSON.stringify({ ...lerRascunho(chaveRascunho), rede: evento.target.value }),
+                  );
+                }}
+              >
+                <option>Ethereum</option>
+                <option>Polygon</option>
               </select>
             )}
           </Campo>
@@ -589,17 +640,12 @@ function FormularioPagamento() {
           </Campo>
           <Campo classe="campo-tipo" rotulo="Tipo de carteira" obrigatorio>
             {(id) => (
-              <input
-                id={id}
-                value={carteira?.tipo ?? ''}
-                readOnly
-                placeholder="Selecione uma carteira"
-              />
+              <input id={id} value={provedor} readOnly placeholder="Selecione uma carteira" />
             )}
           </Campo>
-          {campoTexto('indicacao', 'Código de indicação')}
+          {campoTexto('indicacao', 'Código de indicação', carteira?.indicacao)}
           {campoTexto('email', 'E-mail', perfil?.email, 'email')}
-          {campoTexto('ens', 'Nome ENS')}
+          {campoTexto('ens', 'Nome ENS', carteira?.ens || perfil?.ens)}
           <details className="carteira-alternativa">
             <summary>Usar outra carteira?</summary>
             <Campo rotulo="Carteira cadastrada">
@@ -705,7 +751,7 @@ function FormularioPagamento() {
                     <small>
                       {item.endereco.slice(0, 6)}…{item.endereco.slice(-4)}
                     </small>
-                    <small>Rede {item.rede}</small>
+                    <small>Rede {carteira?.id === item.id ? rede : item.rede}</small>
                   </span>
                 </label>
                 <Dialogo
@@ -739,6 +785,26 @@ function FormularioPagamento() {
           </div>
           <fieldset className="provedores-carteira">
             <legend>Carteira e rede</legend>
+            <Campo classe="rede-conexao-movel" rotulo="Rede da conexão">
+              {(id) => (
+                <select
+                  id={id}
+                  value={rede}
+                  onChange={(evento) => {
+                    definirRede(evento.target.value);
+                    definirRevisao(null);
+                    conexao.reset();
+                    localStorage.setItem(
+                      chaveRascunho,
+                      JSON.stringify({ ...lerRascunho(chaveRascunho), rede: evento.target.value }),
+                    );
+                  }}
+                >
+                  <option>Ethereum</option>
+                  <option>Polygon</option>
+                </select>
+              )}
+            </Campo>
             {['WalletConnect', 'MetaMask', 'Coinbase Wallet'].map((tipo) => (
               <label key={tipo}>
                 <span className="emblema-provedor" aria-hidden="true">
@@ -756,11 +822,16 @@ function FormularioPagamento() {
                   name="provedor-carteira"
                   value={tipo}
                   aria-label={tipo}
-                  checked={Boolean(conectado && carteira?.tipo === tipo)}
-                  disabled={carteira?.tipo !== tipo || conexao.isPending}
+                  checked={Boolean(conectado && provedor === tipo)}
+                  disabled={!carteira || conexao.isPending}
                   onChange={() => {
+                    definirProvedor(tipo);
                     definirRevisao(null);
-                    conexao.mutate('conectar');
+                    localStorage.setItem(
+                      chaveRascunho,
+                      JSON.stringify({ ...lerRascunho(chaveRascunho), provedor: tipo }),
+                    );
+                    conexao.mutate({ acao: 'conectar', provedor: tipo });
                   }}
                 />
               </label>
@@ -819,7 +890,7 @@ function FormularioPagamento() {
                   {dadosRevisados?.nome} · {dadosRevisados?.email}
                 </p>
                 <p>
-                  {carteira?.nome} · {carteira?.rede}
+                  {carteira?.nome} · {rede} · {provedor}
                 </p>
                 <ResumoValores cotacao={revisao} />
                 {desatualizada && (

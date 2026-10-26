@@ -1,7 +1,7 @@
 /** Composição editorial e elementos gráficos conferidos nos frames originais do desafio. */
 import { Link } from '@tanstack/react-router';
-import { useRef, useState } from 'react';
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import { Dialogo } from './comuns';
 
 /** Renderiza o vetor exportado da referência sem substituir seus traços por outro conjunto. */
@@ -54,6 +54,17 @@ export function AcaoEditorial({ texto, descricao }: { texto: string; descricao?:
 /** O destaque compartilha tipografia, recorte e versões de texto do desktop e do mobile. */
 export function DestaquePrincipal() {
   const [indice, definirIndice] = useState(0);
+  const [automatico, definirAutomatico] = useState(
+    () => !window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
+  const [interagindo, definirInteragindo] = useState(false);
+  useEffect(() => {
+    if (!automatico || interagindo) return;
+    const timer = window.setInterval(() => {
+      if (!document.hidden) definirIndice((atual) => (atual + 1) % 3);
+    }, 8000);
+    return () => window.clearInterval(timer);
+  }, [automatico, interagindo, indice]);
   const toque = useRef<{ x: number; y: number } | null>(null);
   const destaques = [
     { id: '1', imagem: 0, nome: 'Emerald Ape #042' },
@@ -69,6 +80,10 @@ export function DestaquePrincipal() {
       className="hero"
       aria-label="Destaques da coleção"
       aria-roledescription="carrossel"
+      onFocusCapture={() => definirInteragindo(true)}
+      onBlurCapture={(evento) => {
+        if (!evento.currentTarget.contains(evento.relatedTarget)) definirInteragindo(false);
+      }}
       onKeyDown={(evento) => {
         if (evento.key === 'ArrowRight' || evento.key === 'ArrowLeft') {
           evento.preventDefault();
@@ -134,6 +149,20 @@ export function DestaquePrincipal() {
           ))}
           <button type="button" aria-label="Próximo destaque" onClick={() => navegar(1)}>
             <ChevronRight size={16} aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            aria-label={automatico ? 'Pausar carrossel' : 'Reproduzir carrossel'}
+            onClick={() => {
+              definirAutomatico(!automatico);
+              definirInteragindo(false);
+            }}
+          >
+            {automatico ? (
+              <Pause size={14} aria-hidden="true" />
+            ) : (
+              <Play size={14} aria-hidden="true" />
+            )}
           </button>
         </div>
       </div>

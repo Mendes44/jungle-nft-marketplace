@@ -3,6 +3,7 @@ import { delay, HttpResponse } from 'msw';
 import { z } from 'zod';
 import {
   colecionadorSchema,
+  carteiraSchema,
   envioPedidoSchema,
   itemSchema,
   type Pedido,
@@ -90,10 +91,15 @@ export async function criarPedido(contexto: ContextoRequisicao): Promise<Respons
   if (cotacao.itens.some((item) => item.quantidade > item.disponivel))
     throw new FalhaApi(409, 'Uma edição esgotou. Atualize as quantidades do carrinho.');
   const carteira = banco.carteiras[dono]?.find((carteira) => carteira.id === dados.carteiraId);
-  if (!carteira || carteira.rede !== dados.rede)
-    throw new FalhaApi(422, 'Selecione uma carteira e sua rede cadastrada.');
+  if (!carteira || !carteiraSchema.shape.rede.safeParse(dados.rede).success)
+    throw new FalhaApi(422, 'Selecione uma carteira cadastrada e uma rede disponível.');
   const token = requisicao.headers.get('Authorization')?.replace('Bearer ', '') ?? '';
-  if (banco.sessoes[token]?.carteiraId !== carteira.id)
+  const sessao = banco.sessoes[token];
+  if (
+    sessao?.carteiraId !== carteira.id ||
+    sessao.rede !== dados.rede ||
+    sessao.provedor !== (dados.provedor ?? carteira.tipo)
+  )
     throw new FalhaApi(422, 'Conecte a carteira antes de enviar o pedido.');
   const pedido: Pedido = {
     id: `KUR-${String(++banco.sequencia).padStart(5, '0')}`,
@@ -101,7 +107,11 @@ export async function criarPedido(contexto: ContextoRequisicao): Promise<Respons
     estado: 'pendente',
     versao: 1,
     cotacao: structuredClone(cotacao),
-    carteira: structuredClone(carteira),
+    carteira: {
+      ...structuredClone(carteira),
+      rede: carteiraSchema.shape.rede.parse(dados.rede),
+      tipo: dados.provedor ?? carteira.tipo,
+    },
     colecionador: colecionadorSchema.parse(dados),
     transacao: `0x${crypto.randomUUID().replaceAll('-', '')}`,
     criadoEm: Date.now(),

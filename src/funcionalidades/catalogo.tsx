@@ -1,7 +1,7 @@
 /** Descoberta e detalhe: estado de pesquisa pertence à URL; consultas obsoletas são canceladas. */
 import axios from 'axios';
 import { NaoEncontrado } from '../componentes/nao-encontrado';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearch, useParams } from '@tanstack/react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
@@ -209,6 +209,17 @@ function FiltrosCatalogo({
 export function Inicio() {
   const filtros = filtrosSchema.parse(useSearch({ strict: false }));
   const [filtrosAbertos, definirFiltrosAbertos] = useState(() => window.innerWidth > 600);
+  const painelFiltros = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!filtrosAbertos || !window.matchMedia('(max-width: 600px)').matches) return;
+    painelFiltros.current?.focus({ preventScroll: true });
+    painelFiltros.current?.scrollIntoView({
+      block: 'start',
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 'instant'
+        : 'smooth',
+    });
+  }, [filtrosAbertos]);
   const [buscaAberta, definirBuscaAberta] = useState(Boolean(filtros.busca));
   const navegar = useNavigate();
   const catalogo = useQuery({
@@ -256,6 +267,7 @@ export function Inicio() {
           className="alternar-filtros"
           aria-label="Filtrar coleções"
           aria-expanded={filtrosAbertos}
+          aria-controls="filtros-catalogo"
           onClick={() => definirFiltrosAbertos(!filtrosAbertos)}
         >
           <IconeOriginal nome="filtros" tamanho={21} />
@@ -268,7 +280,12 @@ export function Inicio() {
         </h2>
         <div className="catalogo-layout">
           <aside aria-label="Filtros do catálogo">
-            <div className={filtrosAbertos ? 'conteudo-filtros aberto' : 'conteudo-filtros'}>
+            <div
+              ref={painelFiltros}
+              id="filtros-catalogo"
+              tabIndex={-1}
+              className={filtrosAbertos ? 'conteudo-filtros aberto' : 'conteudo-filtros'}
+            >
               <FiltrosCatalogo
                 key={`${filtros.minimo}:${filtros.maximo}`}
                 filtros={filtros}

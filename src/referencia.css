@@ -1948,12 +1948,12 @@ main {
   }
   .hero {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 138px;
+    grid-template-columns: minmax(0, 1fr) clamp(88px, 32vw, 138px);
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     position: relative;
     margin: 0 0 16px;
-    padding: 16px 16px 48px;
+    padding: 16px 12px 48px;
     min-height: 190px;
     height: auto;
     border-radius: 32px;
@@ -3827,20 +3827,6 @@ main {
     height: auto;
   }
 }
-@media (max-width: 380px) {
-  .hero {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
-  }
-  .hero-arte {
-    justify-self: center;
-  }
-  .hero h1,
-  .hero .sobretitulo,
-  .hero .descricao {
-    text-align: center;
-  }
-}
 
 .item-carrinho .preco-unitario,
 .item-carrinho .total-item {
@@ -3855,5 +3841,45 @@ main {
     grid-column: 1 / -1;
     grid-row: 3;
     padding: 8px 12px;
+  }
+}
+
+.rede-conexao-movel {
+  display: none;
+}
+.conteudo-filtros {
+  scroll-margin-top: 16px;
+}
+@media (max-width: 600px) {
+  .hero h1 {
+    font-size: clamp(14px, 4.35vw, 18px);
+    line-height: 1.55;
+  }
+  .hero .descricao,
+  .hero .sobretitulo {
+    font-size: clamp(10px, 2.9vw, 12px);
+  }
+  .hero-arte,
+  .hero-arte > img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
+  .hero-arte > img.arte-secundaria {
+    width: 42%;
+    height: auto;
+    aspect-ratio: 1;
+    left: 8%;
+  }
+  .indicadores-hero button[aria-label='Destaque anterior'],
+  .indicadores-hero button[aria-label='Próximo destaque'] {
+    display: none;
+  }
+  .rede-conexao-movel {
+    display: grid;
+    margin-bottom: 16px;
+  }
+  .rede-conexao-movel select {
+    width: 100%;
   }
 }
