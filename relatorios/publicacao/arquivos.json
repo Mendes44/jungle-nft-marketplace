@@ -1,11 +1,11 @@
 {
   "origem": "https://kurio-jungle.vercel.app",
-  "verificadoEm": "2026-10-26T02:28:03.532Z",
+  "verificadoEm": "2026-10-26T03:25:06.815Z",
   "arquivos": [
     {
-      "caminho": "/assets/index-DKoUid0J.js",
+      "caminho": "/assets/index-Bs2n_iQU.js",
       "igual": true,
-      "sha256": "2f187ccd10510b1cd8ecd0228a7f69405cadec1bea17e64942d0eeaabaf36883"
+      "sha256": "674285cd083e3e529804f0da815b80db958f1e66cf975b9b544b20a26abe698e"
     },
     {
       "caminho": "/assets/preload-helper-BLdHbfdN.js",
@@ -13,24 +13,24 @@
       "sha256": "8aec9ff75ffa86a03d51268b63126abadb3754aa5a6b6c5bb16e4e2446a63dee"
     },
     {
-      "caminho": "/assets/index-1LsIr3OX.css",
+      "caminho": "/assets/index-D0nu4sdJ.css",
       "igual": true,
-      "sha256": "d7fb558593977efd89ea03fd51905098d420d001ddde33df00cfe389e6d5a2f2"
+      "sha256": "ddda8636006a17c9da27a47da812feccb9917c91c461ae8ace993be107ac8fb1"
     },
     {
-      "caminho": "/assets/aplicacao-B0h6Xnro.js",
+      "caminho": "/assets/aplicacao-DwIv6Ffg.js",
       "igual": true,
-      "sha256": "18e4712e5f62ebb4b39146aafd634bee077051147d35109570ddd5b6a1cb6262"
+      "sha256": "267827e2a23b91186bd5b15a2e93c84e445acf0b7fdbd1167ec99ee7989d680f"
     },
     {
-      "caminho": "/assets/catalogo-KmIsHQZ7.js",
+      "caminho": "/assets/catalogo-BUdLYLjF.js",
       "igual": true,
-      "sha256": "17692b66b8e949aa5c7d0b160b49723e27e1426f78d6f804fb87f0e62cf1e19d"
+      "sha256": "0cc31b38c5e9be9a68c63627d2f788e7fcae46397be173d581e5c7380cf4dfc4"
     },
     {
-      "caminho": "/assets/compra-C81jAPGa.js",
+      "caminho": "/assets/compra-BG25k6Vo.js",
       "igual": true,
-      "sha256": "90204bbf504a3f35863c292c426257f0cb487bf3e798fb1bf2b44d83a27a1eff"
+      "sha256": "ac5affed983c1861ba4e176f1d2e02597eab34fc0f546b91e6b28ab8c8a5ed6c"
     },
     {
       "caminho": "/assets/configuracao-f1gMeta1.js",
@@ -38,9 +38,9 @@
       "sha256": "e06aab014d58dc67fe40d4e2d29e87799defadc6c20ed2ded85d4e5524103827"
     },
     {
-      "caminho": "/assets/conta-CTfkEPpU.js",
+      "caminho": "/assets/conta-CTUrDhLx.js",
       "igual": true,
-      "sha256": "406cf966fdb494942423d869c743b29e74ea3bb94db82c65e6510da515a2c05f"
+      "sha256": "cbc2fb3ae1a27f1ecfade55c6238d74d80b1a157e561e51fdfb6fc0c3d8e1c35"
     },
     {
       "caminho": "/assets/esm-B6DvIUmM.js",
@@ -58,9 +58,9 @@
       "sha256": "03ce4fc8eac36c91ab0092ea9261118c77f6a91243b7047f145cfd29b2bfc052"
     },
     {
-      "caminho": "/assets/rede-bwdH0YEt.js",
+      "caminho": "/assets/rede-DreW5bFm.js",
       "igual": true,
-      "sha256": "e9867c7953e6518dfdca891b272e57eaea415927818c1d69ad3ad6e3c3d25dcc"
+      "sha256": "09f5abbe1d5294147d420418aa6d8589828bc11c48f2540fcd6aad0006237dc0"
     },
     {
       "caminho": "/assets/rolldown-runtime-XKyaHtl9.js",
@@ -68,9 +68,9 @@
       "sha256": "548d1dbf321e7d2ae804fcc158b588706a7c52f8ca175de1490c6ccb4dbe55b7"
     },
     {
-      "caminho": "/assets/valores-p3N5XUMa.js",
+      "caminho": "/assets/valores-gpQliCqe.js",
       "igual": true,
-      "sha256": "12c140b13983511e4407010d1c166ab7cd3f21deebcc07af26a4ae8eb398e1d9"
+      "sha256": "794d7daf8d101bbe6154cda502404520d2200741a95b2bd4b04c2859402f002f"
     },
     {
       "caminho": "/icones/acesso-facebook.svg",
