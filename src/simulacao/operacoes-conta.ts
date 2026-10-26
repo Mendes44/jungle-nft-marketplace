@@ -1,7 +1,12 @@
 /** Operações REST de conta; regras e persistência ficam na camada de simulação. */
 import { HttpResponse } from 'msw';
 import { z } from 'zod';
-import { cadastroSchema, carteiraSchema, dadosPerfilSchema } from '../dominio/contratos';
+import {
+  cadastroSchema,
+  dadosCarteiraSchema,
+  dadosPerfilSchema,
+  perfilSchema,
+} from '../dominio/contratos';
 import { FalhaApi, hashSenha, mesclarVisitante, perfilPublico, salvarBanco } from './banco';
 import type { ContextoRequisicao } from './contexto';
 /** Autentica credenciais ou cria uma conta e mescla o carrinho visitante. */
@@ -20,12 +25,14 @@ export async function autenticarConta(contexto: ContextoRequisicao): Promise<Res
     if (usuario) throw new FalhaApi(409, 'Este e-mail já possui uma conta.');
     const cadastro = cadastroSchema.parse(dados);
     usuario = {
-      id: crypto.randomUUID(),
-      nome: cadastro.nome,
-      email: cadastro.email.toLowerCase(),
-      apelido: cadastro.nome.split(' ')[0],
-      biografia: '',
-      avatar: '/imagens/colecao-0.webp',
+      ...perfilSchema.parse({
+        id: crypto.randomUUID(),
+        nome: cadastro.nome,
+        email: cadastro.email.toLowerCase(),
+        apelido: cadastro.nome.split(' ')[0],
+        biografia: '',
+        avatar: '/imagens/colecao-0.webp',
+      }),
       senhaHash,
     };
     banco.usuarios.push(usuario);
@@ -124,7 +131,7 @@ export async function alterarCarteiras(contexto: ContextoRequisicao): Promise<Re
 
   const carteiras = (banco.carteiras[dono] ??= []);
   if (metodo === 'POST' || metodo === 'PATCH') {
-    const carteira = carteiraSchema.parse(await lerCorpo());
+    const carteira = dadosCarteiraSchema.parse(await lerCorpo());
     const existente = carteiras.findIndex((item) => item.id === carteira.id);
     if (
       carteiras.some(

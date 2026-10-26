@@ -23,6 +23,8 @@ export async function listarNfts(contexto: ContextoRequisicao): Promise<Response
       normalizarBusca(`${nft.nome} ${nft.criador}`).includes(normalizarBusca(filtros.busca)) &&
       (!filtros.categoria || nft.categoria === filtros.categoria) &&
       (!filtros.rede || nft.rede === filtros.rede) &&
+      (filtros.aba !== 'novos' || nft.novo) &&
+      (filtros.aba !== 'alta' || nft.emAlta) &&
       paraWei(nft.edicoes[0].preco) >= paraWei(filtros.minimo) &&
       paraWei(nft.edicoes[0].preco) <= paraWei(filtros.maximo),
   );
@@ -43,6 +45,28 @@ export async function listarNfts(contexto: ContextoRequisicao): Promise<Response
           paginas: Math.max(1, Math.ceil(itens.length / quantidadePorPagina)),
         },
   );
+}
+
+/** Contagens das coleções e redes são derivadas do banco, sem números decorativos na interface. */
+export function consultarFacetas(contexto: ContextoRequisicao): Response {
+  const { banco } = contexto;
+  return HttpResponse.json({
+    categorias: [
+      'Arte digital',
+      'Fotografia',
+      'Música',
+      'Arte 3D',
+      'Colecionáveis',
+      'Generativa',
+      'Jogos',
+      'Assinaturas',
+      'Utilidade',
+    ].map((nome) => ({ nome, total: banco.nfts.filter((nft) => nft.categoria === nome).length })),
+    redes: ['Ethereum', 'Polygon', 'Solana'].map((nome) => ({
+      nome,
+      total: banco.nfts.filter((nft) => nft.rede === nome).length,
+    })),
+  });
 }
 
 /** Localiza uma obra por identificador e diferencia recursos inexistentes. */

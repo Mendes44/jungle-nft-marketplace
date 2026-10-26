@@ -1,13 +1,15 @@
 /** Descoberta e detalhe: estado de pesquisa pertence à URL; consultas obsoletas são canceladas. */
 import axios from 'axios';
 import { NaoEncontrado } from '../componentes/nao-encontrado';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearch, useParams } from '@tanstack/react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
-import { Eye, Heart, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, ShoppingCart, Heart, Star, Mail, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   catalogoSchema,
+  facetasSchema,
+  filtrosSchema,
   carrinhoSchema,
   nftSchema,
   type Filtros,
@@ -17,25 +19,54 @@ import { exibirEth } from '../dominio/valores';
 import { alterar, cache, consultar } from '../infraestrutura/api';
 import { useSessao } from '../infraestrutura/sessao';
 import { Button } from '../componentes/ui/button';
-import { Campo, Esqueleto, EsqueletoDoNft, Falha } from '../componentes/comuns';
+import { Dialogo, Esqueleto, EsqueletoDoNft, Falha } from '../componentes/comuns';
+import { DestaquePrincipal, ConteudoEditorial, IconeOriginal } from '../componentes/vitrine';
+import { ControleQuantidade, VoltarAoMercado } from '../componentes/controles';
 
 /** Cartão navegável com imagem local e preço sem arredondamento. */
 export function CartaoNft({ nft }: { nft: Nft }) {
+  const adicionar = useMutation({
+    mutationFn: () =>
+      alterar(
+        'POST',
+        '/carrinho',
+        { nftId: nft.id, edicaoId: nft.edicoes[0].id, quantidade: 1 },
+        carrinhoSchema,
+      ),
+    onSuccess: async () => {
+      await cache.invalidateQueries({ queryKey: ['carrinho'] });
+      await cache.invalidateQueries({ queryKey: ['cotacao'] });
+    },
+  });
   return (
-    <article className="cartao-nft">
+    <article className="cartao-nft" data-nft={nft.id}>
       <Link to="/nft/$nftId" params={{ nftId: nft.id }} aria-label={`Ver ${nft.nome}`}>
         <div className="moldura-arte">
-          <img src={nft.imagem} alt={`Arte ${nft.nome}`} width="400" height="400" loading="lazy" />
+          <img src={nft.imagem} alt={`Arte ${nft.nome}`} width="250" height="250" loading="lazy" />
         </div>
-        <div className="flex justify-between gap-2 mt-4">
-          <h3>{nft.nome}</h3>
-          <Eye size={16} aria-hidden="true" />
-        </div>
+        <h3>{nft.nome}</h3>
       </Link>
-      <p className="text-[var(--cobre)] mt-1">{exibirEth(nft.edicoes[0].preco)}</p>
-      <p className="text-xs text-[var(--suave)] mt-2">
-        {nft.criador} · {nft.rede}
+      <p className="preco-cartao">
+        {exibirEth(nft.edicoes[0].preco)}
+        {nft.precoAnterior && <del>{exibirEth(nft.precoAnterior)}</del>}
       </p>
+      {nft.raridade === 'raro' && <span className="selo-raridade">RARO</span>}
+      <div className="acoes-cartao">
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={`Adicionar ${nft.nome} ao carrinho`}
+          disabled={adicionar.isPending || nft.edicoes[0].disponivel < 1}
+          onClick={() => adicionar.mutate()}
+        >
+          <ShoppingCart size={20} />
+        </Button>
+        <Favoritar nftId={nft.id} compacto />
+        <Link to="/nft/$nftId" params={{ nftId: nft.id }} aria-label={`Inspecionar ${nft.nome}`}>
+          <Search size={21} />
+        </Link>
+      </div>
+      {adicionar.isError && <Falha erro={adicionar.error} />}
     </article>
   );
 }
@@ -50,108 +81,136 @@ function FiltrosCatalogo({
 }) {
   const [minimo, definirMinimo] = useState(filtros.minimo);
   const [maximo, definirMaximo] = useState(filtros.maximo);
+  const facetas = useQuery({
+    queryKey: ['facetas'],
+    queryFn: ({ signal }) => consultar('/facetas', facetasSchema, signal),
+  });
+  const categorias = [
+    'Arte digital',
+    'Fotografia',
+    'Música',
+    'Arte 3D',
+    'Colecionáveis',
+    'Generativa',
+    'Jogos',
+    'Assinaturas',
+    'Utilidade',
+  ];
   return (
-    <div className="filtros">
-      <h2>Coleções</h2>
-      <div className="lista-categorias">
-        {['', 'Arte digital', 'Fotografia', 'Arte 3D'].map((categoria) => (
-          <button
-            key={categoria}
-            aria-pressed={filtros.categoria === categoria}
-            onClick={() => mudar({ categoria })}
-          >
-            {categoria || 'Todas as coleções'}
-            {!categoria && <span>12</span>}
-          </button>
-        ))}
-      </div>
-      <form
-        onSubmit={(evento) => {
-          evento.preventDefault();
-          mudar({ minimo, maximo });
-        }}
-      >
-        <h3>Faixa de preço</h3>
-        <div className="flex gap-2">
-          <Campo rotulo="Mínimo ETH">
-            {(id) => (
-              <input
-                id={id}
-                type="text"
-                inputMode="decimal"
-                pattern="[0-9]+([.][0-9]{1,18})?"
-                value={minimo}
-                onChange={(evento) => definirMinimo(evento.target.value)}
-                required
-              />
-            )}
-          </Campo>
-          <Campo rotulo="Máximo ETH">
-            {(id) => (
-              <input
-                id={id}
-                type="text"
-                inputMode="decimal"
-                pattern="[0-9]+([.][0-9]{1,18})?"
-                value={maximo}
-                onChange={(evento) => definirMaximo(evento.target.value)}
-                required
-              />
-            )}
-          </Campo>
+    <div className="coluna-filtros">
+      <div className="filtros">
+        <h2>Coleções</h2>
+        <div className="lista-categorias">
+          {categorias.map((categoria) => (
+            <button
+              type="button"
+              key={categoria}
+              aria-pressed={filtros.categoria === categoria}
+              onClick={() => mudar({ categoria: filtros.categoria === categoria ? '' : categoria })}
+            >
+              {categoria}
+              <span>
+                ({facetas.data?.categorias.find((item) => item.nome === categoria)?.total ?? '—'})
+              </span>
+            </button>
+          ))}
         </div>
-        <Button size="sm" className="mt-3">
-          Aplicar preço
-        </Button>
-      </form>
-      <Campo rotulo="Rede">
-        {(id) => (
-          <select
-            id={id}
-            value={filtros.rede}
-            onChange={(evento) => mudar({ rede: evento.target.value })}
+        <form
+          className="filtro-preco"
+          onSubmit={(evento) => {
+            evento.preventDefault();
+            mudar({ minimo, maximo });
+          }}
+        >
+          <h3>Faixa de preço</h3>
+          <div className="controle-faixa">
+            <label className="sr-only" htmlFor="preco-minimo">
+              Mínimo ETH
+            </label>
+            <input
+              id="preco-minimo"
+              type="range"
+              min="0"
+              max="12.30"
+              step="0.01"
+              value={minimo}
+              onChange={(evento) => definirMinimo(evento.target.value)}
+            />
+            <label className="sr-only" htmlFor="preco-maximo">
+              Máximo ETH
+            </label>
+            <input
+              id="preco-maximo"
+              type="range"
+              min="0"
+              max="12.30"
+              step="0.01"
+              value={maximo}
+              onChange={(evento) => definirMaximo(evento.target.value)}
+            />
+          </div>
+          <p>
+            Preço: {minimo} - {maximo} ETH
+          </p>
+          <Button size="sm">Aplicar</Button>
+        </form>
+        <h3 className="titulo-redes">Rede</h3>
+        <div className="lista-redes" role="group" aria-label="Rede">
+          {['Ethereum', 'Polygon', 'Solana'].map((rede) => (
+            <button
+              type="button"
+              key={rede}
+              aria-pressed={filtros.rede === rede}
+              onClick={() => mudar({ rede: filtros.rede === rede ? '' : rede })}
+            >
+              {rede}
+              <span>({facetas.data?.redes.find((item) => item.nome === rede)?.total ?? '—'})</span>
+            </button>
+          ))}
+        </div>
+        {(filtros.busca ||
+          filtros.categoria ||
+          filtros.rede ||
+          filtros.minimo !== '0.02' ||
+          filtros.maximo !== '12.30') && (
+          <Button
+            variant="ghost"
+            onClick={() =>
+              mudar({
+                busca: '',
+                categoria: '',
+                rede: '',
+                minimo: '0.02',
+                maximo: '12.30',
+                ordem: 'recentes',
+                aba: 'todos',
+              })
+            }
           >
-            <option value="">Todas as redes</option>
-            <option>Ethereum</option>
-            <option>Polygon</option>
-          </select>
+            Limpar filtros
+          </Button>
         )}
-      </Campo>
-      <Button
-        variant="ghost"
-        onClick={() =>
-          mudar({
-            busca: '',
-            categoria: '',
-            rede: '',
-            minimo: '0',
-            maximo: '100',
-            ordem: 'recentes',
-          })
-        }
-      >
-        Limpar filtros
-      </Button>
-      <div className="destaque-lateral">
-        <p className="sobretitulo">NFT EM DESTAQUE</p>
-        <img
-          src="/imagens/colecao-1.webp"
-          width="240"
-          height="240"
-          alt="Nômade Sábio, destaque da coleção"
-        />
-        <h3>Nômade Sábio #055</h3>
-        <p>Uma nova perspectiva.</p>
+        {facetas.isError && (
+          <button type="button" className="text-xs" onClick={() => void facetas.refetch()}>
+            Recarregar contagens
+          </button>
+        )}
       </div>
+      <Link className="destaque-lateral" to="/nft/$nftId" params={{ nftId: '2' }}>
+        <p>NFT EM DESTAQUE</p>
+        <h3>OFERTA LIMITADA</h3>
+        <img src="/imagens/colecao-1.webp" width="310" height="368" alt="Sage Nomad" />
+      </Link>
     </div>
   );
 }
 
 /** Página inicial baseada na composição do Figma e com resultados inteiramente vindos da API. */
 export function Inicio() {
-  const filtros = useSearch({ from: '/' });
+  const filtros = filtrosSchema.parse(useSearch({ strict: false }));
   const [filtrosAbertos, definirFiltrosAbertos] = useState(() => window.innerWidth > 600);
-  const navegar = useNavigate({ from: '/' });
+  const [buscaAberta, definirBuscaAberta] = useState(Boolean(filtros.busca));
+  const navegar = useNavigate();
   const catalogo = useQuery({
     queryKey: ['catalogo', filtros],
     queryFn: ({ signal }) =>
@@ -161,93 +220,54 @@ export function Inicio() {
         signal,
       ),
   });
-  /** Alterações preservam os demais filtros e reiniciam a paginação. */
+  /** Filtros permanecem na URL e toda alteração reinicia a paginação. */
   function mudar(dados: Partial<Filtros>) {
     void navegar({
+      to: '/',
       search: { ...filtros, ...dados, pagina: dados.pagina ?? 1 },
       resetScroll: false,
     });
   }
+  useEffect(() => {
+    /** O cabeçalho só revela a busca; a consulta segue o mesmo controle e a mesma URL. */
+    function abrirBusca() {
+      definirBuscaAberta(true);
+      window.requestAnimationFrame(() => document.getElementById('busca-catalogo')?.focus());
+    }
+    window.addEventListener('kurio:abrir-busca', abrirBusca);
+    return () => window.removeEventListener('kurio:abrir-busca', abrirBusca);
+  }, []);
   return (
     <>
-      <section className="hero">
-        <div>
-          <p className="sobretitulo">Bem-vindo à Kurio</p>
-          <h1>
-            <span className="texto-desktop">
-              SEJA DONO DO FUTURO
-              <br />
-              DA ARTE DIGITAL
-            </span>
-            <span className="texto-mobile">
-              SEJA DONO DA
-              <br />
-              CULTURA DIGITAL
-            </span>
-          </h1>
-          <p className="descricao">
-            <span className="texto-desktop">
-              Descubra NFTs selecionados de criadores emergentes e consagrados. Colecione arte
-              digital rara, apoie artistas e tenha uma parte da cultura da internet.
-            </span>
-            <span className="texto-mobile">
-              Descubra NFTs selecionados de criadores do mundo todo.
-            </span>
-          </p>
-          <Button asChild>
-            <a href="#catalogo">EXPLORAR COLEÇÕES</a>
-          </Button>
-          <p className="hero-nota">
-            <span>12</span> obras selecionadas <span>02</span> redes para explorar
-          </p>
-        </div>
-        <Link
-          to="/nft/$nftId"
-          params={{ nftId: '1' }}
-          className="hero-arte"
-          aria-label="Conhecer MACACO ESMERALDA #042"
+      <div className={`busca-vitrine ${buscaAberta ? 'aberta' : ''}`}>
+        <label className="sr-only" htmlFor="busca-catalogo">
+          Buscar NFTs
+        </label>
+        <IconeOriginal nome="busca-mobile" tamanho={22} />
+        <input
+          id="busca-catalogo"
+          type="search"
+          placeholder="Explorar coleções"
+          value={filtros.busca}
+          onChange={(evento) => mudar({ busca: evento.target.value })}
+        />
+        <button
+          type="button"
+          className="alternar-filtros"
+          aria-label="Filtrar coleções"
+          aria-expanded={filtrosAbertos}
+          onClick={() => definirFiltrosAbertos(!filtrosAbertos)}
         >
-          <img
-            src="/imagens/colecao-0.webp"
-            alt="Macaco Esmeralda, personagem da coleção Kurio"
-            width="480"
-            height="480"
-            fetchPriority="high"
-          />
-          <img
-            className="arte-secundaria"
-            src="/imagens/colecao-1.webp"
-            alt=""
-            width="110"
-            height="110"
-          />
-          <div>
-            <span>MACACO ESMERALDA #042</span>
-            <Eye size={18} aria-hidden="true" />
-          </div>
-        </Link>
-      </section>
+          <IconeOriginal nome="filtros" tamanho={21} />
+        </button>
+      </div>
+      <DestaquePrincipal />
       <section id="catalogo" aria-labelledby="titulo-catalogo">
-        <div className="cabecalho-secao">
-          <div>
-            <p className="sobretitulo">ENCONTRE SUA PRÓXIMA PEÇA</p>
-            <h2 id="titulo-catalogo">
-              Explore o mercado<span className="text-[var(--cobre)]">.</span>
-            </h2>
-          </div>
-          <span className="text-xs text-[var(--suave)]">
-            Curadoria independente · Edições limitadas
-          </span>
-        </div>
+        <h2 id="titulo-catalogo" className="sr-only">
+          Explorar coleções
+        </h2>
         <div className="catalogo-layout">
           <aside aria-label="Filtros do catálogo">
-            <button
-              className="alternar-filtros"
-              aria-expanded={filtrosAbertos}
-              onClick={() => definirFiltrosAbertos(!filtrosAbertos)}
-            >
-              Filtrar coleções <span>{filtrosAbertos ? '−' : '+'}</span>
-            </button>
             <div className={filtrosAbertos ? 'conteudo-filtros aberto' : 'conteudo-filtros'}>
               <FiltrosCatalogo
                 key={`${filtros.minimo}:${filtros.maximo}`}
@@ -257,35 +277,42 @@ export function Inicio() {
             </div>
           </aside>
           <div>
+            <EstadoFavoritos exibir={!catalogo.isError} />
             <div className="barra-catalogo">
-              <Campo rotulo="Buscar NFTs">
-                {(id) => (
-                  <input
-                    id={id}
-                    type="search"
-                    placeholder="Nome da obra ou artista"
-                    value={filtros.busca}
-                    onChange={(evento) => mudar({ busca: evento.target.value })}
-                  />
-                )}
-              </Campo>
-              <Campo rotulo="Ordenar por">
-                {(id) => (
-                  <select
-                    id={id}
-                    value={filtros.ordem}
-                    onChange={(evento) =>
-                      mudar({
-                        ordem: z.enum(['recentes', 'menor', 'maior']).parse(evento.target.value),
-                      })
-                    }
+              <div className="abas-catalogo" role="tablist" aria-label="Catálogo">
+                {[
+                  { valor: 'todos', nome: 'Todos os NFTs' },
+                  { valor: 'novos', nome: 'Novos lançamentos' },
+                  { valor: 'alta', nome: 'Em alta' },
+                ].map(({ valor, nome }) => (
+                  <button
+                    type="button"
+                    key={valor}
+                    role="tab"
+                    aria-selected={filtros.aba === valor}
+                    onClick={() => mudar({ aba: z.enum(['todos', 'novos', 'alta']).parse(valor) })}
                   >
-                    <option value="recentes">Listados recentemente</option>
-                    <option value="menor">Menor preço</option>
-                    <option value="maior">Maior preço</option>
-                  </select>
-                )}
-              </Campo>
+                    {nome}
+                  </button>
+                ))}
+              </div>
+              <div className="ordenacao">
+                <label htmlFor="ordem-catalogo">Ordenar por:</label>
+                <select
+                  id="ordem-catalogo"
+                  aria-label="Ordenar por"
+                  value={filtros.ordem}
+                  onChange={(evento) =>
+                    mudar({
+                      ordem: z.enum(['recentes', 'menor', 'maior']).parse(evento.target.value),
+                    })
+                  }
+                >
+                  <option value="recentes">Listados recentemente</option>
+                  <option value="menor">Menor preço</option>
+                  <option value="maior">Maior preço</option>
+                </select>
+              </div>
             </div>
             {catalogo.isFetching && !catalogo.isPending && (
               <p role="status" className="text-xs mb-3">
@@ -320,9 +347,20 @@ export function Inicio() {
                   >
                     <ChevronLeft size={18} />
                   </Button>
-                  <span>
+                  <span className="sr-only">
                     Página {filtros.pagina} de {catalogo.data.paginas}
                   </span>
+                  {Array.from({ length: catalogo.data.paginas }, (_, indice) => (
+                    <button
+                      type="button"
+                      key={indice}
+                      aria-label={`Ir para página ${indice + 1}`}
+                      aria-current={filtros.pagina === indice + 1 ? 'page' : undefined}
+                      onClick={() => mudar({ pagina: indice + 1 })}
+                    >
+                      {indice + 1}
+                    </button>
+                  ))}
                   <Button
                     variant="outline"
                     size="icon"
@@ -340,7 +378,14 @@ export function Inicio() {
                 <p>Experimente outra busca ou remova um filtro.</p>
                 <Button
                   onClick={() =>
-                    mudar({ busca: '', categoria: '', rede: '', minimo: '0', maximo: '100' })
+                    mudar({
+                      aba: 'todos',
+                      busca: '',
+                      categoria: '',
+                      rede: '',
+                      minimo: '0.02',
+                      maximo: '12.30',
+                    })
                   }
                 >
                   Ver todas as obras
@@ -350,26 +395,14 @@ export function Inicio() {
           </div>
         </div>
       </section>
-      <section className="faixa-editorial">
-        <p className="sobretitulo">ARTE QUE CONECTA</p>
-        <h2>
-          Uma coleção.
-          <br />
-          Infinitas perspectivas.
-        </h2>
-        <p>Cada obra tem uma história. Encontre a sua.</p>
-        <Button asChild variant="outline">
-          <Link to="/nft/$nftId" params={{ nftId: '1' }}>
-            Conhecer a coleção
-          </Link>
-        </Button>
-      </section>
+      <ConteudoEditorial />
     </>
   );
 }
 
 /** Recomendações são links para obras reais do catálogo, obtidas pela mesma API da busca. */
-export function MaisDaColecao() {
+export function MaisDaColecao({ titulo = 'Mais desta coleção' }: { titulo?: string }) {
+  const [pagina, definirPagina] = useState(1);
   const consulta = useQuery({
     queryKey: ['catalogo', 'recomendacoes'],
     queryFn: ({ signal }) => consultar('/nfts', catalogoSchema, signal),
@@ -377,26 +410,59 @@ export function MaisDaColecao() {
   if (consulta.isError) return null;
   return (
     <section className="mais-colecao" aria-label="Mais desta coleção">
-      <h2>Mais desta coleção</h2>
+      <h2>{titulo}</h2>
       <div className="grade-recomendacoes">
         {consulta.isPending
           ? [1, 2, 3, 4, 5].map((indice) => <Esqueleto key={indice} />)
-          : consulta.data.itens.slice(3, 8).map((nft) => <CartaoNft key={nft.id} nft={nft} />)}
+          : consulta.data.itens
+              .filter((_nft, indice) =>
+                (pagina === 0
+                  ? [0, 1, 2, 3, 4]
+                  : pagina === 1
+                    ? [3, 4, 5, 6, 8]
+                    : [4, 5, 6, 7, 8]
+                ).includes(indice),
+              )
+              .map((nft) => <CartaoNft key={nft.id} nft={nft} />)}
+      </div>
+      <div className="indicadores-colecao" aria-label="Páginas de recomendações">
+        {[0, 1, 2].map((indice) => (
+          <button
+            key={indice}
+            type="button"
+            aria-label={`Ver recomendações ${indice + 1}`}
+            aria-pressed={pagina === indice}
+            onClick={() => definirPagina(indice)}
+          />
+        ))}
       </div>
     </section>
   );
 }
 
-/** Favoritos usam optimistic update com snapshot e rollback quando a API recusa a alteração. */
-function Favoritar({ nftId }: { nftId: string }) {
+/** Todos os controles compartilham a consulta privada, sem repetir mensagens em cada cartão. */
+function useFavoritos() {
   const { perfil } = useSessao();
-  const navegar = useNavigate();
-  const chave = ['favoritos', perfil?.id];
-  const favoritos = useQuery({
-    queryKey: chave,
+  return useQuery({
+    queryKey: ['favoritos', perfil?.id],
     queryFn: ({ signal }) => consultar('/favoritos', z.array(z.string()), signal),
     enabled: Boolean(perfil),
   });
+}
+/** Uma falha de leitura aparece uma vez na página e permite refazer a consulta compartilhada. */
+function EstadoFavoritos({ exibir = true }: { exibir?: boolean }) {
+  const favoritos = useFavoritos();
+  return exibir && favoritos.isError ? (
+    <Falha erro={favoritos.error} tentar={() => void favoritos.refetch()} />
+  ) : null;
+}
+
+/** Favoritos usam optimistic update com snapshot e rollback quando a API recusa a alteração. */
+function Favoritar({ nftId, compacto = false }: { nftId: string; compacto?: boolean }) {
+  const { perfil } = useSessao();
+  const navegar = useNavigate();
+  const chave = ['favoritos', perfil?.id];
+  const favoritos = useFavoritos();
   const favorito = favoritos.data?.includes(nftId) ?? false;
   const salvar = useMutation({
     mutationFn: (remover: boolean) =>
@@ -418,6 +484,9 @@ function Favoritar({ nftId }: { nftId: string }) {
     <div>
       <Button
         variant="outline"
+        className={compacto ? 'favorito-compacto' : undefined}
+        aria-label={compacto ? `Salvar NFT ${nftId} nos favoritos` : undefined}
+        data-favorito={nftId}
         aria-pressed={favorito}
         disabled={salvar.isPending || (Boolean(perfil) && favoritos.isPending) || favoritos.isError}
         onClick={() => {
@@ -426,12 +495,9 @@ function Favoritar({ nftId }: { nftId: string }) {
         }}
       >
         <Heart size={17} fill={favorito ? 'currentColor' : 'none'} />
-        {favorito ? 'Favoritado' : 'Favoritar'}
+        {!compacto && (favorito ? 'Favoritado' : 'Favoritar')}
       </Button>
       {salvar.isError && <Falha erro={salvar.error} />}
-      {favoritos.isError && (
-        <Falha erro={favoritos.error} tentar={() => void favoritos.refetch()} />
-      )}
     </div>
   );
 }
@@ -463,16 +529,23 @@ export function DetalheNft() {
       <Falha erro={nft.error} tentar={() => void nft.refetch()} />
     );
   const edicao = nft.data.edicoes.find((edicao) => edicao.id === edicaoId) ?? nft.data.edicoes[0];
+  const numeroToken = (nft.data.nome.split('#')[1] ?? nftId).padStart(4, '0');
   return (
     <>
+      <div className="cabecalho-detalhe-movel">
+        <VoltarAoMercado />
+        <Favoritar nftId={nftId} compacto />
+      </div>
       <nav aria-label="Caminho" className="caminho">
-        <Link to="/">Início</Link> / Mercado / {nft.data.nome}
+        <Link to="/">Início</Link> / Mercado
       </nav>
+      <EstadoFavoritos />
       <section className="detalhe-layout">
         <div className="galeria">
           <div className="miniaturas">
-            {[0, 1, 2].map((indice) => (
+            {[0, 1, 2, 3].map((indice) => (
               <button
+                type="button"
                 key={indice}
                 aria-label={`Visualização ${indice + 1}`}
                 aria-pressed={imagem === indice}
@@ -481,8 +554,8 @@ export function DetalheNft() {
                 <img
                   src={nft.data.imagem}
                   alt=""
-                  width="72"
-                  height="72"
+                  width="100"
+                  height="100"
                   style={{ transform: `scale(${1 + indice * 0.12})` }}
                 />
               </button>
@@ -492,92 +565,197 @@ export function DetalheNft() {
             <img
               src={nft.data.imagem}
               alt={nft.data.nome}
-              width="600"
-              height="600"
+              width="404"
+              height="404"
               style={{ transform: `scale(${1 + imagem * 0.12})` }}
             />
+            <Dialogo
+              titulo={nft.data.nome}
+              descricao="Visualização ampliada da arte"
+              gatilho={
+                <button type="button" className="ampliar-arte" aria-label="Ampliar imagem">
+                  <Search size={24} />
+                </button>
+              }
+            >
+              <img className="imagem-ampliada" src={nft.data.imagem} alt={nft.data.nome} />
+            </Dialogo>
           </div>
         </div>
         <div className="informacoes-nft">
-          <p className="sobretitulo">EDIÇÕES KURIO / {nft.data.rede}</p>
-          <h1>{nft.data.nome}</h1>
-          <p className="preco-grande">{exibirEth(edicao.preco)}</p>
+          <div className="titulo-nft">
+            <h1>{nft.data.nome}</h1>
+            <span className="nota-movel">
+              <Star size={14} fill="currentColor" />
+              {nft.data.avaliacoes.media}({nft.data.avaliacoes.total})
+            </span>
+          </div>
+          <div className="preco-avaliacoes">
+            <p className="preco-grande">{exibirEth(edicao.preco)}</p>
+            <span>
+              <span className="estrelas" aria-hidden="true">
+                ★★★★★
+              </span>{' '}
+              {nft.data.avaliacoes.total} avaliações de colecionadores
+            </span>
+          </div>
           <hr />
-          <h2>Sobre este NFT</h2>
-          <p className="descricao">{nft.data.descricao}</p>
+          <h2>Sobre este NFT:</h2>
+          <p className="descricao">
+            <span className="texto-desktop">{nft.data.descricao}</span>
+            <span className="texto-mobile">
+              Um colecionável digital {edicao.nome} finalizado à mão da coleção Kurio Editions,
+              verificado na {nft.data.rede}.
+            </span>
+          </p>
           <fieldset>
-            <legend>Edição</legend>
-            <div className="flex gap-3 flex-wrap">
-              {nft.data.edicoes.map((item) => (
-                <label className="edicao" key={item.id}>
-                  <input
-                    type="radio"
-                    name="edicao"
-                    value={item.id}
-                    checked={edicaoId === item.id}
-                    onChange={() => {
-                      definirEdicao(item.id);
-                      definirQuantidade(1);
-                    }}
-                  />
-                  {item.nome}
-                  {item.disponivel === 0 && ' · Esgotada'}
-                </label>
-              ))}
+            <legend>Edição:</legend>
+            <div className="edicoes-nft">
+              {[...nft.data.edicoes]
+                .sort(
+                  (a, b) =>
+                    ['unica', 'dez', 'limitada', 'aberta'].indexOf(a.id) -
+                    ['unica', 'dez', 'limitada', 'aberta'].indexOf(b.id),
+                )
+                .map((item) => (
+                  <label className="edicao" key={item.id}>
+                    <input
+                      type="radio"
+                      name="edicao"
+                      value={item.id}
+                      checked={edicaoId === item.id}
+                      onChange={() => {
+                        definirEdicao(item.id);
+                        definirQuantidade(1);
+                      }}
+                    />
+                    {item.nome}
+                    {item.disponivel === 0 && <span className="sr-only"> · Esgotada</span>}
+                  </label>
+                ))}
             </div>
           </fieldset>
-          <p className="text-xs text-[var(--suave)] mt-3">
-            {edicao.disponivel} unidade(s) disponível(is)
+          <p className={edicao.disponivel ? 'sr-only' : 'erro estoque-esgotado'}>
+            {edicao.disponivel
+              ? `${edicao.disponivel} unidades disponíveis`
+              : 'Esta edição está esgotada.'}
           </p>
           <div className="acoes-compra">
-            <Campo rotulo="Quantidade">
-              {(id) => (
-                <input
-                  id={id}
-                  type="number"
-                  min="1"
-                  max={Math.max(1, edicao.disponivel)}
-                  value={quantidade}
-                  onChange={(evento) => definirQuantidade(evento.target.valueAsNumber || 1)}
-                />
-              )}
-            </Campo>
-            <Button
-              disabled={adicionar.isPending || edicao.disponivel < quantidade || quantidade < 1}
-              onClick={() => adicionar.mutate()}
-            >
-              {adicionar.isPending ? 'Adicionando…' : 'COMPRAR'}
-            </Button>
-            <Favoritar nftId={nftId} />
+            <div className="linha-quantidade">
+              <span className="rotulo-quantidade">Qtd.</span>
+              <ControleQuantidade
+                rotulo="Quantidade"
+                valor={quantidade}
+                maximo={edicao.disponivel}
+                alterar={definirQuantidade}
+              />
+              <p className="preco-movel">{exibirEth(edicao.preco)}</p>
+            </div>
+            <div className="botoes-compra">
+              <Button
+                className="comprar-nft"
+                disabled={adicionar.isPending || edicao.disponivel < quantidade || quantidade < 1}
+                onClick={() => adicionar.mutate()}
+              >
+                <span className="texto-desktop">
+                  {adicionar.isPending ? 'Adicionando…' : 'COMPRAR'}
+                </span>
+                <span className="texto-mobile">
+                  {adicionar.isPending ? 'Adicionando…' : 'Comprar NFT'}
+                </span>
+              </Button>
+              <div className="favoritar-detalhe">
+                <Favoritar nftId={nftId} />
+              </div>
+              <Link className="carrinho-detalhe-movel" to="/carrinho" aria-label="Abrir carrinho">
+                <ShoppingCart size={22} fill="currentColor" />
+              </Link>
+            </div>
           </div>
           {adicionar.isError && <Falha erro={adicionar.error} />}
           <dl className="metadados">
             <div>
-              <dt>ID do token</dt>
-              <dd>#{nftId.padStart(4, '0')}</dd>
+              <dt>ID do token:</dt>
+              <dd>#{numeroToken}</dd>
             </div>
             <div>
-              <dt>Coleção</dt>
-              <dd>Edições Kurio</dd>
+              <dt>Coleção:</dt>
+              <dd>{nft.data.colecao}</dd>
             </div>
             <div>
-              <dt>Criador</dt>
-              <dd>{nft.data.criador}</dd>
+              <dt>Atributos:</dt>
+              <dd>{nft.data.atributos.join(', ')}</dd>
             </div>
           </dl>
-          <p className="seguranca">
-            <ShieldCheck size={18} />
-            Compra e carteira simuladas para demonstração.
-          </p>
+          <div className="compartilhar-nft">
+            <strong>Compartilhar este NFT:</strong>
+            <Dialogo
+              titulo="Compartilhar esta obra"
+              descricao={nft.data.nome}
+              gatilho={
+                <button type="button" aria-label="Compartilhar no LinkedIn">
+                  <img src="/icones/rede-linkedin.svg" alt="" width="18" height="18" />
+                </button>
+              }
+            >
+              <p>Copie o endereço desta página para compartilhar a obra.</p>
+              <code className="endereco">{window.location.href}</code>
+            </Dialogo>
+            <a
+              href={`mailto:?subject=${encodeURIComponent(nft.data.nome)}&body=${encodeURIComponent(window.location.href)}`}
+              aria-label="Compartilhar por e-mail"
+            >
+              <Mail size={17} />
+            </a>
+          </div>
         </div>
       </section>
       <section className="detalhes-editoriais">
-        <h2>Detalhes do NFT</h2>
-        <p>{nft.data.descricao}</p>
+        <div className="abas-detalhe">
+          <h2>Detalhes do NFT</h2>
+          <Dialogo
+            titulo="Avaliações de colecionadores"
+            descricao="Resumo fictício retornado pela API da demonstração"
+            gatilho={
+              <button type="button">
+                Avaliações de colecionadores ({nft.data.avaliacoes.total})
+              </button>
+            }
+          >
+            <p>
+              {nft.data.avaliacoes.total} avaliações · Nota média {nft.data.avaliacoes.media} de 5.
+            </p>
+            <p>
+              As avaliações deste catálogo são dados fictícios. Publicar avaliações não faz parte
+              dos fluxos desta demonstração.
+            </p>
+          </Dialogo>
+        </div>
         <p>
-          Rede: {nft.data.rede}. A compra é uma simulação, sem transferência de ativos ou cobrança
-          real.
+          {nft.data.nome} é uma obra digital {edicao.nome} finalizada à mão da coleção Kurio
+          Editions. Cada atributo fica armazenado nos metadados do token e verificado na{' '}
+          {nft.data.rede}. A obra explora identidade, movimento e luz em um mundo digital sem
+          fronteiras.
         </p>
+        <p>
+          A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores
+          e um registro permanente de procedência registrada na rede. {nft.data.criador} recebe{' '}
+          {nft.data.direitosAutorais}% de direitos autorais nas vendas secundárias, apoiando novos
+          trabalhos e lançamentos da comunidade.
+        </p>
+        <dl>
+          <dt>Rede:</dt>
+          <dd>
+            Cunhado na {nft.data.rede} com procedência imutável e metadados armazenados no IPFS.
+          </dd>
+          <dt>Contrato:</dt>
+          <dd>{nft.data.contrato} · Contrato inteligente ERC-721 verificado.</dd>
+          <dt>Direitos autorais:</dt>
+          <dd>
+            Direitos autorais do criador: {nft.data.direitosAutorais}% nas vendas secundárias, pagos
+            automaticamente pelos mercados compatíveis.
+          </dd>
+        </dl>
       </section>
       <MaisDaColecao />
     </>

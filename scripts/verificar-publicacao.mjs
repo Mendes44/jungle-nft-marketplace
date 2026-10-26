@@ -13,12 +13,10 @@ const caminhos = [
   ...new Set([
     ...entradas,
     ...arquivosDoBuild.map((nome) => `/assets/${nome}`),
-    '/imagens/colecao-0.webp',
-    '/imagens/colecao-1.webp',
-    '/imagens/colecao-2.webp',
-    '/imagens/colecao-3.webp',
-    '/fontes/ibm-plex-mono-latin.woff2',
-    '/fontes/ibm-plex-mono-negrito.woff2',
+    ...(await readdir('dist/icones')).map((nome) => `/icones/${nome}`),
+    ...(await readdir('dist/imagens')).map((nome) => `/imagens/${nome}`),
+    '/fontes/roboto-mono-latin.woff2',
+    '/fontes/roboto-mono-negrito.woff2',
     '/mockServiceWorker.js',
   ]),
 ];

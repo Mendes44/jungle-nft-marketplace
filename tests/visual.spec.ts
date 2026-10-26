@@ -11,7 +11,7 @@ test('regressão visual dos fluxos principais, conta e páginas 404', async ({ p
   await page.evaluate(() => document.fonts.ready);
   await expect(page).toHaveScreenshot('inicio.png', { fullPage: true });
   await page.goto('/nft/1');
-  await expect(page.getByRole('heading', { name: 'Macaco Esmeralda #042' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Emerald Ape #042' })).toBeVisible();
   await expect(page).toHaveScreenshot('detalhe.png', { fullPage: true });
   await page.goto('/login');
   await expect(page.getByRole('dialog')).toBeVisible();
@@ -23,18 +23,23 @@ test('regressão visual dos fluxos principais, conta e páginas 404', async ({ p
   await adicionar(page);
   await expect(page).toHaveScreenshot('carrinho.png', { fullPage: true });
   await revisarCompra(page);
+  await page.keyboard.press('Escape');
   await expect(page).toHaveScreenshot('pagamento.png', { fullPage: true });
+  await page.getByRole('button', { name: 'Ver revisão', exact: true }).click();
   await cenario(page, 'pedido-lento');
   await page.getByRole('button', { name: 'Confirmar compra', exact: true }).click();
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Pedido pendente');
   await evento(page, 'Concluir pedidos pendentes');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Sua coleção ganhou');
-  await expect(page).toHaveScreenshot('confirmacao.png', { fullPage: true });
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Seus NFTs agora');
+  await expect(page).toHaveScreenshot('confirmacao.png', {
+    fullPage: true,
+    mask: [page.locator('.identificacao-recibo > div:first-child dd')],
+  });
   await page.goto('/perfil');
-  await expect(page.getByLabel('Nome completo')).toHaveValue('Ana Oliveira');
+  await expect(page.getByLabel('Nome de exibição', { exact: true })).toHaveValue('Ana Oliveira');
   await expect(page).toHaveScreenshot('perfil.png', { fullPage: true });
   await page.goto('/carteiras');
-  await expect(page.getByRole('heading', { name: 'Minha carteira', exact: true })).toBeVisible();
+  await expect(page.getByLabel('Nome de exibição', { exact: true })).toHaveValue('Minha carteira');
   await expect(page).toHaveScreenshot('carteiras.png', { fullPage: true });
   for (const [caminho, nome, titulo] of [
     ['/rota-ausente', 'pagina-404', 'Esta página não foi encontrada.'],

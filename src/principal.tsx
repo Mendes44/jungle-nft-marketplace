@@ -1,5 +1,6 @@
 /** Inicializa os mocks antes de permitir que qualquer consulta da aplicação seja executada. */
 import './estilos.css';
+import './referencia.css';
 import { criarPreparacaoTransporte } from './simulacao/retomada';
 
 /** A mesma configuração ativa MSW no desenvolvimento e no build público de demonstração. */

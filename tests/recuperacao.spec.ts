@@ -1,7 +1,17 @@
 /** Regressão do catálogo após suspensão do worker pelo navegador. */
 import { test, expect } from '@playwright/test';
 import { envioPedidoSchema, pedidoSchema } from '../src/dominio/contratos';
-import { abrir, entrar, adicionar, cenario, evento, revisarCompra } from './apoio';
+import {
+  prepararCompra,
+  conectarERevisar,
+  abrirBusca,
+  abrir,
+  entrar,
+  adicionar,
+  cenario,
+  evento,
+  revisarCompra,
+} from './apoio';
 
 test('recupera a consulta quando o navegador encerra o service worker inativo', async ({
   page,
@@ -12,7 +22,8 @@ test('recupera a consulta quando o navegador encerra o service worker inativo', 
   const depurador = await context.newCDPSession(page);
   await depurador.send('ServiceWorker.enable');
   await depurador.send('ServiceWorker.stopAllWorkers');
-  await page.getByLabel('Buscar NFTs').fill('Nomade');
+  await abrirBusca(page);
+  await page.getByLabel('Buscar NFTs').fill('Nomad');
   await expect(page.locator('.cartao-nft')).toHaveCount(2);
   await expect(page.getByRole('alert')).toHaveCount(0);
   await depurador.detach();
@@ -27,9 +38,9 @@ test('preserva o pedido pendente ao retomar o worker e conclui a mesma transaç�
   await entrar(page);
   await adicionar(page);
   await cenario(page, 'pedido-lento');
-  await revisarCompra(page);
-  await page.getByLabel('Nome ENS (.eth)', { exact: true }).fill('Teste.ETH');
-  await page.getByRole('button', { name: 'Revisar compra', exact: true }).click();
+  await prepararCompra(page);
+  await page.getByLabel('Nome ENS', { exact: true }).fill('Teste.ETH');
+  await conectarERevisar(page);
   const respostaPedido = page.waitForResponse(
     (resposta) =>
       new URL(resposta.url()).pathname === '/api/pedidos' && resposta.request().method() === 'POST',
@@ -42,7 +53,7 @@ test('preserva o pedido pendente ao retomar o worker e conclui a mesma transaç�
   await depurador.send('ServiceWorker.enable');
   await depurador.send('ServiceWorker.stopAllWorkers');
   await evento(page, 'Concluir pedidos pendentes');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Sua coleção ganhou');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Seus NFTs agora');
   await page.goto('/pedidos');
   await expect(page.locator('.grade-carteiras>a')).toHaveCount(1);
   await depurador.detach();
@@ -57,8 +68,9 @@ test('expira uma sessão por tempo e retoma o checkout com orientação explíci
   await entrar(page);
   await adicionar(page);
   await revisarCompra(page);
+  await page.keyboard.press('Escape');
   await page.clock.fastForward(3601000);
-  await page.getByRole('button', { name: 'Revisar compra', exact: true }).click();
+  await page.getByRole('button', { name: 'Confirmar compra', exact: true }).click();
   await expect(page).toHaveURL(/login/);
   await expect(
     page.getByText('Sua sessão expirou. Entre novamente para continuar de onde parou.'),

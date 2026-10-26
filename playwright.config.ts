@@ -39,7 +39,7 @@ export default defineConfig({
       name: 'mobile',
       use: {
         browserName: 'chromium',
-        viewport: { width: 390, height: 844 },
+        viewport: { width: 414, height: 896 },
         isMobile: true,
         deviceScaleFactor: 1,
       },

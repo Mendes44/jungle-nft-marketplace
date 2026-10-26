@@ -66,11 +66,15 @@ As telas de confirmação, perfil e carteiras funcionam em mobile por adaptaçã
 
 Os 15 frames foram exportados, renderizados e revisados. Os quatro retratos originais são reutilizados entre NFTs, como no catálogo da referência. A paleta usa fundo #140D0A, painel #241612, texto #F5F1EB, texto secundário #CFB28C e cobre #D28A4C. O destaque desktop usa 43 px e entrelinha de 70 px; mobile usa escala menor e composição compacta. O menu inferior e os filtros expansíveis preservam acesso aos recursos em telas estreitas.
 
-Desvios do Figma: nomes e descrições traduzidos; fonte IBM Plex Mono substitui a variável não resolvida `font/family`; informações de demonstração e conexão; seleção de rede vinculada à carteira cadastrada; histórico para recuperação. Login e cadastro mantêm URLs acessíveis diretamente e utilizam um modal com foco preso no desktop; no mobile, o formulário ocupa a tela. Perfil inclui biografia; a organização dos formulários de conta e de revisão foi adaptada aos contratos. O recibo usa um painel com a identidade da referência e uma rota recuperável. Seções editoriais fora do escopo são reduzidas, sem cadastro de newsletter ou autenticação social fictícios. A navegação e o rodapé usam destinos reais ou diálogos explicativos. Estas escolhas mantêm os fluxos completos, mas não representam reprodução pixel a pixel.
+Textos, nomes de NFTs e ícones preservam os originais. A composição desktop usa conteúdo de 1200 px em um frame de 1440 px; os frames móveis têm 414×896 px. Cabeçalho, busca, abas, filtros, cartões, galeria, quantidades, tabelas, formulários, autenticação, recibo, seções editoriais e rodapé foram alinhados à referência. Vetores originais são servidos localmente em `public/icones/`. A busca desktop se revela pelo ícone do cabeçalho; no celular, filtros e ordenação se expandem pelo controle ao lado da busca.
+
+Ajustes funcionais e de acessibilidade: carteira e rede vêm dos registros da conta; números, contagens e valores vêm da API. Os frames ilustrativos apresentam variações de imagens e dados entre telas; a aplicação mantém uma identidade consistente para cada NFT, sem trocar a imagem ou o total de uma obra entre etapas. A taxa simulada permanece 0,005 ETH, calculada na API. O recibo informa explicitamente que a transação é simulada. Estados de sessão, estoque, erro, carregamento e confirmação são dinâmicos, enquanto os frames mostram apenas exemplos estáticos. O controle da simulação continua acessível em todas as telas necessárias à avaliação.
+
+A revisão da compra é um diálogo acessível com cotação revalidada. No celular, os dados do colecionador precedem a seleção de carteira; voltar preserva o formulário. A carteira escolhida também permanece no rascunho após refresh, e a conexão precisa ser revalidada. Perfil, carteiras e recibo possuem adaptação móvel. A biografia é editável em uma seção recolhida. Os provedores sociais, newsletter e páginas editoriais fora do escopo explicam sua indisponibilidade, sem aparentar sucesso. Labels de autenticação continuam associados aos inputs, embora estejam visualmente ocultos como no frame. Campos de senha permitem alternar a visibilidade. Os indicadores de recomendações têm área clicável mínima de 24×24 px. Botões e mensagens adicionais garantem teclado, recuperação e feedback acessível. O recorte externo arredondado do dispositivo não é aplicado como máscara fixa à página, para preservar a rolagem e o conteúdo. Essas diferenças de estado, dados e renderização do navegador impedem afirmar identidade literal de todos os pixels.
 
 ## Carregamento e entrega dos arquivos
 
-O ponto de entrada inicia MSW e baixa a aplicação em paralelo, montando a árvore somente quando a interceptação está pronta. Compra e conta são carregadas por funcionalidade com `lazyRouteComponent`. Fontes WOFF2 e imagens WebP são locais; o destaque possui preload. As dimensões do detalhe e de seu skeleton coincidem para reduzir CLS.
+O ponto de entrada inicia MSW e baixa a aplicação em paralelo, montando a árvore somente quando a interceptação está pronta. Compra e conta são carregadas por funcionalidade com `lazyRouteComponent`. Fontes WOFF2 e imagens WebP são locais; o destaque possui preload, incluindo suas camadas de fundo com media query móvel. O controle de filtros usa o vetor original sobre gradiente CSS para manter nitidez em telas de alta densidade. As dimensões do detalhe e de seu skeleton coincidem para reduzir CLS.
 
 O plugin local `configuracao/compressao.ts` pré-comprime texto em Brotli no build e serve os arquivos comprimidos no preview quando o navegador aceita esse encoding. O fallback continua com o Vite. Isso reproduz uma entrega estática comprimida, também oferecida pela hospedagem, sem retirar mocks ou conteúdo das auditorias. O cabeçalho Vary evita compartilhar uma resposta comprimida com clientes incompatíveis.
 
@@ -128,31 +132,32 @@ Os schemas executáveis ficam em `src/dominio/contratos.ts`.
 
 ### Recursos
 
-| Método / caminho           | Entrada                                               | Resposta                                                                                        |
-| -------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| POST `/cadastro`           | nome, email, senha                                    | token e perfil público; 409 se e-mail existe                                                    |
-| POST `/login`              | email, senha                                          | token e perfil; 422 para credenciais inválidas                                                  |
-| GET `/sessao`              | token                                                 | perfil público da sessão                                                                        |
-| POST `/logout`             | token                                                 | `{ sucesso: true }`; token revogado                                                             |
-| GET `/nfts`                | busca, categoria, rede, ordem, pagina, minimo, maximo | itens, total, paginas; nove itens por página                                                    |
-| GET `/nfts/:id`            | identificador                                         | NFT com edições e versão; 404 se ausente                                                        |
-| GET `/favoritos`           | token                                                 | lista de identificadores                                                                        |
-| POST / DELETE `/favoritos` | nftId                                                 | lista atualizada; exige sessão                                                                  |
-| GET `/carrinho`            | visitante ou sessão                                   | itens com preço/estoque atuais e cupom                                                          |
-| POST `/carrinho`           | nftId, edicaoId, quantidade                           | soma à linha existente, respeitando estoque                                                     |
-| PATCH `/carrinho`          | nftId, edicaoId, quantidade                           | substitui quantidade; 409 se indisponível                                                       |
-| DELETE `/carrinho`         | nftId, edicaoId                                       | remove a linha composta                                                                         |
-| GET `/cotacao`             | visitante ou sessão                                   | id, itens, cupom, subtotal, desconto, taxa, total                                               |
-| POST `/cotacao`            | cupom, string vazia para remover                      | valida e retorna cotação atual; 422 se inválido/expirado                                        |
-| GET / PATCH `/perfil`      | dados públicos/avatar na alteração                    | perfil persistido; e-mail em conflito retorna 409                                               |
-| PATCH `/senha`             | atual, nova                                           | sucesso; valida hash atual e complexidade                                                       |
-| GET `/carteiras`           | token                                                 | até duas carteiras da conta                                                                     |
-| POST / PATCH `/carteiras`  | id, nome, endereco, rede, tipo, principal             | lista atualizada; endereço hexadecimal 0x de 40 caracteres                                      |
-| POST `/conexao`            | carteiraId, acao: conectar/recusar/desconectar        | estado e carteiraId; conexão é registrada na sessão                                             |
-| GET `/pedidos`             | token                                                 | pedidos somente da conta atual                                                                  |
-| POST `/pedidos`            | corpo abaixo + Idempotency-Key                        | pedido pendente (201), replay do mesmo pedido (200), 409 para chave reutilizada com outro corpo |
-| GET `/pedidos/:id`         | token                                                 | estado e snapshot; 403 se pertence a outra conta                                                |
-| GET / POST `/simulacao`    | cenário e/ou ação                                     | cenário atual; apenas disponível com os mocks                                                   |
+| Método / caminho           | Entrada                                                    | Resposta                                                                                                                               |
+| -------------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| POST `/cadastro`           | nome, email, senha                                         | token e perfil público; 409 se e-mail existe                                                                                           |
+| POST `/login`              | email, senha                                               | token e perfil; 422 para credenciais inválidas                                                                                         |
+| GET `/sessao`              | token                                                      | perfil público da sessão                                                                                                               |
+| POST `/logout`             | token                                                      | `{ sucesso: true }`; token revogado                                                                                                    |
+| GET `/nfts`                | aba, busca, categoria, rede, ordem, pagina, minimo, maximo | itens, total, paginas; nove itens por página                                                                                           |
+| GET `/facetas`             | sem parâmetros                                             | contagens reais por categoria e rede                                                                                                   |
+| GET `/nfts/:id`            | identificador                                              | NFT com edições e versão; 404 se ausente                                                                                               |
+| GET `/favoritos`           | token                                                      | lista de identificadores                                                                                                               |
+| POST / DELETE `/favoritos` | nftId                                                      | lista atualizada; exige sessão                                                                                                         |
+| GET `/carrinho`            | visitante ou sessão                                        | itens com preço/estoque atuais e cupom                                                                                                 |
+| POST `/carrinho`           | nftId, edicaoId, quantidade                                | soma à linha existente, respeitando estoque                                                                                            |
+| PATCH `/carrinho`          | nftId, edicaoId, quantidade                                | substitui quantidade; 409 se indisponível                                                                                              |
+| DELETE `/carrinho`         | nftId, edicaoId                                            | remove a linha composta                                                                                                                |
+| GET `/cotacao`             | visitante ou sessão                                        | id, itens, cupom, subtotal, desconto, taxa, total                                                                                      |
+| POST `/cotacao`            | cupom, string vazia para remover                           | valida e retorna cotação atual; 422 se inválido/expirado                                                                               |
+| GET / PATCH `/perfil`      | dados públicos/avatar na alteração                         | perfil persistido; e-mail em conflito retorna 409                                                                                      |
+| PATCH `/senha`             | atual, nova                                                | sucesso; valida hash atual e complexidade                                                                                              |
+| GET `/carteiras`           | token                                                      | até duas carteiras da conta                                                                                                            |
+| POST / PATCH `/carteiras`  | id, nome, endereco, rede, tipo, principal                  | lista atualizada; endereço 0x de 40 caracteres; apelido, nomePerfil, email, ens, indicacao e enderecoSecundario também são persistidos |
+| POST `/conexao`            | carteiraId, acao: conectar/recusar/desconectar             | estado e carteiraId; conexão é registrada na sessão                                                                                    |
+| GET `/pedidos`             | token                                                      | pedidos somente da conta atual                                                                                                         |
+| POST `/pedidos`            | corpo abaixo + Idempotency-Key                             | pedido pendente (201), replay do mesmo pedido (200), 409 para chave reutilizada com outro corpo                                        |
+| GET `/pedidos/:id`         | token                                                      | estado e snapshot; 403 se pertence a outra conta                                                                                       |
+| GET / POST `/simulacao`    | cenário e/ou ação                                          | cenário atual; apenas disponível com os mocks                                                                                          |
 
 ```json
 {
@@ -173,7 +178,9 @@ Os schemas executáveis ficam em `src/dominio/contratos.ts`.
 
 A API exige que a carteira pertença à conta, corresponda à rede e esteja conectada na sessão. Ela recalcula a cotação antes de reservar estoque. `conectado: true` enviado isoladamente não substitui essa verificação.
 
-Um NFT inclui id, nome, criador, categoria, rede, imagem local, descrição, versão e edições com id, nome, disponibilidade e preço. Uma linha tem chave NFT+edição e quantidade. O pedido inclui usuário, estado, versão, snapshot da cotação, coletor, carteira, referência de transação e tempos da simulação.
+Perfil também persiste ENS e apelido da carteira. Os campos obrigatórios dos formulários de conta são validados na interface e na API, enquanto os contratos de leitura mantêm compatibilidade com snapshots anteriores. A migração de catálogo atualiza nomes e metadados das fixtures sem apagar contas, carrinhos, estoque ou pedidos históricos.
+
+Um NFT inclui id, nome, criador, categoria, rede, imagem local, descrição, versão, coleção, atributos, contrato ilustrativo, royalties, raridade, preço anterior opcional, flags de lançamento/alta, avaliação agregada e edições com id, nome, disponibilidade e preço. As abas filtram as flags na API. Uma linha tem chave NFT+edição e quantidade. O pedido inclui usuário, estado, versão, snapshot da cotação, coletor, carteira, referência de transação e tempos da simulação.
 
 ### Eventos Socket.IO
 
@@ -207,6 +214,6 @@ Identidade é estável para tipo+recurso+versão. O cliente rejeita versões men
 
 ## Assets e atribuições
 
-Os quatro retratos em `assets/originais/` foram exportados do Figma do desafio e convertidos para WebP em `public/imagens/`, com largura de 640 px e qualidade 85. A autoria das artes permanece com seus autores. Os criadores e colecionadores das fixtures são fictícios e não constituem créditos das imagens.
+Os quatro retratos em `assets/originais/` foram exportados do Figma do desafio e convertidos para WebP em `public/imagens/`, com largura de 640 px e qualidade 85. As três camadas PNG do destaque móvel e os vetores em `public/icones/` também foram exportados da referência. A autoria das artes permanece com seus autores. Os criadores e colecionadores das fixtures são fictícios e não constituem créditos das imagens.
 
-IBM Plex Mono é servida localmente nos pesos 400/700, sob a licença SIL OFL em `public/fontes/OFL.txt`. A propriedade de família do Figma expõe `font/family`, sem o valor resolvido; por isso a família local permanece uma substituição declarada. Lucide é utilizado sob licença ISC. Button e Dialog seguem shadcn/ui/Radix, sob MIT, com os tokens do marketplace. O ícone de visualização identifica o acesso aos detalhes; paginação mantém chevrons de navegação.
+Roboto Mono é servida localmente como WOFF2 nos pesos 400 e 700, sob a licença SIL OFL em `public/fontes/OFL.txt`. A família foi identificada pela comparação dos contornos e métricas dos glifos exportados com os da fonte oficial; o Figma expõe apenas o alias `font/family`. A versão local deriva do [repositório Google Fonts](https://github.com/google/fonts/tree/main/ofl/robotomono), com subconjunto latino. Os dois pesos somam cerca de 24 KB; a redução mantém os contornos, métricas e caracteres necessários aos textos em português. Os ícones exportados do Figma ficam em `public/icones/`; Lucide (ISC) complementa controles e estados sem vetor próprio. Button e Dialog seguem shadcn/ui/Radix, sob MIT, com os tokens do marketplace.

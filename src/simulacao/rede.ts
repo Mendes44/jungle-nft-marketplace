@@ -6,7 +6,7 @@ import {
   criarPedido,
   consultarPedido,
 } from './operacoes-compra';
-import { listarNfts, consultarNft, alterarFavoritos } from './operacoes-catalogo';
+import { listarNfts, consultarNft, alterarFavoritos, consultarFacetas } from './operacoes-catalogo';
 import {
   autenticarConta,
   alterarConexao,
@@ -194,6 +194,7 @@ async function responder(requisicao: Request): Promise<Response> {
   if (caminho === '/sessao') return consultarSessao(contexto);
   if (caminho === '/logout' && metodo === 'POST') return encerrarSessao(contexto);
   if (caminho === '/nfts') return listarNfts(contexto);
+  if (caminho === '/facetas') return consultarFacetas(contexto);
   if (caminho.startsWith('/nfts/')) return consultarNft(contexto);
   if (caminho === '/favoritos') return alterarFavoritos(contexto);
   if (caminho === '/carrinho') return alterarCarrinho(contexto);

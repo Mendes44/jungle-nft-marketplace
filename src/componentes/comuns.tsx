@@ -10,15 +10,21 @@ export function Campo({
   rotulo,
   erro,
   children,
+  classe,
+  obrigatorio = false,
 }: {
   rotulo: string;
   erro?: string;
   children: (id: string, erroId: string | undefined) => ReactNode;
+  classe?: string;
+  obrigatorio?: boolean;
 }) {
   const id = useId();
   return (
-    <div className="campo">
-      <label htmlFor={id}>{rotulo}</label>
+    <div className={classe ? `campo ${classe}` : 'campo'}>
+      <label htmlFor={id} className={obrigatorio ? 'rotulo-obrigatorio' : undefined}>
+        {rotulo}
+      </label>
       {children(id, erro ? `${id}-erro` : undefined)}
       {erro && (
         <small className="erro" id={`${id}-erro`}>
@@ -48,10 +54,11 @@ export function EsqueletoDoNft() {
       <div className="caminho">
         <div className="esqueleto linha-carregando" />
       </div>
+      <div className="cabecalho-detalhe-movel" aria-hidden="true" />
       <div className="detalhe-layout">
         <div className="galeria">
           <div className="miniaturas">
-            {[1, 2, 3].map((indice) => (
+            {[1, 2, 3, 4].map((indice) => (
               <div className="esqueleto miniatura-carregando" key={indice} />
             ))}
           </div>
@@ -89,14 +96,18 @@ export function Dialogo({
   descricao,
   gatilho,
   children,
+  aberto,
+  aoAlterarAbertura,
 }: {
   titulo: string;
   descricao: string;
   gatilho: ReactNode;
   children: ReactNode;
+  aberto?: boolean;
+  aoAlterarAbertura?: (aberto: boolean) => void;
 }) {
   return (
-    <Dialog.Root>
+    <Dialog.Root open={aberto} onOpenChange={aoAlterarAbertura}>
       <Dialog.Trigger asChild>{gatilho}</Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="dialogo-fundo" />

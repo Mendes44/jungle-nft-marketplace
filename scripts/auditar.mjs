@@ -57,6 +57,10 @@ for (const [pagina, caminho] of [
           perfil === 'desktop' ? configuracaoDesktop : undefined,
         );
         if (!resultado) throw new Error('Lighthouse não retornou uma medição.');
+        if (resultado.lhr.runtimeError)
+          throw new Error(
+            `Lighthouse não carregou a página: ${resultado.lhr.runtimeError.message}`,
+          );
         const nome = `${pagina}-${perfil}-${numero}`;
         // Mantém apenas grupos referenciados pelas quatro categorias solicitadas, sem alterar métricas.
         const gruposUtilizados = new Set(

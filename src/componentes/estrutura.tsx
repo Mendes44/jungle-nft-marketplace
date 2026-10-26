@@ -4,22 +4,14 @@ import { cenarios } from '../dominio/cenarios';
 import { Link, Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
-import {
-  Home,
-  Heart,
-  UserRound,
-  LogIn,
-  Menu,
-  ShoppingCart,
-  SlidersHorizontal,
-  Wallet,
-} from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { carrinhoSchema } from '../dominio/contratos';
 import { alterar, cache, consultar, trocarSessao } from '../infraestrutura/api';
 import { useSessao } from '../infraestrutura/sessao';
 import { useTempoReal } from '../infraestrutura/tempo-real';
 import { Button } from './ui/button';
 import { Campo, Dialogo, Falha } from './comuns';
+import { IconeOriginal, RodapeOriginal } from './vitrine';
 
 /** Controles da demonstração enviam requisições; os eventos são emitidos exclusivamente nos mocks. */
 function PainelSimulacao() {
@@ -120,13 +112,31 @@ export function Estrutura() {
   useEffect(() => {
     document.title = `Kurio | ${local.pathname === '/' ? 'Arte digital e colecionáveis' : local.pathname.startsWith('/nft') ? 'Detalhes da obra' : 'Sua coleção'}`;
   }, [local.pathname]);
+  const tipoPagina =
+    local.pathname === '/'
+      ? 'inicio'
+      : local.pathname.startsWith('/nft/')
+        ? 'detalhe'
+        : ['/perfil', '/carteiras', '/pedidos'].includes(local.pathname)
+          ? 'conta'
+          : ['/login', '/cadastro'].includes(local.pathname)
+            ? 'autenticacao'
+            : local.pathname.startsWith('/pedido/')
+              ? 'pedido'
+              : local.pathname.slice(1);
+  /** A busca abre o controle da página inicial sem descartar filtros já presentes na URL. */
+  function abrirBusca() {
+    const focar = () => window.dispatchEvent(new Event('kurio:abrir-busca'));
+    if (local.pathname === '/') focar();
+    else void navegar({ to: '/' }).then(() => window.requestAnimationFrame(focar));
+  }
   const quantidade = carrinho.data?.itens.reduce((total, item) => total + item.quantidade, 0) ?? 0;
   return (
     <>
       <a className="pular-conteudo" href="#conteudo">
         Pular para o conteúdo
       </a>
-      <div className="pagina">
+      <div className={`pagina pagina-${tipoPagina}`}>
         <header className="cabecalho">
           <Link to="/" className="marca" aria-label="KURIO início">
             KURIO
@@ -135,7 +145,14 @@ export function Estrutura() {
             <Link to="/" activeProps={{ className: 'ativo' }} activeOptions={{ exact: true }}>
               Início
             </Link>
-            <a href="/#catalogo">Mercado</a>
+            <a
+              href="/#catalogo"
+              className={
+                ['detalhe', 'carrinho', 'pagamento'].includes(tipoPagina) ? 'ativo' : undefined
+              }
+            >
+              Mercado
+            </a>
             <Dialogo
               titulo="Criadores Kurio"
               descricao="Conheça os artistas nas informações de cada obra."
@@ -158,12 +175,20 @@ export function Estrutura() {
             </Dialogo>
           </nav>
           <div className="acoes-cabecalho">
+            <button
+              type="button"
+              className="buscar-cabecalho"
+              aria-label="Abrir busca de NFTs"
+              onClick={abrirBusca}
+            >
+              <IconeOriginal nome="busca" tamanho={26} />
+            </button>
             <Link
               className="icone-carrinho"
               to="/carrinho"
               aria-label={`Carrinho, ${quantidade} itens`}
             >
-              <ShoppingCart size={21} />
+              <IconeOriginal nome="carrinho" tamanho={28} />
               <span>{quantidade}</span>
             </Link>
             {perfil ? (
@@ -183,7 +208,7 @@ export function Estrutura() {
             ) : (
               <Button asChild size="sm">
                 <Link to="/login" search={{ retorno: local.href }}>
-                  <LogIn size={16} />
+                  <IconeOriginal nome="entrar" tamanho={20} />
                   Entrar
                 </Link>
               </Button>
@@ -221,108 +246,63 @@ export function Estrutura() {
         <main id="conteudo" tabIndex={-1}>
           <Outlet />
         </main>
-        <footer>
-          <div className="beneficios">
-            <div>
-              <Wallet />
-              <h2>Segurança da carteira</h2>
-              <p>Gerencie suas carteiras e revise cada compra.</p>
-            </div>
-            <div>
-              <ShoppingCart />
-              <h2>Colecione do seu jeito</h2>
-              <p>Explore obras e edições de criadores independentes.</p>
-            </div>
-            <div>
-              <SlidersHorizontal />
-              <h2>Uma experiência transparente</h2>
-              <p>Valores e disponibilidade sempre atualizados.</p>
-            </div>
-            <div>
-              <h2>Antecipe sua próxima coleção</h2>
-              <p>Descubra os lançamentos e acompanhe suas obras favoritas.</p>
-              <Link to="/" className="link-texto">
-                Explorar o mercado
-              </Link>
-            </div>
-          </div>
-          <div className="links-rodape">
-            <div>
-              <h2>Meu perfil</h2>
-              <Link to="/perfil">Dados do perfil</Link>
-              <Link to="/pedidos">Minhas compras</Link>
-              <Link to="/carteiras">Carteiras</Link>
-            </div>
-            <div>
-              <h2>Central de ajuda</h2>
-              <Dialogo
-                titulo="Como comprar NFTs"
-                descricao="Guia da demonstração Kurio"
-                gatilho={<button>Como comprar NFTs</button>}
-              >
-                <p>
-                  Escolha uma obra e uma edição, adicione ao carrinho, entre na conta e conecte uma
-                  carteira simulada. Revise os dados antes de confirmar. Todas as operações são
-                  fictícias.
-                </p>
-              </Dialogo>
-              <Link to="/carteiras">Carteira e segurança</Link>
-            </div>
-            <div>
-              <h2>Coleções</h2>
-              <a href="/#catalogo">Arte digital</a>
-              <a href="/#catalogo">Fotografia</a>
-              <a href="/#catalogo">Arte 3D</a>
-            </div>
-            <div>
-              <h2>Carteiras compatíveis</h2>
-              <p>MetaMask · WalletConnect · Coinbase Wallet</p>
-              <p>© 2026 Kurio</p>
-            </div>
-          </div>
-          <div className="rodape-final">
-            <Link to="/" className="marca">
-              KURIO
-            </Link>
-            <p>Arte digital. Novas perspectivas.</p>
-            <div className="flex gap-5">
-              <Link to="/perfil">Meu perfil</Link>
-              <Link to="/carteiras">Carteiras</Link>
-            </div>
-          </div>
-          <div className="rodape-demo">
-            <span>Compras e transações inteiramente simuladas.</span>
-            {import.meta.env.VITE_MOCKS !== 'false' && (
-              <Dialogo
-                key={local.pathname}
-                titulo="Cenários da demonstração"
-                descricao="Reproduza latência, falhas e eventos da API simulada."
-                gatilho={
-                  <Button variant="ghost" size="sm">
-                    <SlidersHorizontal size={15} />
-                    Simulação
-                  </Button>
-                }
-              >
-                <PainelSimulacao />
-              </Dialogo>
-            )}
-          </div>
+        <footer className="rodape-original">
+          <RodapeOriginal />
         </footer>
       </div>
+      {import.meta.env.VITE_MOCKS !== 'false' && (
+        <div className="acesso-simulacao">
+          <Dialogo
+            key={local.pathname}
+            titulo="Cenários da demonstração"
+            descricao="Reproduza latência, falhas e eventos da API simulada."
+            gatilho={
+              <Button variant="ghost" size="sm" aria-label="Simulação">
+                <IconeOriginal nome="digitalizar" tamanho={34} />
+                <span>Simulação</span>
+              </Button>
+            }
+          >
+            <PainelSimulacao />
+          </Dialogo>
+        </div>
+      )}
       <nav className="navegacao-inferior" aria-label="Navegação móvel">
         <Link to="/" aria-label="Página inicial">
-          <Home size={23} />
+          <IconeOriginal nome="inicio" />
         </Link>
         <Link to="/pedidos" aria-label="Minha coleção">
-          <Heart size={23} />
+          <IconeOriginal nome="favoritos" />
         </Link>
+        <span className="espaco-digitalizador" aria-hidden="true" />
         <Link to="/carrinho" aria-label="Abrir carrinho">
-          <ShoppingCart size={23} />
+          <IconeOriginal nome="sacola" />
         </Link>
-        <Link to="/perfil" aria-label="Abrir meu perfil">
-          <UserRound size={23} />
-        </Link>
+        {perfil ? (
+          <Dialogo
+            key={local.pathname}
+            titulo="Sua conta"
+            descricao={perfil.nome}
+            gatilho={
+              <button type="button" aria-label="Abrir sua conta">
+                <IconeOriginal nome="perfil" />
+              </button>
+            }
+          >
+            <nav className="menu-conta">
+              <Link to="/perfil">Meu perfil</Link>
+              <Link to="/carteiras">Carteiras</Link>
+              <Link to="/pedidos">Minha coleção</Link>
+              <Button onClick={() => sair.mutate()} disabled={sair.isPending}>
+                Sair
+              </Button>
+            </nav>
+          </Dialogo>
+        ) : (
+          <Link to="/perfil" aria-label="Abrir meu perfil">
+            <IconeOriginal nome="perfil" />
+          </Link>
+        )}
       </nav>
     </>
   );

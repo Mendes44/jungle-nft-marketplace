@@ -30,6 +30,7 @@ const bancoSchema = z.object({
   tentativas: z.record(z.string(), z.object({ corpo: z.string(), pedidoId: z.string() })),
   cenario: z.string(),
   sequencia: z.number(),
+  versaoCatalogo: z.number().default(1),
 });
 export type Banco = z.infer<typeof bancoSchema>;
 export type Usuario = z.infer<typeof usuarioSchema>;
@@ -56,18 +57,18 @@ export async function hashSenha(senha: string): Promise<string> {
 /** Fixtures variadas e determinísticas; cada edição possui disponibilidade própria. */
 export async function criarBanco(): Promise<Banco> {
   const nomes = [
-    'Macaco Esmeralda',
-    'Nômade Sábio',
-    'Forma Néon',
-    'Flor Cósmica',
-    'Nômade Violeta',
-    'Barão de Marfim',
-    'Ritmo Dourado',
-    'Sinal Dourado',
-    'Terra Nova',
-    'Eco Lunar',
-    'Floresta Pixel',
-    'Aurora',
+    'Emerald Ape #042',
+    'Sage Nomad #009',
+    'Neon Vessel #552',
+    'Cosmic Bloom #118',
+    'Violet Nomad #314',
+    'Ivory Baron #088',
+    'Golden Beat #207',
+    'Golden Frequency #071',
+    'Golden Signal #160',
+    'Terra Nova #247',
+    'Pixel Forest #260',
+    'Aurora #273',
   ];
   const precos = [
     '1.19',
@@ -77,34 +78,52 @@ export async function criarBanco(): Promise<Banco> {
     '1.39',
     '1.79',
     '0.99',
+    '0.59',
     '0.39',
-    '0.100000000000000001',
     '2.29',
     '0.59',
-    '0.89',
+    '0.100000000000000001',
   ];
   const senhaHash = await hashSenha('Colecao123');
   // O Figma reutiliza os quatro retratos em diferentes NFTs e edições.
   const retratos = [0, 1, 2, 1, 1, 2, 3, 3, 3, 0, 1, 2];
-  return {
+  return bancoSchema.parse({
     nfts: nomes.map((nome, indice) => ({
       id: String(indice + 1),
-      nome: `${nome} #${String(42 + indice * 13).padStart(3, '0')}`,
-      criador: indice % 2 ? 'Marina Costa' : 'Rafael Lima',
+      nome,
+      criador: indice === 0 ? 'Nova Sato' : indice % 2 ? 'Marina Costa' : 'Rafael Lima',
       categoria: ['Arte digital', 'Fotografia', 'Arte 3D'][indice % 3],
       rede: indice % 2 ? 'Polygon' : 'Ethereum',
       imagem: `/imagens/colecao-${retratos[indice]}.webp`,
       descricao:
-        'Um colecionável da coleção Edições Kurio. Arte digital em edição limitada, criada para quem vê o mundo de um jeito próprio.',
+        'Um colecionável digital finalizado à mão da coleção Kurio Editions, verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.',
+      colecao: 'Kurio Apes',
+      atributos:
+        retratos[indice] === 0
+          ? ['Óculos', 'Esmeralda', 'Raro']
+          : retratos[indice] === 1
+            ? ['Chapéu', 'Moletom', 'Raro']
+            : retratos[indice] === 2
+              ? ['Paletó', 'Marfim', 'Raro']
+              : ['Fones', 'Dourado', 'Raro'],
+      contrato: '0x7A42...19E8',
+      direitosAutorais: 5,
       versao: 1,
+      novo: indice < 3,
+      emAlta: [0, 2, 5].includes(indice),
+      raridade: [2].includes(indice) ? 'raro' : 'comum',
+      precoAnterior: indice === 2 ? '2.29' : undefined,
+      avaliacoes: { media: 4.8, total: 19 },
       edicoes: [
-        { id: 'limitada', nome: '1/50', disponivel: 5, preco: precos[indice] },
+        { id: 'limitada', nome: '1/50', disponivel: indice === 0 ? 5 : 15, preco: precos[indice] },
         {
           id: 'unica',
           nome: '1/1',
           disponivel: indice === 0 ? 0 : 1,
           preco: deWei(paraWei(precos[indice]) * 2n),
         },
+        { id: 'dez', nome: '1/10', disponivel: 10, preco: precos[indice] },
+        { id: 'aberta', nome: 'ABERTA', disponivel: 100, preco: precos[indice] },
       ],
     })),
     usuarios: [
@@ -113,6 +132,8 @@ export async function criarBanco(): Promise<Banco> {
         nome: 'Ana Oliveira',
         email: 'ana@exemplo.com',
         apelido: 'ana.arte',
+        ens: 'ana.eth',
+        nomeCarteira: 'Minha carteira',
         biografia: 'Colecionando novas perspectivas.',
         avatar: '/imagens/colecao-0.webp',
         senhaHash,
@@ -122,6 +143,8 @@ export async function criarBanco(): Promise<Banco> {
         nome: 'Bruno Santos',
         email: 'bruno@exemplo.com',
         apelido: 'bruno.nft',
+        ens: 'bruno.eth',
+        nomeCarteira: 'Carteira de Bruno',
         biografia: '',
         avatar: '/imagens/colecao-0.webp',
         senhaHash,
@@ -135,6 +158,11 @@ export async function criarBanco(): Promise<Banco> {
         {
           id: 'ana-principal',
           nome: 'Minha carteira',
+          apelido: 'Principal',
+          nomePerfil: 'ana.arte',
+          email: 'ana@exemplo.com',
+          ens: 'ana.eth',
+          indicacao: 'KURIO',
           endereco: `0x${'a'.repeat(40)}`,
           rede: 'Ethereum',
           tipo: 'MetaMask',
@@ -145,6 +173,11 @@ export async function criarBanco(): Promise<Banco> {
         {
           id: 'bruno-principal',
           nome: 'Carteira de Bruno',
+          apelido: 'Principal',
+          nomePerfil: 'bruno.nft',
+          email: 'bruno@exemplo.com',
+          ens: 'bruno.eth',
+          indicacao: 'KURIO',
           endereco: `0x${'b'.repeat(40)}`,
           rede: 'Ethereum',
           tipo: 'Coinbase Wallet',
@@ -156,14 +189,44 @@ export async function criarBanco(): Promise<Banco> {
     tentativas: {},
     cenario: 'padrao',
     sequencia: 0,
-  };
+    versaoCatalogo: 2,
+  });
 }
 
 /** Recupera apenas dados aderentes ao contrato; dados antigos/corrompidos iniciam uma fixture limpa. */
 export async function carregarBanco(): Promise<Banco> {
   try {
     const resultado = bancoSchema.safeParse(JSON.parse(localStorage.getItem(chaveBanco) ?? 'null'));
-    if (resultado.success) return resultado.data;
+    if (resultado.success) {
+      const banco = resultado.data;
+      if (banco.versaoCatalogo < 2) {
+        // Atualiza nomes e classificações sem apagar contas, estoque, carrinhos ou recibos históricos.
+        const referencia = await criarBanco();
+        for (const nft of banco.nfts) {
+          const original = referencia.nfts.find((item) => item.id === nft.id);
+          if (original) {
+            nft.nome = original.nome;
+            nft.descricao = original.descricao;
+            nft.novo = original.novo;
+            nft.emAlta = original.emAlta;
+            nft.raridade = original.raridade;
+            nft.precoAnterior = original.precoAnterior;
+            nft.avaliacoes = original.avaliacoes;
+            nft.colecao = original.colecao;
+            nft.atributos = original.atributos;
+            nft.contrato = original.contrato;
+            nft.direitosAutorais = original.direitosAutorais;
+            for (const edicao of original.edicoes) {
+              if (!nft.edicoes.some((existente) => existente.id === edicao.id))
+                nft.edicoes.push(edicao);
+            }
+          }
+        }
+        banco.versaoCatalogo = 2;
+        salvarBanco(banco);
+      }
+      return banco;
+    }
   } catch {
     /* Persistência inválida não impede a demonstração. */
   }

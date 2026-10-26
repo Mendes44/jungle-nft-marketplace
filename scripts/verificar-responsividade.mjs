@@ -14,7 +14,7 @@ try {
   await adicionar(pagina);
   await revisarCompra(pagina);
   await pagina.getByRole('button', { name: 'Confirmar compra', exact: true }).click();
-  await expect(pagina.getByRole('heading', { level: 1 })).toContainText('Sua coleção ganhou');
+  await expect(pagina.getByRole('heading', { level: 1 })).toContainText('Seus NFTs agora');
   const recibo = new URL(pagina.url()).pathname;
   await adicionar(pagina);
   const caminhos = [

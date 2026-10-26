@@ -17,8 +17,19 @@ export const nftSchema = z.object({
   categoria: z.string(),
   rede: z.string(),
   imagem: z.string(),
+  precoAnterior: ethSchema.optional(),
+  raridade: z.enum(['comum', 'raro']).default('comum'),
   descricao: z.string(),
+  colecao: z.string().default('Kurio Apes'),
+  atributos: z.array(z.string()).default([]),
+  contrato: z.string().default('0x7A42...19E8'),
+  direitosAutorais: z.number().min(0).max(100).default(5),
   versao: z.number().int(),
+  novo: z.boolean().default(false),
+  emAlta: z.boolean().default(false),
+  avaliacoes: z
+    .object({ media: z.number().min(0).max(5), total: z.number().int().nonnegative() })
+    .default({ media: 4.8, total: 19 }),
   edicoes: z.array(edicaoSchema),
 });
 export const itemSchema = z.object({
@@ -43,6 +54,19 @@ export const cotacaoSchema = z.object({
   taxa: ethSchema,
   total: ethSchema,
 });
+/** ENS e endereços auxiliares são validados sem consultar registros externos. */
+export const ensSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .regex(/^[a-z0-9-]+\.eth$/, 'Informe um nome ENS terminado em .eth, como ana.eth.');
+const enderecoAuxiliarSchema = z
+  .string()
+  .trim()
+  .refine(
+    (valor) => !valor || /^0x[a-fA-F0-9]{40}$/.test(valor) || /^[a-z0-9-]+\.eth$/i.test(valor),
+    'Informe um endereço 0x válido ou um nome ENS terminado em .eth.',
+  );
 export const perfilSchema = z.object({
   id: z.string(),
   nome: z.string(),
@@ -50,6 +74,8 @@ export const perfilSchema = z.object({
   apelido: z.string(),
   biografia: z.string(),
   avatar: z.string(),
+  ens: z.union([ensSchema, z.literal('')]).default(''),
+  nomeCarteira: z.string().default(''),
 });
 export const carteiraSchema = z.object({
   id: z.string(),
@@ -60,6 +86,20 @@ export const carteiraSchema = z.object({
   rede: z.enum(['Ethereum', 'Polygon']),
   tipo: z.enum(['MetaMask', 'Coinbase Wallet', 'WalletConnect']),
   principal: z.boolean(),
+  apelido: z.string().default(''),
+  nomePerfil: z.string().default(''),
+  email: z.union([z.email('Informe um e-mail válido.'), z.literal('')]).default(''),
+  ens: z.union([ensSchema, z.literal('')]).default(''),
+  indicacao: z.string().default(''),
+  enderecoSecundario: enderecoAuxiliarSchema.default(''),
+});
+/** O contrato de escrita exige os campos do formulário; snapshots antigos continuam legíveis. */
+export const dadosCarteiraSchema = carteiraSchema.extend({
+  apelido: z.string().min(2, 'Informe o apelido da carteira.'),
+  nomePerfil: z.string().min(2, 'Informe o nome do perfil.'),
+  email: z.email('Informe um e-mail válido.'),
+  ens: ensSchema,
+  indicacao: z.string().min(3, 'Informe o código de indicação.'),
 });
 export const colecionadorSchema = z.object({
   nome: z.string().min(3, 'Informe o nome de exibição.'),
@@ -67,18 +107,9 @@ export const colecionadorSchema = z.object({
   apelido: z.string().min(2, 'Informe o nome de usuário.'),
   nomePerfil: z.string().min(2, 'Informe o nome de perfil.'),
   indicacao: z.string().min(3, 'Informe o código de indicação.'),
-  ens: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .regex(/^[a-z0-9-]+\.eth$/, 'Informe um nome ENS terminado em .eth, como ana.eth.'),
+  ens: ensSchema,
   observacao: z.string().max(500),
-  enderecoSecundario: z
-    .string()
-    .refine(
-      (valor) => !valor || /^0x[a-fA-F0-9]{40}$/.test(valor),
-      'Endereço secundário inválido.',
-    ),
+  enderecoSecundario: enderecoAuxiliarSchema,
 });
 export const envioPedidoSchema = colecionadorSchema.extend({
   cotacaoId: z.string(),
@@ -118,15 +149,22 @@ export const dadosPerfilSchema = perfilSchema.omit({ id: true, avatar: true }).e
   apelido: z.string().min(2),
   biografia: z.string().max(300),
   avatar: z.string().max(600000),
+  ens: ensSchema,
+  nomeCarteira: z.string().min(2, 'Informe o apelido da carteira.'),
 });
 export const filtrosSchema = z.object({
+  aba: z.enum(['todos', 'novos', 'alta']).catch('todos'),
   busca: z.string().catch(''),
   categoria: z.string().catch(''),
   rede: z.string().catch(''),
   ordem: z.enum(['recentes', 'menor', 'maior']).catch('recentes'),
   pagina: z.coerce.number().int().min(1).catch(1),
-  minimo: ethSchema.catch('0'),
-  maximo: ethSchema.catch('100'),
+  minimo: ethSchema.catch('0.02'),
+  maximo: ethSchema.catch('12.30'),
+});
+export const facetasSchema = z.object({
+  categorias: z.array(z.object({ nome: z.string(), total: z.number().int() })),
+  redes: z.array(z.object({ nome: z.string(), total: z.number().int() })),
 });
 export const catalogoSchema = z.object({
   itens: z.array(nftSchema),

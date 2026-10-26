@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
 import axios from 'axios';
-import { CheckCircle2, Clock3, ShieldCheck, Trash2, Wallet, XCircle, Search } from 'lucide-react';
+import { Clock3, XCircle } from 'lucide-react';
 import {
   carteiraSchema,
   carrinhoSchema,
@@ -16,12 +16,14 @@ import {
   type Item,
 } from '../dominio/contratos';
 import { deWei, exibirEth, paraWei } from '../dominio/valores';
+import { completarEns } from '../dominio/nomes';
 import { alterar, cache, consultar } from '../infraestrutura/api';
 import { useSessao } from '../infraestrutura/sessao';
 import { Button } from '../componentes/ui/button';
 import { Campo, Dialogo, Esqueleto, Falha } from '../componentes/comuns';
 import { NaoEncontrado } from '../componentes/nao-encontrado';
 import { MaisDaColecao } from './catalogo';
+import { ControleQuantidade, VoltarAoMercado, EntradaEns } from '../componentes/controles';
 
 /** Chaves incluem o dono; carrinhos de visitantes nunca reutilizam o cache de uma conta. */
 function useDadosCarrinho() {
@@ -54,12 +56,15 @@ export function ResumoValores({ cotacao }: { cotacao: Cotacao }) {
         <dd>{exibirEth(cotacao.subtotal)}</dd>
       </div>
       <div>
-        <dt>Desconto {cotacao.cupom && `(${cotacao.cupom})`}</dt>
+        <dt>Desconto do lançamento {cotacao.cupom && `(${cotacao.cupom})`}</dt>
         <dd>− {exibirEth(cotacao.desconto)}</dd>
       </div>
       <div>
         <dt>Taxa de rede</dt>
-        <dd>{exibirEth(cotacao.taxa)}</dd>
+        <dd>
+          {exibirEth(cotacao.taxa)}
+          <small className="taxa-estimada">Taxa estimada</small>
+        </dd>
       </div>
       <div className="total">
         <dt>Total</dt>
@@ -78,6 +83,7 @@ function Cupom({ aplicado }: { aplicado: string }) {
   });
   return (
     <form
+      className="formulario-cupom"
       onSubmit={(evento) => {
         evento.preventDefault();
         aplicar.mutate(codigo);
@@ -90,7 +96,7 @@ function Cupom({ aplicado }: { aplicado: string }) {
               id={id}
               value={codigo}
               onChange={(evento) => definirCodigo(evento.target.value)}
-              placeholder="Digite seu cupom"
+              placeholder="Digite o código promocional..."
             />
             <Button disabled={aplicar.isPending}>Aplicar</Button>
           </div>
@@ -144,11 +150,12 @@ export function Carrinho() {
   return (
     <>
       <nav className="caminho" aria-label="Caminho">
-        <Link to="/">Início</Link> / Mercado / Carrinho de NFTs
+        <Link to="/">Início</Link> / Mercado / Carrinho
       </nav>
-      <h1 className="titulo-pagina">
-        Seu carrinho<span className="text-[var(--cobre)]">.</span>
-      </h1>
+      <div className="cabecalho-pagina-compra">
+        <VoltarAoMercado />
+        <h1>Carrinho de NFTs</h1>
+      </div>
       {!carrinho.data.itens.length ? (
         <div className="vazio">
           <h2>Uma coleção começa com uma descoberta.</h2>
@@ -162,55 +169,54 @@ export function Carrinho() {
           <section aria-label="Itens do carrinho">
             <div className="cabecalho-itens">
               <span>NFTs</span>
-              <span>Preço / Edições / Total</span>
+              <span>Preço</span>
+              <span>Edições</span>
+              <span>Total</span>
             </div>
             {carrinho.data.itens.map((item) => (
               <article className="item-carrinho" key={`${item.nftId}:${item.edicaoId}`}>
-                <img src={item.imagem} alt={item.nome} width="80" height="80" />
-                <div>
+                <img src={item.imagem} alt={item.nome} width="70" height="70" />
+                <div className="nome-item">
                   <Link to="/nft/$nftId" params={{ nftId: item.nftId }}>
                     <h2>{item.nome}</h2>
                   </Link>
-                  <p className="text-xs text-[var(--suave)]">
-                    Edição {item.edicao} · {exibirEth(item.preco)}
+                  <p className="token-item">
+                    ID do token: #{(item.nome.split('#')[1] ?? item.nftId).padStart(4, '0')}
                   </p>
-                  <p className="text-xs text-[var(--cobre)]">
-                    Total do item: {exibirEth(deWei(paraWei(item.preco) * BigInt(item.quantidade)))}
-                  </p>
-                  <p className="text-xs">{item.disponivel} disponível(is)</p>
+                  <p className="edicao-item">Edição: {item.edicao}</p>
                   {item.quantidade > item.disponivel && (
                     <p className="erro text-xs">
                       Quantidade indisponível. Ajuste ou remova este item.
                     </p>
                   )}
                 </div>
-                <Campo rotulo={`Quantidade de ${item.nome}`}>
-                  {(id) => (
-                    <input
-                      className="quantidade"
-                      id={id}
-                      type="number"
-                      min="1"
-                      max={Math.max(item.disponivel, item.quantidade)}
-                      value={item.quantidade}
-                      disabled={mudar.isPending}
-                      onChange={(evento) => {
-                        const quantidade = evento.target.valueAsNumber;
-                        if (Number.isInteger(quantidade) && quantidade > 0)
-                          mudar.mutate({
-                            metodo: 'PATCH',
-                            item: { nftId: item.nftId, edicaoId: item.edicaoId, quantidade },
-                          });
-                      }}
-                    />
-                  )}
-                </Campo>
+                <p className="preco-unitario">{exibirEth(item.preco)}</p>
+                <ControleQuantidade
+                  rotulo={`Quantidade de ${item.nome}`}
+                  valor={item.quantidade}
+                  maximo={item.disponivel}
+                  desabilitado={mudar.isPending}
+                  alterar={(quantidade) =>
+                    mudar.mutate({
+                      metodo: 'PATCH',
+                      item: { nftId: item.nftId, edicaoId: item.edicaoId, quantidade },
+                    })
+                  }
+                />
+                <p className="total-item">
+                  {exibirEth(deWei(paraWei(item.preco) * BigInt(item.quantidade)))}
+                </p>
                 <Dialogo
                   titulo="Remover esta obra?"
                   descricao="Você pode adicioná-la novamente enquanto houver edições disponíveis."
                   gatilho={
-                    <Button variant="ghost" size="icon" aria-label={`Remover ${item.nome}`}>
-                      <Trash2 size={18} />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="remover-item"
+                      aria-label={`Remover ${item.nome}`}
+                    >
+                      <img src="/icones/lixeira.svg" width="20" height="20" alt="" />
                     </Button>
                   }
                 >
@@ -229,9 +235,6 @@ export function Carrinho() {
               </article>
             ))}
             {mudar.isError && <Falha erro={mudar.error} />}
-            <Link to="/" className="link-texto">
-              Continuar explorando
-            </Link>
           </section>
           <aside className="painel-resumo">
             <h2>Resumo da carteira</h2>
@@ -240,14 +243,13 @@ export function Carrinho() {
             <Button asChild className="w-full">
               <Link to="/pagamento">Conectar e finalizar</Link>
             </Button>
-            <p className="seguranca">
-              <ShieldCheck size={17} />
-              Valores revalidados antes da compra.
-            </p>
+            <Link className="continuar-explorando" to="/">
+              Continuar explorando
+            </Link>
           </aside>
         </div>
       )}
-      {carrinho.data.itens.length > 0 && <MaisDaColecao />}
+      {carrinho.data.itens.length > 0 && <MaisDaColecao titulo="Colecionadores também viram" />}
     </>
   );
 }
@@ -290,6 +292,10 @@ function FormularioPagamento() {
   const chavePersistencia = `kurio.tentativa:${perfil?.id}`;
   const chaveRascunho = `kurio.rascunho:${perfil?.id}`;
   const [rascunho] = useState(() => lerRascunho(chaveRascunho));
+  const [etapaMovel, definirEtapaMovel] = useState(
+    rascunho.etapa === 'carteira' ? 'carteira' : 'dados',
+  );
+  const [revisaoAberta, definirRevisaoAberta] = useState(false);
   const [tentativa, definirTentativa] = useState(() => lerTentativa(chavePersistencia));
   const { carrinho, cotacao } = useDadosCarrinho();
   const carteiras = useQuery({
@@ -300,7 +306,7 @@ function FormularioPagamento() {
     queryKey: ['pedidos', perfil?.id],
     queryFn: ({ signal }) => consultar('/pedidos', z.array(pedidoSchema), signal),
   });
-  const [carteiraId, definirCarteira] = useState('');
+  const [carteiraId, definirCarteira] = useState(rascunho.carteiraId ?? '');
   const [revisao, definirRevisao] = useState<Cotacao | null>(null);
   const [dadosRevisados, definirDadosRevisados] = useState<z.infer<
     typeof colecionadorSchema
@@ -335,7 +341,8 @@ function FormularioPagamento() {
         erro.response &&
         erro.response.status >= 400 &&
         erro.response.status < 500 &&
-        erro.response.status !== 401
+        erro.response.status !== 401 &&
+        z.object({ mensagem: z.string() }).safeParse(erro.response.data).success
       ) {
         sessionStorage.removeItem(chavePersistencia);
         definirTentativa(null);
@@ -354,15 +361,16 @@ function FormularioPagamento() {
     mutationFn: () => consultar('/cotacao', cotacaoSchema),
     onSuccess: (atual) => {
       definirRevisao(atual);
+      definirRevisaoAberta(true);
       cache.setQueryData(['cotacao', perfil?.id], atual);
     },
   });
   /** Valida os campos do layout antes de buscar uma cotação atual para a revisão. */
   function prepararRevisao(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault();
-    const resultado = colecionadorSchema.safeParse(
-      Object.fromEntries(new FormData(evento.currentTarget)),
-    );
+    const valores = Object.fromEntries(new FormData(evento.currentTarget));
+    if (typeof valores.ens === 'string') valores.ens = completarEns(valores.ens);
+    const resultado = colecionadorSchema.safeParse(valores);
     if (!resultado.success) {
       definirErros(
         Object.fromEntries(
@@ -373,6 +381,19 @@ function FormularioPagamento() {
     }
     definirErros({});
     definirDadosRevisados(resultado.data);
+    if (window.matchMedia('(max-width: 600px)').matches && etapaMovel === 'dados') {
+      definirEtapaMovel('carteira');
+      sessionStorage.setItem(
+        chaveRascunho,
+        JSON.stringify({ ...valores, etapa: 'carteira', carteiraId: carteira?.id ?? '' }),
+      );
+      window.scrollTo(0, 0);
+      return;
+    }
+    if (!conectado) {
+      definirErros({ carteira: 'Conecte uma carteira para continuar.' });
+      return;
+    }
     revisar.mutate();
   }
   /** Persiste chave e conteúdo antes do primeiro envio; reenvios nunca geram uma segunda chave. */
@@ -399,22 +420,49 @@ function FormularioPagamento() {
   }
   /** Campos repetem o contrato do layout; dados confirmados são copiados para o snapshot do pedido. */
   function campoTexto(nome: string, rotulo: string, valor = '', tipo = 'text') {
+    const valorInicial = rascunho[nome] ?? valor;
     return (
-      <Campo key={nome} rotulo={rotulo} erro={erros[nome]}>
-        {(id, erroId) => (
-          <input
-            id={id}
-            name={nome}
-            type={tipo}
-            defaultValue={rascunho[nome] ?? valor}
-            required
-            aria-invalid={Boolean(erros[nome])}
-            aria-describedby={erroId}
-            onChange={() => definirRevisao(null)}
-          />
-        )}
+      <Campo key={nome} classe={`campo-${nome}`} rotulo={rotulo} obrigatorio erro={erros[nome]}>
+        {(id, erroId) =>
+          nome === 'ens' ? (
+            <EntradaEns
+              id={id}
+              valorInicial={valorInicial}
+              erroId={erroId}
+              invalido={Boolean(erros[nome])}
+              aoAlterar={() => definirRevisao(null)}
+            />
+          ) : (
+            <input
+              id={id}
+              name={nome}
+              type={tipo}
+              defaultValue={valorInicial}
+              required
+              aria-invalid={Boolean(erros[nome])}
+              aria-describedby={erroId}
+              onChange={() => definirRevisao(null)}
+            />
+          )
+        }
       </Campo>
     );
+  }
+  /** A escolha de outra carteira invalida conexão e revisão ligadas ao endereço anterior. */
+  function escolherCarteira(id: string) {
+    definirCarteira(id);
+    sessionStorage.setItem(
+      chaveRascunho,
+      JSON.stringify({ ...lerRascunho(chaveRascunho), carteiraId: id }),
+    );
+    definirRevisao(null);
+    conexao.reset();
+  }
+  /** Voltar aos dados não apaga os campos já preenchidos nem a tentativa persistida. */
+  function editarDados() {
+    definirEtapaMovel('dados');
+    const dados = lerRascunho(chaveRascunho);
+    sessionStorage.setItem(chaveRascunho, JSON.stringify({ ...dados, etapa: 'dados' }));
   }
   if (carrinho.isPending || cotacao.isPending || carteiras.isPending) return <Esqueleto detalhe />;
   if (carrinho.isError || cotacao.isError || carteiras.isError)
@@ -448,11 +496,23 @@ function FormularioPagamento() {
   return (
     <>
       <nav aria-label="Caminho" className="caminho">
-        <Link to="/carrinho">Carrinho</Link> / Pagamento
+        <Link to="/">Início</Link> / Mercado / Pagamento
       </nav>
-      <h1 className="titulo-pagina">
-        Sua próxima coleção<span className="text-[var(--cobre)]">.</span>
-      </h1>
+      <div className="cabecalho-pagina-compra">
+        <button
+          type="button"
+          className="voltar-movel"
+          aria-label={
+            etapaMovel === 'carteira' ? 'Editar dados do colecionador' : 'Voltar ao carrinho'
+          }
+          onClick={() =>
+            etapaMovel === 'carteira' ? editarDados() : void navegar({ to: '/carrinho' })
+          }
+        >
+          ‹
+        </button>
+        <h1>{etapaMovel === 'dados' ? 'Perfil do colecionador' : 'Pagamento com carteira'}</h1>
+      </div>
       {pendente && (
         <p className="mensagem">
           <Link to="/pedido/$pedidoId" params={{ pedidoId: pendente.id }}>
@@ -468,169 +528,339 @@ function FormularioPagamento() {
           </Button>
         </div>
       )}
-      <div className="compra-layout">
+      <div className={`compra-layout pagamento-layout etapa-${etapaMovel}`}>
         <form
+          id="formulario-pagamento"
+          className="formulario-pagamento"
+          noValidate
           onSubmit={prepararRevisao}
-          onChange={(evento) => {
+          onChange={(evento) =>
             sessionStorage.setItem(
               chaveRascunho,
-              JSON.stringify(Object.fromEntries(new FormData(evento.currentTarget))),
-            );
-          }}
+              JSON.stringify({
+                ...Object.fromEntries(new FormData(evento.currentTarget)),
+                etapa: etapaMovel,
+              }),
+            )
+          }
         >
-          <h2 className="subtitulo">Perfil do colecionador</h2>
-          <div className="grade-formulario">
-            {campoTexto('nome', 'Nome de exibição', perfil?.nome)}
-            {campoTexto('apelido', 'Nome de usuário', perfil?.apelido)}
-            {campoTexto('nomePerfil', 'Nome de perfil', perfil?.apelido)}
-            {campoTexto('email', 'E-mail', perfil?.email, 'email')}
-            {campoTexto('indicacao', 'Código de indicação')}
-            {campoTexto('ens', 'Nome ENS (.eth)')}
-            <Campo rotulo="Endereço secundário (opcional)" erro={erros.enderecoSecundario}>
-              {(id, erroId) => (
-                <input
-                  id={id}
-                  name="enderecoSecundario"
-                  defaultValue={rascunho.enderecoSecundario ?? ''}
-                  aria-describedby={erroId}
-                  onChange={() => definirRevisao(null)}
-                />
-              )}
-            </Campo>
-            <Campo rotulo="Observação do colecionador (opcional)">
+          <h2>Perfil do colecionador</h2>
+          {campoTexto('nome', 'Nome de exibição', perfil?.nome)}
+          {campoTexto('apelido', 'Nome do usuário', perfil?.apelido)}
+          <Campo classe="campo-rede" rotulo="Rede" obrigatorio>
+            {(id) => (
+              <select id={id} value={carteira?.rede ?? ''} onChange={() => definirRevisao(null)}>
+                <option>{carteira?.rede ?? 'Selecione uma rede'}</option>
+              </select>
+            )}
+          </Campo>
+          {campoTexto('nomePerfil', 'Nome do perfil', perfil?.apelido)}
+          <Campo classe="campo-endereco" rotulo="Endereço da carteira" obrigatorio>
+            {(id) => (
+              <input
+                id={id}
+                value={carteira?.endereco ?? ''}
+                readOnly
+                placeholder="Endereço 0x da carteira"
+              />
+            )}
+          </Campo>
+          <Campo
+            classe="campo-endereco-secundario"
+            rotulo="Endereço secundário (opcional)"
+            erro={erros.enderecoSecundario}
+          >
+            {(id, erroId) => (
+              <input
+                id={id}
+                name="enderecoSecundario"
+                defaultValue={rascunho.enderecoSecundario ?? ''}
+                placeholder="ENS ou carteira secundária (opcional)"
+                aria-describedby={erroId}
+                onChange={() => definirRevisao(null)}
+              />
+            )}
+          </Campo>
+          <Campo classe="campo-tipo" rotulo="Tipo de carteira" obrigatorio>
+            {(id) => (
+              <input
+                id={id}
+                value={carteira?.tipo ?? ''}
+                readOnly
+                placeholder="Selecione uma carteira"
+              />
+            )}
+          </Campo>
+          {campoTexto('indicacao', 'Código de indicação')}
+          {campoTexto('email', 'E-mail', perfil?.email, 'email')}
+          {campoTexto('ens', 'Nome ENS')}
+          <details className="carteira-alternativa">
+            <summary>Usar outra carteira?</summary>
+            <Campo rotulo="Carteira cadastrada">
               {(id) => (
-                <textarea
+                <select
                   id={id}
-                  name="observacao"
-                  defaultValue={rascunho.observacao ?? ''}
-                  maxLength={500}
-                  rows={4}
-                  onChange={() => definirRevisao(null)}
-                />
+                  name="carteiraId"
+                  value={carteira?.id ?? ''}
+                  onChange={(evento) => escolherCarteira(evento.target.value)}
+                >
+                  {carteiras.data.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.nome} · {item.principal ? 'Principal' : 'Secundária'}
+                    </option>
+                  ))}
+                </select>
               )}
             </Campo>
-          </div>
-          <h2 className="subtitulo mt-8">Carteira e rede</h2>
-          {carteiras.data.length ? (
-            <>
-              <Campo rotulo="Carteira cadastrada">
-                {(id) => (
-                  <select
-                    id={id}
-                    value={carteira?.id ?? ''}
-                    onChange={(evento) => {
-                      definirCarteira(evento.target.value);
-                      definirRevisao(null);
-                      conexao.reset();
-                    }}
-                  >
-                    {carteiras.data.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.nome} · {item.principal ? 'Principal' : 'Secundária'}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </Campo>
-              <Campo rotulo="Rede">
-                {(id) => (
-                  <select id={id} value={carteira?.rede} onChange={() => definirRevisao(null)}>
-                    <option>{carteira?.rede}</option>
-                  </select>
-                )}
-              </Campo>
-              <Campo rotulo="Endereço da carteira">
-                {(id) => <input id={id} value={carteira?.endereco ?? ''} readOnly />}
-              </Campo>
-              <Campo rotulo="Tipo de carteira">
-                {(id) => <input id={id} value={carteira?.tipo ?? ''} readOnly />}
-              </Campo>
-              <div className="flex flex-wrap gap-2 my-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={conexao.isPending}
-                  onClick={() => conexao.mutate(conectado ? 'desconectar' : 'conectar')}
-                >
-                  <Wallet size={17} />
-                  {conectado ? 'Desconectar carteira' : 'Conectar carteira'}
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  disabled={conexao.isPending}
-                  onClick={() => conexao.mutate('recusar')}
-                >
-                  Simular recusa
-                </Button>
-              </div>
-              <p role="status" className="text-sm mb-4">
-                {conectado
-                  ? 'Carteira conectada na simulação.'
-                  : conexao.data?.estado === 'recusada'
-                    ? 'Conexão recusada. Tente conectar novamente.'
-                    : 'Carteira desconectada.'}
-              </p>
-              {conexao.isError && <Falha erro={conexao.error} />}
-            </>
-          ) : (
-            <p className="mensagem">
-              Cadastre uma carteira para continuar. <Link to="/carteiras">Gerenciar carteiras</Link>
-            </p>
-          )}
-          <Button disabled={!conectado || revisar.isPending || Boolean(tentativa)}>
-            {revisar.isPending ? 'Revalidando…' : 'Revisar compra'}
+            <div className="acoes-conexao">
+              <Button
+                type="button"
+                disabled={conexao.isPending || !carteira}
+                onClick={() => {
+                  definirRevisao(null);
+                  conexao.mutate(conectado ? 'desconectar' : 'conectar');
+                }}
+              >
+                {conectado ? 'Desconectar carteira' : 'Conectar carteira'}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={conexao.isPending || !carteira}
+                onClick={() => {
+                  definirRevisao(null);
+                  conexao.mutate('recusar');
+                }}
+              >
+                Simular recusa
+              </Button>
+            </div>
+          </details>
+          <Campo classe="campo-observacao" rotulo="Observação do colecionador (opcional)">
+            {(id) => (
+              <textarea
+                id={id}
+                name="observacao"
+                defaultValue={rascunho.observacao ?? ''}
+                maxLength={500}
+                rows={6}
+                onChange={() => definirRevisao(null)}
+              />
+            )}
+          </Campo>
+          <Button className="continuar-pagamento-movel" type="submit">
+            Continuar
           </Button>
           {revisar.isError && <Falha erro={revisar.error} />}
         </form>
-        <aside className="painel-resumo">
-          <h2>Seus NFTs</h2>
-          {cotacao.data.itens.map((item) => (
-            <div className="item-resumo" key={`${item.nftId}:${item.edicaoId}`}>
-              <img src={item.imagem} width="54" height="54" alt="" />
-              <div>
-                <p>{item.nome}</p>
-                <small>
-                  {item.quantidade} × {exibirEth(item.preco)}
-                </small>
-              </div>
+        <aside className="painel-resumo resumo-pagamento">
+          <div className="nfts-pagamento">
+            <h2>Seus NFTs</h2>
+            <div className="cabecalho-resumo">
+              <span>NFTs</span>
+              <span>Subtotal</span>
             </div>
-          ))}
-          <ResumoValores cotacao={revisao ?? cotacao.data} />
+            {cotacao.data.itens.map((item) => (
+              <div className="item-resumo" key={`${item.nftId}:${item.edicaoId}`}>
+                <img src={item.imagem} width="70" height="70" alt="" />
+                <div>
+                  <h3>{item.nome}</h3>
+                  <p>ID do token: #{(item.nome.split('#')[1] ?? item.nftId).padStart(4, '0')}</p>
+                </div>
+                <span>(x {item.quantidade})</span>
+                <strong>{exibirEth(deWei(paraWei(item.preco) * BigInt(item.quantidade)))}</strong>
+              </div>
+            ))}
+            <details className="cupom-pagamento">
+              <summary>Tem um código promocional? Aplique aqui</summary>
+              <Cupom aplicado={cotacao.data.cupom} />
+            </details>
+            <ResumoValores cotacao={revisao ?? cotacao.data} />
+          </div>
+          <div className="carteiras-salvas-pagamento">
+            <h2>
+              {conectado ? 'Carteira conectada' : 'Selecione sua carteira'}
+              <Link to="/carteiras">Trocar carteira</Link>
+            </h2>
+            {carteiras.data.map((item) => (
+              <div
+                className={`cartao-carteira-pagamento ${carteira?.id === item.id ? 'selecionada' : ''}`}
+                key={item.id}
+              >
+                <label>
+                  <input
+                    type="radio"
+                    name="carteira-pagamento"
+                    checked={carteira?.id === item.id}
+                    onChange={() => escolherCarteira(item.id)}
+                  />
+                  <span>
+                    <strong>{item.nome}</strong>
+                    <small>
+                      {item.endereco.slice(0, 6)}…{item.endereco.slice(-4)}
+                    </small>
+                    <small>Rede {item.rede}</small>
+                  </span>
+                </label>
+                <Dialogo
+                  titulo="Opções da carteira"
+                  descricao={item.nome}
+                  gatilho={
+                    <button type="button" aria-label={`Opções de ${item.nome}`}>
+                      ⋮
+                    </button>
+                  }
+                >
+                  <div className="menu-conta">
+                    <Button
+                      disabled={conexao.isPending || carteira?.id !== item.id}
+                      onClick={() => conexao.mutate(conectado ? 'desconectar' : 'conectar')}
+                    >
+                      {conectado ? 'Desconectar carteira' : 'Conectar carteira'}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      disabled={conexao.isPending}
+                      onClick={() => conexao.mutate('recusar')}
+                    >
+                      Simular recusa
+                    </Button>
+                    <Link to="/carteiras">Gerenciar carteiras</Link>
+                  </div>
+                </Dialogo>
+              </div>
+            ))}
+          </div>
+          <fieldset className="provedores-carteira">
+            <legend>Carteira e rede</legend>
+            {['WalletConnect', 'MetaMask', 'Coinbase Wallet'].map((tipo) => (
+              <label key={tipo}>
+                <span className="emblema-provedor" aria-hidden="true">
+                  {tipo === 'WalletConnect' ? (
+                    'W'
+                  ) : tipo === 'MetaMask' ? (
+                    'M'
+                  ) : (
+                    <img src="/icones/carteira-provedor.svg" width="22" height="22" alt="" />
+                  )}
+                </span>
+                <span>{tipo}</span>
+                <input
+                  type="radio"
+                  name="provedor-carteira"
+                  value={tipo}
+                  aria-label={tipo}
+                  checked={Boolean(conectado && carteira?.tipo === tipo)}
+                  disabled={carteira?.tipo !== tipo || conexao.isPending}
+                  onChange={() => {
+                    definirRevisao(null);
+                    conexao.mutate('conectar');
+                  }}
+                />
+              </label>
+            ))}
+          </fieldset>
+          <p
+            role="status"
+            className={conexao.data?.estado === 'recusada' ? 'mensagem erro' : 'sr-only'}
+          >
+            {conectado
+              ? 'Carteira conectada na simulação.'
+              : conexao.data?.estado === 'recusada'
+                ? 'Conexão recusada. Tente conectar novamente.'
+                : 'Carteira desconectada.'}
+          </p>
+          {conexao.isError && <Falha erro={conexao.error} />}
+          {erros.carteira && (
+            <p className="erro" role="alert">
+              {erros.carteira}
+            </p>
+          )}
+          <p className="total-pagamento-movel">
+            Total: <strong>{exibirEth((revisao ?? cotacao.data).total)}</strong>
+          </p>
           {desatualizada && !tentativa && (
             <p role="alert" className="mensagem erro">
               A cotação mudou. Revise os valores e confirme novamente.
             </p>
           )}
-          {revisao && (
-            <div className="revisao">
-              <h3>Revise antes de confirmar</h3>
-              <p>
-                {dadosRevisados?.nome} · {dadosRevisados?.email}
-              </p>
-              <p>
-                {carteira?.nome} · {carteira?.rede}
-              </p>
-              <Button
-                className="w-full mt-4"
-                disabled={
-                  !conectado ||
-                  desatualizada ||
-                  enviar.isPending ||
-                  Boolean(tentativa) ||
-                  cotacao.data.itens.some((item) => item.quantidade > item.disponivel)
-                }
-                onClick={confirmar}
-              >
-                {enviar.isPending ? 'Enviando pedido…' : 'Confirmar compra'}
-              </Button>
-            </div>
+          {desatualizada && !tentativa && (
+            <Button type="button" onClick={() => revisar.mutate()}>
+              Revisar compra
+            </Button>
           )}
-          {enviar.isError && <Falha erro={enviar.error} />}
-          <p className="seguranca">
-            <ShieldCheck size={18} />
-            Demonstração. Nenhum valor real será cobrado.
-          </p>
+          <Dialogo
+            titulo="Revisar compra"
+            descricao="Confira os dados e a cotação atual antes de confirmar o pedido."
+            aberto={revisaoAberta}
+            aoAlterarAbertura={(aberto) => {
+              if (!aberto) definirRevisaoAberta(false);
+            }}
+            gatilho={
+              <Button
+                className="confirmar-pagamento"
+                form="formulario-pagamento"
+                type="submit"
+                disabled={!conectado || desatualizada || revisar.isPending || Boolean(tentativa)}
+              >
+                {revisar.isPending ? 'Revalidando…' : 'Confirmar compra'}
+              </Button>
+            }
+          >
+            {revisao && (
+              <>
+                <p>
+                  {dadosRevisados?.nome} · {dadosRevisados?.email}
+                </p>
+                <p>
+                  {carteira?.nome} · {carteira?.rede}
+                </p>
+                <ResumoValores cotacao={revisao} />
+                {desatualizada && (
+                  <p className="mensagem erro" role="alert">
+                    A cotação mudou. Revise os valores e confirme novamente.
+                  </p>
+                )}
+                {desatualizada && (
+                  <Button type="button" onClick={() => revisar.mutate()}>
+                    Revisar compra
+                  </Button>
+                )}
+                <div className="acoes-revisao">
+                  <Button
+                    disabled={
+                      !conectado ||
+                      desatualizada ||
+                      enviar.isPending ||
+                      Boolean(tentativa) ||
+                      cotacao.data.itens.some((item) => item.quantidade > item.disponivel)
+                    }
+                    onClick={confirmar}
+                  >
+                    {enviar.isPending ? 'Enviando pedido…' : 'Confirmar compra'}
+                  </Button>
+                  {tentativa && (
+                    <Button disabled={enviar.isPending} onClick={confirmar}>
+                      Recuperar pedido
+                    </Button>
+                  )}
+                  <Button variant="ghost" onClick={() => definirRevisaoAberta(false)}>
+                    Voltar aos dados
+                  </Button>
+                </div>
+              </>
+            )}
+            {enviar.isError && <Falha erro={enviar.error} />}
+          </Dialogo>
+          {revisao && !revisaoAberta && (
+            <Button type="button" variant="ghost" onClick={() => definirRevisaoAberta(true)}>
+              Ver revisão
+            </Button>
+          )}
+          {!revisaoAberta && enviar.isError && <Falha erro={enviar.error} />}
+          {!carteiras.data.length && (
+            <Link to="/carteiras">Cadastre uma carteira para continuar</Link>
+          )}
         </aside>
       </div>
     </>
@@ -657,75 +887,103 @@ export function AcompanharPedido() {
   const pendente = pedido.data.estado === 'pendente';
   return (
     <section className="recibo">
-      <div className="icone-recibo">
-        {confirmado ? (
-          <CheckCircle2 size={48} />
-        ) : pendente ? (
-          <Clock3 size={48} />
-        ) : (
-          <XCircle size={48} />
-        )}
+      <Link
+        to={confirmado ? '/' : '/carrinho'}
+        className="fechar-recibo"
+        aria-label="Fechar recibo"
+      >
+        <img src="/icones/fechar.svg" width="18" height="18" alt="" />
+      </Link>
+      <div className="cabecalho-recibo">
+        <div className="icone-recibo">
+          {confirmado ? (
+            <img src="/icones/recibo-confirmado.svg" width="69" height="85" alt="" />
+          ) : pendente ? (
+            <Clock3 size={64} />
+          ) : (
+            <XCircle size={64} />
+          )}
+        </div>
+        <h1 aria-live="polite">
+          {confirmado
+            ? 'Seus NFTs agora estão na sua carteira'
+            : pendente
+              ? 'Pedido pendente'
+              : 'Pagamento recusado'}
+        </h1>
       </div>
-      <p className="sobretitulo">{pedido.data.id}</p>
-      <h1 aria-live="polite">
-        {confirmado
-          ? 'Sua coleção ganhou uma nova história.'
-          : pendente
-            ? 'Pedido pendente'
-            : 'Pagamento recusado'}
-      </h1>
-      <p className="descricao">
-        {confirmado
-          ? 'Compra confirmada na simulação. Confira seu recibo.'
-          : pendente
-            ? 'Aguardando a confirmação da simulação. Você pode recarregar esta página com segurança.'
-            : 'A simulação recusou o pagamento. Seus itens foram preservados no carrinho.'}
-      </p>
-      <div className="painel-resumo text-left">
-        <h2>{confirmado ? 'Recibo do pedido' : 'Resumo do pedido'}</h2>
+      <dl className="identificacao-recibo">
+        <div>
+          <dt>ID da transação</dt>
+          <dd title={pedido.data.transacao || pedido.data.id}>
+            {pedido.data.transacao
+              ? `${pedido.data.transacao.slice(0, 6)}…${pedido.data.transacao.slice(-4)}`
+              : pedido.data.id}
+          </dd>
+        </div>
+        <div>
+          <dt>Data</dt>
+          <dd>
+            {new Intl.DateTimeFormat('pt-BR', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            }).format(new Date(pedido.data.criadoEm))}
+          </dd>
+        </div>
+        <div>
+          <dt>Total</dt>
+          <dd>{exibirEth(pedido.data.cotacao.total)}</dd>
+        </div>
+        <div>
+          <dt>Carteira</dt>
+          <dd>{pedido.data.carteira.tipo}</dd>
+        </div>
+      </dl>
+      <div className="corpo-recibo">
+        <h2>Detalhes da transação</h2>
+        <div className="colunas-recibo">
+          <span>NFTs</span>
+          <span>Edições</span>
+          <span>Subtotal</span>
+        </div>
         {pedido.data.cotacao.itens.map((item) => (
-          <div className="item-resumo" key={`${item.nftId}:${item.edicaoId}`}>
-            <img src={item.imagem} alt="" width="60" height="60" />
+          <div className="item-recibo" key={`${item.nftId}:${item.edicaoId}`}>
+            <img src={item.imagem} width="70" height="70" alt="" />
             <div>
               <h3>{item.nome}</h3>
-              <p>
-                {item.quantidade} × {exibirEth(item.preco)} · {item.edicao}
-              </p>
+              <p>ID do token: #{(item.nome.split('#')[1] ?? item.nftId).padStart(4, '0')}</p>
             </div>
+            <span>(x {item.quantidade})</span>
+            <strong>{exibirEth(deWei(paraWei(item.preco) * BigInt(item.quantidade)))}</strong>
           </div>
         ))}
-        <ResumoValores cotacao={pedido.data.cotacao} />
-        <p>Carteira: {pedido.data.carteira.nome}</p>
-        <p>
-          Data:{' '}
-          {new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium', timeStyle: 'short' }).format(
-            new Date(pedido.data.criadoEm),
-          )}
+        <div className="valores-recibo">
+          <ResumoValores cotacao={pedido.data.cotacao} />
+        </div>
+        <p className="descricao-recibo">
+          {confirmado
+            ? `Transação confirmada na simulação da rede ${pedido.data.carteira.rede}. O recibo registra as obras e os valores desta compra. Nenhum ativo real foi transferido.`
+            : pendente
+              ? 'Aguardando a confirmação da simulação. Você pode recarregar esta página com segurança.'
+              : 'A simulação recusou o pagamento. Seus itens foram preservados no carrinho.'}
         </p>
-        <p>Rede: {pedido.data.carteira.rede}</p>
-        {confirmado && (
-          <div className="mt-4">
+        {confirmado ? (
+          <Dialogo
+            titulo="Explorador simulado"
+            descricao="Esta referência não existe em uma blockchain real."
+            gatilho={<Button className="explorador-recibo">Ver no Etherscan</Button>}
+          >
             <p>Transação simulada</p>
             <code className="endereco">{pedido.data.transacao}</code>
-            <Dialogo
-              titulo="Explorador simulado"
-              descricao="Esta referência não existe em uma blockchain real."
-              gatilho={
-                <Button variant="ghost" size="sm">
-                  <Search size={16} aria-hidden="true" /> Ver referência da transação
-                </Button>
-              }
-            >
-              <p className="endereco">{pedido.data.transacao}</p>
-            </Dialogo>
-          </div>
+            <p>Pedido: {pedido.data.id}</p>
+          </Dialogo>
+        ) : (
+          <Button asChild className="explorador-recibo">
+            <Link to="/carrinho">Voltar ao carrinho</Link>
+          </Button>
         )}
       </div>
-      <Button asChild className="mt-6">
-        <Link to={confirmado ? '/' : '/carrinho'}>
-          {confirmado ? 'Continuar explorando' : 'Voltar ao carrinho'}
-        </Link>
-      </Button>
     </section>
   );
 }

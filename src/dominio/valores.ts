@@ -12,7 +12,7 @@ export function deWei(valor: bigint): string {
   const fracao = (valor % escalaWei).toString().padStart(18, '0').replace(/0+$/, '');
   return `${valor / escalaWei}${fracao ? `.${fracao}` : ''}`;
 }
-/** Apresenta o valor integral em português sem arredondamentos ocultos. */
+/** Apresenta o valor integral com o separador decimal do Figma, sem arredondamentos ocultos. */
 export function exibirEth(valor: string): string {
-  return `${valor.replace('.', ',')} ETH`;
+  return `${valor} ETH`;
 }
