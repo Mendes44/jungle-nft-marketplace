@@ -1,4 +1,4 @@
-/** Confere todas as telas em três larguras e em uma viewport equivalente a zoom de 200%. */
+/** Confere todas as telas em seis larguras e em uma viewport equivalente a zoom de 200%. */
 import { chromium, expect } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { abrir, entrar, adicionar, revisarCompra } from '../tests/apoio.ts';
@@ -29,7 +29,7 @@ try {
     '/pedidos',
     recibo,
   ];
-  for (const largura of [390, 768, 1440, 720]) {
+  for (const largura of [320, 360, 390, 414, 768, 1440, 720]) {
     await pagina.setViewportSize({ width: largura, height: largura === 720 ? 450 : 1000 });
     for (const caminho of caminhos) {
       await pagina.goto(caminho);

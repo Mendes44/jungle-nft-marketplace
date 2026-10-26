@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
 import axios from 'axios';
-import { Clock3, XCircle } from 'lucide-react';
+import { Clock3, Trash2, XCircle } from 'lucide-react';
 import {
   carteiraSchema,
   carrinhoSchema,
@@ -91,24 +91,28 @@ function Cupom({ aplicado }: { aplicado: string }) {
     >
       <Campo rotulo="Código promocional">
         {(id) => (
-          <div className="flex">
+          <div className="entrada-cupom">
             <input
               id={id}
               value={codigo}
               onChange={(evento) => definirCodigo(evento.target.value)}
               placeholder="Digite o código promocional..."
             />
-            <Button disabled={aplicar.isPending}>Aplicar</Button>
+            <Button className="aplicar-cupom" disabled={aplicar.isPending}>
+              Aplicar
+            </Button>
           </div>
         )}
       </Campo>
       {aplicado && (
-        <div className="text-xs flex items-center justify-between">
+        <div className="cupom-aplicado">
           <span>{aplicado} aplicado</span>
           <Button
             type="button"
             variant="ghost"
             size="sm"
+            className="remover-cupom"
+            disabled={aplicar.isPending}
             onClick={() => {
               definirCodigo('');
               aplicar.mutate('');
@@ -203,7 +207,9 @@ export function Carrinho() {
                     })
                   }
                 />
-                <p className="total-item">
+                <p
+                  className={`total-item ${exibirEth(deWei(paraWei(item.preco) * BigInt(item.quantidade))).length > 16 ? 'valor-longo' : ''}`}
+                >
                   {exibirEth(deWei(paraWei(item.preco) * BigInt(item.quantidade)))}
                 </p>
                 <Dialogo
@@ -216,7 +222,7 @@ export function Carrinho() {
                       className="remover-item"
                       aria-label={`Remover ${item.nome}`}
                     >
-                      <img src="/icones/lixeira.svg" width="20" height="20" alt="" />
+                      <Trash2 size={20} aria-hidden="true" />
                     </Button>
                   }
                 >

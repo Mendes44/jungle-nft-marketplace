@@ -771,6 +771,7 @@ main {
   white-space: nowrap;
 }
 .selo-raridade {
+  font-weight: 700;
   display: none;
 }
 .grade-nfts > .esqueleto {
@@ -1235,7 +1236,7 @@ main {
   padding: 8px;
   border-radius: 4px 0 0 4px;
 }
-.formulario-cupom button {
+.formulario-cupom .aplicar-cupom {
   height: 40px;
   width: 102px;
   font-size: 16px;
@@ -1253,11 +1254,17 @@ main {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 4px 16px;
+  flex-wrap: wrap;
+  min-width: 0;
   min-height: 24px;
   margin: 0;
 }
 .resumo-valores dd {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  margin-inline-start: auto;
   text-align: right;
   font-size: 18px;
   line-height: 24px;
@@ -1636,7 +1643,7 @@ main {
     padding: 12px 16px;
     font-size: 14px;
   }
-  .formulario-cupom button {
+  .formulario-cupom .aplicar-cupom {
     height: 50px;
     width: 97px;
     margin-top: -1px;
@@ -1940,20 +1947,25 @@ main {
     margin: 0;
   }
   .hero {
-    display: block;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 138px;
+    align-items: center;
+    gap: 16px;
     position: relative;
     margin: 0 0 16px;
-    padding: 0;
+    padding: 16px 16px 48px;
     min-height: 190px;
-    height: 190px;
+    height: auto;
     border-radius: 32px;
     background: radial-gradient(ellipse at 5% 40%, #765031, #2c1b11 90%);
     overflow: hidden;
   }
   .hero > div:first-child {
-    height: 190px;
-    width: 66%;
-    padding: 6px 0 0 16px;
+    position: static;
+    height: auto;
+    width: auto;
+    min-width: 0;
+    padding: 0;
   }
   .hero .sobretitulo {
     font-size: 12px;
@@ -1991,9 +2003,9 @@ main {
     display: inline-block;
   }
   .hero-arte {
-    position: absolute;
-    right: 16px;
-    top: 10px;
+    position: relative;
+    right: auto;
+    top: auto;
     width: 138px;
     height: 138px;
     border-radius: 16px;
@@ -2017,7 +2029,8 @@ main {
   .indicadores-hero {
     position: absolute;
     right: auto;
-    left: calc((100vw - 48px) / 2 - 16px);
+    left: 50%;
+    transform: translateX(-50%);
     bottom: 6px;
     gap: 6px;
   }
@@ -2043,7 +2056,7 @@ main {
   }
   .barra-catalogo {
     display: block;
-    height: 20px;
+    height: auto;
     min-height: 0;
     margin: 0 0 16px;
   }
@@ -2051,9 +2064,12 @@ main {
     display: none;
   }
   .abas-catalogo {
-    gap: 4px;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    white-space: normal;
   }
   .abas-catalogo button {
+    flex: 0 0 auto;
     font-size: 14px;
     line-height: 20px;
     padding: 0 0 2px;
@@ -3583,9 +3599,6 @@ main {
       url('/imagens/hero-movel-halo-1.png') -24px -31px / 192px 248px no-repeat,
       url('/imagens/hero-movel-base.png') center / 100% 100% no-repeat;
   }
-  .hero-arte {
-    top: 10.5px;
-  }
   .hero-arte > img.arte-secundaria {
     width: 58px;
     height: 58px;
@@ -3689,5 +3702,158 @@ main {
     min-height: 0;
     max-height: calc(100dvh - 48px);
     overflow-y: auto;
+  }
+}
+
+/* Controles com área de toque e espaço próprio para conteúdo variável. */
+.indicadores-hero {
+  align-items: center;
+  gap: 0;
+}
+.indicadores-hero button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--cobre);
+  cursor: pointer;
+}
+.indicadores-hero .indicador-hero i {
+  display: block;
+  opacity: 0.45;
+}
+.indicadores-hero .indicador-hero[aria-pressed='true'] i {
+  opacity: 1;
+  transform: scale(1.35);
+}
+.hero {
+  touch-action: pan-y;
+}
+.entrada-cupom {
+  display: flex;
+  min-width: 0;
+}
+.entrada-cupom input {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.aplicar-cupom {
+  flex: 0 0 auto;
+}
+.cupom-aplicado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 12px;
+}
+.formulario-cupom .remover-cupom {
+  width: auto;
+  max-width: 100%;
+  min-height: 40px;
+  height: auto;
+  padding: 8px 12px;
+  white-space: normal;
+}
+.resumo-valores dt {
+  flex: 1 1 120px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.acoes-revisao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+.acoes-revisao > button {
+  max-width: 100%;
+  white-space: normal;
+}
+.conteudo-aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  touch-action: pan-y;
+}
+.conteudo-aviso span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.conteudo-aviso button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  color: var(--cobre);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+@media (max-width: 600px) {
+  .hero .botao-explorar {
+    margin: 8px auto 0;
+    justify-content: center;
+    min-height: 40px;
+  }
+  .hero .indicadores-hero button {
+    width: 30px;
+    height: 40px;
+  }
+  .salvar-perfil {
+    align-self: center;
+  }
+  .dialogo-conteudo > button:not(.dialogo-fechar),
+  .formulario-carteira > button {
+    display: flex;
+    margin-inline: auto;
+    max-width: 100%;
+  }
+  .acoes-revisao {
+    flex-direction: column;
+  }
+  .acoes-revisao > button {
+    width: min(100%, 280px);
+    min-height: 44px;
+    height: auto;
+  }
+}
+@media (max-width: 380px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .hero-arte {
+    justify-self: center;
+  }
+  .hero h1,
+  .hero .sobretitulo,
+  .hero .descricao {
+    text-align: center;
+  }
+}
+
+.item-carrinho .preco-unitario,
+.item-carrinho .total-item {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  .item-carrinho:has(.valor-longo) {
+    grid-template-rows: minmax(50px, auto) minmax(50px, auto) auto;
+  }
+  .item-carrinho .total-item.valor-longo {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    padding: 8px 12px;
   }
 }

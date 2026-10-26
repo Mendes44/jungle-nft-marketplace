@@ -1,5 +1,5 @@
 /** Reconciliação Socket.IO -> REST; eventos nunca carregam valores aceitos sem validação. */
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { Socket } from 'socket.io-client';
 import { eventoSchema } from '../dominio/contratos';
 import { cache } from './api';
@@ -10,7 +10,8 @@ import { origemSocket } from './configuracao';
 export function useTempoReal() {
   const { token, perfil } = useSessao();
   const [conectado, definirConectado] = useState(false);
-  const [aviso, definirAviso] = useState('');
+  const [aviso, definirAviso] = useState<{ mensagem: string; id: number } | null>(null);
+  const dispensarAviso = useCallback(() => definirAviso(null), []);
   useEffect(() => {
     let ativo = true;
     const versoes = new Map<string, number>();
@@ -32,7 +33,10 @@ export function useTempoReal() {
       if (evento.versao <= (versoes.get(chave) ?? 0)) return;
       versoes.set(chave, evento.versao);
       if (nome === 'nft.updated') {
-        definirAviso('Preço ou disponibilidade atualizado. Confira os valores antes de comprar.');
+        definirAviso({
+          mensagem: 'Preço ou disponibilidade atualizado. Confira os valores antes de comprar.',
+          id: Date.now(),
+        });
         for (const recurso of ['catalogo', 'nft', 'carrinho', 'cotacao'])
           void cache.invalidateQueries({ queryKey: [recurso] });
       } else {
@@ -64,5 +68,5 @@ export function useTempoReal() {
       socket?.disconnect();
     };
   }, [token, perfil?.id]);
-  return { conectado, aviso };
+  return { conectado, aviso, dispensarAviso };
 }

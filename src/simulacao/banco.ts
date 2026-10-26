@@ -280,14 +280,22 @@ export function linhasCarrinho(banco: Banco, dono: string) {
   });
 }
 
+/** Normaliza o código e distingue formato inválido, inexistência e expiração. */
+export function validarCupom(entrada: string, cenario = 'padrao'): string {
+  const codigo = entrada.trim().toUpperCase();
+  if (!codigo) return '';
+  if (cenario === 'cupom-invalido' || !/^[A-Z0-9]{3,32}$/.test(codigo))
+    throw new FalhaApi(422, 'Cupom inválido. Use de 3 a 32 letras ou números.');
+  if (cenario === 'cupom-inexistente') throw new FalhaApi(422, 'Cupom não existe.');
+  if (codigo === 'EXPIRADO') throw new FalhaApi(422, 'Este cupom expirou.');
+  if (codigo !== 'KURIO10') throw new FalhaApi(422, 'Cupom não existe.');
+  return codigo;
+}
+
 /** Valida cupom no servidor e calcula desconto de 10% truncado em wei. */
 export function cotar(banco: Banco, dono: string): Cotacao {
   const carrinho = obterCarrinho(banco, dono);
-  if (carrinho.cupom && carrinho.cupom !== 'KURIO10')
-    throw new FalhaApi(
-      422,
-      carrinho.cupom === 'EXPIRADO' ? 'Este cupom expirou.' : 'Cupom inválido.',
-    );
+  validarCupom(carrinho.cupom);
   const itens = linhasCarrinho(banco, dono);
   const subtotal = itens.reduce(
     (soma, item) => soma + paraWei(item.preco) * BigInt(item.quantidade),

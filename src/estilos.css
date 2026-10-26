@@ -498,7 +498,7 @@ fieldset {
   overflow-wrap: anywhere;
 }
 .resumo-valores dt {
-  flex-shrink: 0;
+  min-width: 0;
 }
 .links-rodape a,
 .links-rodape button {

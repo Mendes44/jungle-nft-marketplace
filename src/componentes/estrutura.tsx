@@ -9,6 +9,7 @@ import { carrinhoSchema } from '../dominio/contratos';
 import { alterar, cache, consultar, trocarSessao } from '../infraestrutura/api';
 import { useSessao } from '../infraestrutura/sessao';
 import { useTempoReal } from '../infraestrutura/tempo-real';
+import { AvisoTempoReal } from './aviso-tempo-real';
 import { Button } from './ui/button';
 import { Campo, Dialogo, Falha } from './comuns';
 import { IconeOriginal, RodapeOriginal } from './vitrine';
@@ -89,7 +90,7 @@ export function Estrutura() {
   const { perfil, token } = useSessao();
   const navegar = useNavigate();
   const local = useRouterState({ select: (estado) => estado.location });
-  const { conectado, aviso } = useTempoReal();
+  const { conectado, aviso, dispensarAviso } = useTempoReal();
   const carrinho = useQuery({
     queryKey: ['carrinho', perfil?.id ?? token],
     queryFn: ({ signal }) => consultar('/carrinho', carrinhoSchema, signal),
@@ -239,9 +240,7 @@ export function Estrutura() {
           {conectado ? 'Atualizações em tempo real ativas' : 'Reconectando atualizações…'}
           <span className="selo-demo">AMBIENTE DE DEMONSTRAÇÃO</span>
         </div>
-        <div aria-live="polite" aria-atomic="true" className="aviso-tempo-real">
-          {aviso}
-        </div>
+        <AvisoTempoReal aviso={aviso} fechar={dispensarAviso} />
         {sair.isError && <Falha erro={sair.error} />}
         <main id="conteudo" tabIndex={-1}>
           <Outlet />

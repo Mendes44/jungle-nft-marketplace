@@ -12,4 +12,6 @@ export const cenarios = [
   'pagamento-recusado',
   'timeout-pedido',
   'pedido-lento',
+  'cupom-invalido',
+  'cupom-inexistente',
 ] as const;

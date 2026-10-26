@@ -7,7 +7,15 @@ import {
   itemSchema,
   type Pedido,
 } from '../dominio/contratos';
-import { cotar, FalhaApi, linhasCarrinho, mesmaLinha, obterCarrinho, salvarBanco } from './banco';
+import {
+  cotar,
+  FalhaApi,
+  linhasCarrinho,
+  mesmaLinha,
+  obterCarrinho,
+  salvarBanco,
+  validarCupom,
+} from './banco';
 import type { ContextoRequisicao } from './contexto';
 /** Valida a edição e o estoque antes de alterar a quantidade da linha composta. */
 export async function alterarCarrinho(contexto: ContextoRequisicao): Promise<Response> {
@@ -44,12 +52,7 @@ export async function consultarCotacao(contexto: ContextoRequisicao): Promise<Re
 
   if (metodo === 'POST') {
     const { cupom } = z.object({ cupom: z.string() }).parse(await lerCorpo());
-    if (cupom && cupom.toUpperCase() !== 'KURIO10')
-      throw new FalhaApi(
-        422,
-        cupom.toUpperCase() === 'EXPIRADO' ? 'Este cupom expirou.' : 'Cupom inválido.',
-      );
-    obterCarrinho(banco, dono).cupom = cupom.toUpperCase();
+    obterCarrinho(banco, dono).cupom = validarCupom(cupom, banco.cenario);
     salvarBanco(banco);
   }
   return HttpResponse.json(cotar(banco, dono));

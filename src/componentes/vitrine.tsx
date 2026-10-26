@@ -1,6 +1,7 @@
 /** Composição editorial e elementos gráficos conferidos nos frames originais do desafio. */
 import { Link } from '@tanstack/react-router';
-import { ArrowRight } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Dialogo } from './comuns';
 
 /** Renderiza o vetor exportado da referência sem substituir seus traços por outro conjunto. */
@@ -52,8 +53,42 @@ export function AcaoEditorial({ texto, descricao }: { texto: string; descricao?:
 
 /** O destaque compartilha tipografia, recorte e versões de texto do desktop e do mobile. */
 export function DestaquePrincipal() {
+  const [indice, definirIndice] = useState(0);
+  const toque = useRef<{ x: number; y: number } | null>(null);
+  const destaques = [
+    { id: '1', imagem: 0, nome: 'Emerald Ape #042' },
+    { id: '2', imagem: 1, nome: 'Sage Nomad #009' },
+    { id: '6', imagem: 2, nome: 'Ivory Baron #088' },
+  ];
+  const destaque = destaques[indice];
+  function navegar(passo: number) {
+    definirIndice((atual) => (atual + passo + destaques.length) % destaques.length);
+  }
   return (
-    <section className="hero">
+    <section
+      className="hero"
+      aria-label="Destaques da coleção"
+      aria-roledescription="carrossel"
+      onKeyDown={(evento) => {
+        if (evento.key === 'ArrowRight' || evento.key === 'ArrowLeft') {
+          evento.preventDefault();
+          navegar(evento.key === 'ArrowRight' ? 1 : -1);
+        }
+      }}
+      onTouchStart={(evento) => {
+        const primeiro = evento.touches[0];
+        toque.current = { x: primeiro.clientX, y: primeiro.clientY };
+      }}
+      onTouchEnd={(evento) => {
+        const ultimo = evento.changedTouches[0];
+        const inicio = toque.current;
+        toque.current = null;
+        if (!inicio) return;
+        const dx = ultimo.clientX - inicio.x;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(ultimo.clientY - inicio.y))
+          navegar(dx < 0 ? 1 : -1);
+      }}
+    >
       <div>
         <p className="sobretitulo">Bem-vindo à Kurio</p>
         <h1>
@@ -70,45 +105,54 @@ export function DestaquePrincipal() {
         </h1>
         <p className="descricao">
           <span className="texto-desktop">
-            Descubra NFTs selecionados de criadores emergentes e consagrados.
-            <br />
-            Colecione arte digital rara, apoie artistas e tenha uma parte da
-            <br />
+            Descubra NFTs selecionados de criadores emergentes e consagrados. <br />
+            Colecione arte digital rara, apoie artistas e tenha uma parte da <br />
             cultura da internet.
           </span>
           <span className="texto-mobile">
-            Descubra NFTs selecionados
-            <br />
-            de criadores do mundo
-            <br />
-            todo.
+            Descubra NFTs selecionados de criadores do mundo todo.
           </span>
         </p>
         <a className="botao-explorar" href="#catalogo">
           EXPLORAR <ArrowRight className="texto-mobile" size={17} aria-hidden="true" />
         </a>
-        <div className="indicadores-hero" aria-hidden="true">
-          <i />
-          <i />
-          <i />
+        <div className="indicadores-hero" aria-label="Navegação dos destaques">
+          <button type="button" aria-label="Destaque anterior" onClick={() => navegar(-1)}>
+            <ChevronLeft size={16} aria-hidden="true" />
+          </button>
+          {destaques.map((item, posicao) => (
+            <button
+              type="button"
+              key={item.id}
+              className="indicador-hero"
+              aria-label={`Mostrar destaque ${posicao + 1}`}
+              aria-pressed={posicao === indice}
+              onClick={() => definirIndice(posicao)}
+            >
+              <i />
+            </button>
+          ))}
+          <button type="button" aria-label="Próximo destaque" onClick={() => navegar(1)}>
+            <ChevronRight size={16} aria-hidden="true" />
+          </button>
         </div>
       </div>
       <Link
         className="hero-arte"
         to="/nft/$nftId"
-        params={{ nftId: '1' }}
-        aria-label="Conhecer Emerald Ape #042"
+        params={{ nftId: destaque.id }}
+        aria-label={`Conhecer ${destaque.nome}`}
       >
         <img
-          src="/imagens/colecao-0.webp"
-          alt="Emerald Ape #042"
+          src={`/imagens/colecao-${destaque.imagem}.webp`}
+          alt={destaque.nome}
           width="450"
           height="450"
           fetchPriority="high"
         />
         <img
           className="arte-secundaria"
-          src="/imagens/colecao-1.webp"
+          src={`/imagens/colecao-${destaques[(indice + 1) % destaques.length].imagem}.webp`}
           alt=""
           width="72"
           height="72"
