@@ -5,8 +5,8 @@
     "processador": "12th Gen Intel(R) Core(TM) i5-1235U",
     "memoriaGB": 16,
     "node": "v24.18.1",
-    "identificadorBuild": "8cc49eb19d2b29f47b82b8896eb219993298dd7fcfb9a48c18ef8c8269adb25e",
-    "origem": "http://127.0.0.1:4173",
+    "identificadorBuild": "3c29085a67698956b077a7d23a46c6f3c9712657165121149c2406e5618efa61",
+    "origem": "http://127.0.0.1:4174",
     "condicoes": "Build Vite otimizado, MSW padrão, fontes e imagens locais, throttling padrão Lighthouse por perfil, navegador limpo por medição e intervalo de 5 s entre navegadores."
   },
   "resultados": [
@@ -18,46 +18,46 @@
           "nome": "inicio-mobile-1",
           "versao": "13.5.0",
           "navegador": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
-          "indiceCpu": 3335.5,
+          "indiceCpu": 3203.5,
           "categorias": {
             "performance": 92,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 3135.8507499999996,
+          "lcp": 3206.3104999999996,
           "cls": 0,
-          "tbt": 37.5
+          "tbt": 43.56899999999996
         },
         {
           "nome": "inicio-mobile-2",
           "versao": "13.5.0",
           "navegador": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
-          "indiceCpu": 3247,
-          "categorias": {
-            "performance": 90,
-            "accessibility": 100,
-            "best-practices": 100,
-            "seo": 100
-          },
-          "lcp": 3343.824,
-          "cls": 0,
-          "tbt": 77.85300000000007
-        },
-        {
-          "nome": "inicio-mobile-3",
-          "versao": "13.5.0",
-          "navegador": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
-          "indiceCpu": 3085,
+          "indiceCpu": 3179,
           "categorias": {
             "performance": 92,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 3092.82975,
+          "lcp": 3183.6802500000003,
           "cls": 0,
-          "tbt": 36
+          "tbt": 39
+        },
+        {
+          "nome": "inicio-mobile-3",
+          "versao": "13.5.0",
+          "navegador": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
+          "indiceCpu": 3375,
+          "categorias": {
+            "performance": 92,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "lcp": 3176.3545000000004,
+          "cls": 0,
+          "tbt": 37.80099999999993
         }
       ],
       "medianas": {
@@ -65,9 +65,9 @@
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100,
-        "lcp": 3135.8507499999996,
+        "lcp": 3183.6802500000003,
         "cls": 0,
-        "tbt": 37.5
+        "tbt": 39
       }
     },
     {
@@ -78,14 +78,14 @@
           "nome": "inicio-desktop-1",
           "versao": "13.5.0",
           "navegador": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
-          "indiceCpu": 3345.5,
+          "indiceCpu": 3306,
           "categorias": {
             "performance": 99,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 837.9159999999999,
+          "lcp": 822.212,
           "cls": 0,
           "tbt": 0
         },
@@ -93,14 +93,14 @@
           "nome": "inicio-desktop-2",
           "versao": "13.5.0",
           "navegador": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
-          "indiceCpu": 3279.5,
+          "indiceCpu": 3337.5,
           "categorias": {
-            "performance": 99,
+            "performance": 100,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 839.8679999999999,
+          "lcp": 750.3960000000001,
           "cls": 0,
           "tbt": 0
         },
@@ -108,14 +108,14 @@
           "nome": "inicio-desktop-3",
           "versao": "13.5.0",
           "navegador": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
-          "indiceCpu": 3388.5,
+          "indiceCpu": 3250.5,
           "categorias": {
             "performance": 99,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 850.179,
+          "lcp": 829.2239999999999,
           "cls": 0,
           "tbt": 0
         }
@@ -125,7 +125,7 @@
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100,
-        "lcp": 839.8679999999999,
+        "lcp": 822.212,
         "cls": 0,
         "tbt": 0
       }
@@ -138,29 +138,29 @@
           "nome": "detalhe-mobile-1",
           "versao": "13.5.0",
           "navegador": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
-          "indiceCpu": 3203.5,
+          "indiceCpu": 3467.5,
           "categorias": {
             "performance": 90,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 3371.276499999999,
+          "lcp": 3415.5315,
           "cls": 0,
-          "tbt": 47
+          "tbt": 52
         },
         {
           "nome": "detalhe-mobile-2",
           "versao": "13.5.0",
           "navegador": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
-          "indiceCpu": 3371,
+          "indiceCpu": 3538.5,
           "categorias": {
             "performance": 90,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 3379.3454999999994,
+          "lcp": 3428.2245000000003,
           "cls": 0,
           "tbt": 50
         },
@@ -168,16 +168,16 @@
           "nome": "detalhe-mobile-3",
           "versao": "13.5.0",
           "navegador": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
-          "indiceCpu": 3468.5,
+          "indiceCpu": 3339,
           "categorias": {
             "performance": 90,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 3430.1209999999996,
+          "lcp": 3411.66125,
           "cls": 0,
-          "tbt": 47
+          "tbt": 49
         }
       ],
       "medianas": {
@@ -185,9 +185,9 @@
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100,
-        "lcp": 3379.3454999999994,
+        "lcp": 3415.5315,
         "cls": 0,
-        "tbt": 47
+        "tbt": 50
       }
     },
     {
@@ -198,14 +198,14 @@
           "nome": "detalhe-desktop-1",
           "versao": "13.5.0",
           "navegador": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
-          "indiceCpu": 3414.5,
+          "indiceCpu": 3445,
           "categorias": {
-            "performance": 99,
+            "performance": 100,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 822.9989999999999,
+          "lcp": 754.5195000000001,
           "cls": 0.02562768146396988,
           "tbt": 0
         },
@@ -213,14 +213,14 @@
           "nome": "detalhe-desktop-2",
           "versao": "13.5.0",
           "navegador": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
-          "indiceCpu": 1949.5,
+          "indiceCpu": 3387.5,
           "categorias": {
             "performance": 100,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 796.1375,
+          "lcp": 811.1325,
           "cls": 0.02562768146396988,
           "tbt": 0
         },
@@ -228,14 +228,14 @@
           "nome": "detalhe-desktop-3",
           "versao": "13.5.0",
           "navegador": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
-          "indiceCpu": 3315,
+          "indiceCpu": 3188.5,
           "categorias": {
             "performance": 100,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 802.7975,
+          "lcp": 805.6,
           "cls": 0.02562768146396988,
           "tbt": 0
         }
@@ -245,7 +245,7 @@
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100,
-        "lcp": 802.7975,
+        "lcp": 805.6,
         "cls": 0.02562768146396988,
         "tbt": 0
       }

@@ -45,7 +45,7 @@ São dados fictícios. Cada conta possui favoritos, perfil, carteiras, carrinho 
 ## Testar a compra
 
 1. Escolha uma obra e uma edição; ajuste a quantidade e adicione ao carrinho.
-2. Aplique `KURIO10` para obter 10% de desconto. `EXPIRADO` permite testar um cupom vencido.
+2. Aplique `KURIO10` para obter 10% de desconto (aceita espaços nas extremidades e letras minúsculas). Use `KURIO!` para **Cupom inválido**, `NAOEXISTE` para **Cupom não existe** e `EXPIRADO` para um cupom vencido. Uma tentativa recusada preserva o desconto já aplicado; **Remover cupom** restaura os totais sem desconto.
 3. Entre na conta. Os itens do visitante serão mesclados com seu carrinho, respeitando o estoque.
 4. Preencha os dados do colecionador. Use `KURIO` no código de indicação e `ana.eth` no nome ENS. O ENS aceita maiúsculas e é normalizado para minúsculas; não consulta um registro real.
 5. No celular, clique em **Continuar** para abrir as carteiras. Escolha uma carteira cadastrada e clique no seu provedor (por exemplo, **MetaMask**) para conectar. No desktop, **Usar outra carteira?** oferece seleção, conexão, recusa e desconexão.
@@ -58,24 +58,29 @@ O nome ENS e o código de indicação são campos da demonstração. A rede acom
 
 Abra **Simulação**, no rodapé desktop ou no botão central da navegação móvel. O painel utiliza endpoints REST para mudar cenários e emitir eventos através do transporte Socket.IO.
 
-| Cenário ou ação                | Comportamento                                                                                              |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------------- |
-| `padrao`                       | Respostas com 60 ms e compra confirmada                                                                    |
-| `vazio`                        | Catálogo sem resultados                                                                                    |
-| `lento`                        | Latência de 1,8 s para observar skeletons e shimmer                                                        |
-| `variavel`                     | Busca curta com 1,2 s e buscas maiores com 80 ms; verifica descarte de respostas antigas                   |
-| `sem-conexao`                  | Falha de transporte intencional; volte a `padrao` para recuperar                                           |
-| `erro-500` / `erro-403`        | Indisponibilidade e falta de permissão                                                                     |
-| `sessao-expirada`              | Invalida a sessão; volte a `padrao` antes de entrar novamente                                              |
-| `favorito-falha`               | Erro de mutation com rollback do favorito                                                                  |
-| `pagamento-recusado`           | Recusa preserva os itens e devolve a reserva de estoque                                                    |
-| `timeout-pedido`               | Pedido criado, resposta de 5,5 s excede o timeout de 4 s; **Recuperar pedido** reutiliza a mesma tentativa |
-| `pedido-lento`                 | Pedido pendente por 60 s; pode ser concluído pelo painel                                                   |
-| Alterar preço / esgotar edição | Muda o NFT 1 e invalida a revisão antiga do checkout                                                       |
-| Evento duplicado / antigo      | Verifica descarte por versão, sem regredir os dados                                                        |
-| Interromper Socket.IO          | Reconexão relê os recursos ativos por REST                                                                 |
-| Expirar sessão                 | Exige novo login e preserva o rascunho do checkout                                                         |
-| Restaurar demonstração         | Restaura fixtures e limpa apenas dados fictícios desta aplicação                                           |
+| Cenário ou ação                        | Comportamento                                                                                                            |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `padrao`                               | Respostas com 60 ms e compra confirmada                                                                                  |
+| `vazio`                                | Catálogo sem resultados                                                                                                  |
+| `lento`                                | Latência de 1,8 s para observar skeletons e shimmer                                                                      |
+| `variavel`                             | Busca curta com 1,2 s e buscas maiores com 80 ms; verifica descarte de respostas antigas                                 |
+| `sem-conexao`                          | Falha de transporte intencional; volte a `padrao` para recuperar                                                         |
+| `erro-500` / `erro-403`                | Indisponibilidade e falta de permissão                                                                                   |
+| `sessao-expirada`                      | Invalida a sessão; volte a `padrao` antes de entrar novamente                                                            |
+| `favorito-falha`                       | Erro de mutation com rollback do favorito                                                                                |
+| `pagamento-recusado`                   | Recusa preserva os itens e devolve a reserva de estoque                                                                  |
+| `timeout-pedido`                       | Pedido criado, resposta de 5,5 s excede o timeout de 4 s; **Recuperar pedido** reutiliza a mesma tentativa               |
+| `pedido-lento`                         | Pedido pendente por 60 s; pode ser concluído pelo painel                                                                 |
+| `cupom-invalido` / `cupom-inexistente` | Recusa a aplicação de códigos não vazios com a mensagem correspondente; mantém a cotação atual e permite remover o cupom |
+| Alterar preço / esgotar edição         | Muda o NFT 1 e invalida a revisão antiga do checkout                                                                     |
+| Evento duplicado / antigo              | Verifica descarte por versão, sem regredir os dados                                                                      |
+| Interromper Socket.IO                  | Reconexão relê os recursos ativos por REST                                                                               |
+| Expirar sessão                         | Exige novo login e preserva o rascunho do checkout                                                                       |
+| Restaurar demonstração                 | Restaura fixtures e limpa apenas dados fictícios desta aplicação                                                         |
+
+O destaque inicial possui três obras: use os indicadores, os controles anterior/próximo ou as setas do teclado com foco no carrossel. No celular, deslize na horizontal; o link da imagem abre a obra selecionada. A troca é manual para manter o controle da leitura.
+
+Os avisos informativos de atualização desaparecem após três segundos. Também podem ser fechados pelo botão **X** ou por um gesto horizontal no celular. Erros de validação e revisões de preço permanecem visíveis até a correção.
 
 A simulação persiste neste navegador. Para repetir um cenário desde o início, utilize **Restaurar demonstração**. A retomada do service worker após inatividade é automática e não restaura nem apaga esses dados.
 
@@ -89,11 +94,13 @@ npm run format
 npm test
 ```
 
-A suíte passou em 50 casos locais e 50 na publicação, sem testes ignorados ou instáveis. A revisão inclui 24 capturas, 40 combinações de tela/largura sem overflow e 81 arquivos publicados com hashes idênticos ao build local.
+A suíte passou em 60 casos locais e 60 na publicação, sem testes ignorados ou instáveis. A revisão inclui 24 capturas, 70 combinações de tela/largura sem overflow e 81 arquivos publicados com hashes idênticos ao build local.
 
 Playwright inicia o preview na porta 5174 e executa os cenários em Chromium desktop (1440×1000) e mobile (414×896). Mantenha a porta livre. O relatório fica em `playwright-report/index.html`, o resultado JSON em `relatorios/playwright/resultados.json` e as falhas preservam screenshots e traces em `test-results/`.
 
 As baselines de início, detalhe, carrinho, pagamento, autenticação, perfil, carteiras, confirmação e páginas 404 estão em `tests/visual.spec.ts-snapshots/`: 24 capturas nos dois perfis. `npm run test:visual` atualiza essas referências e deve ser usado somente após revisar a alteração visual. As capturas foram feitas no Windows, também usado pelo CI; outros sistemas precisam de referências específicas devido a diferenças de renderização.
+
+Os testes adicionais cobrem controles, teclado e gesto do carrossel; cupons inválidos, inexistentes e expirados; descarte dos avisos; texto e imagem sem sobreposição; e cotação com 18 casas decimais em telas estreitas.
 
 O identificador aleatório da transação é mascarado no recibo durante a comparação visual; itens, valores, taxas e estado do pedido continuam sendo comparados.
 
@@ -109,14 +116,14 @@ Medições do build entregue, com Lighthouse 13.5.0, Chromium 156 e throttling p
 
 | Página / perfil | Performance | Acessibilidade | Boas práticas | SEO |    LCP |   CLS |   TBT |
 | --------------- | ----------: | -------------: | ------------: | --: | -----: | ----: | ----: |
-| Início mobile   |          92 |            100 |           100 | 100 | 3,14 s |     0 | 38 ms |
-| Início desktop  |          99 |            100 |           100 | 100 | 0,84 s |     0 |  0 ms |
-| Detalhe mobile  |          90 |            100 |           100 | 100 | 3,38 s |     0 | 47 ms |
-| Detalhe desktop |         100 |            100 |           100 | 100 | 0,80 s | 0,026 |  0 ms |
+| Início mobile   |          92 |            100 |           100 | 100 | 3,18 s |     0 | 39 ms |
+| Início desktop  |          99 |            100 |           100 | 100 | 0,82 s |     0 |  0 ms |
+| Detalhe mobile  |          90 |            100 |           100 | 100 | 3,42 s |     0 | 50 ms |
+| Detalhe desktop |         100 |            100 |           100 | 100 | 0,81 s | 0,026 |  0 ms |
 
 As medianas atingem as metas das quatro categorias. Os relatórios preservam as três execuções de cada combinação. As medições variam com o ambiente; o índice de CPU fica registrado para permitir essa análise. As atribuições dos assets e os ajustes funcionais em relação ao Figma estão documentadas em `ARCHITECTURE.md`.
 
-Para executar E2E na publicação, defina `URL_APLICACAO=https://kurio-jungle.vercel.app` antes de `npm test`. Os resultados são gravados em `relatorios/publicacao/`, preservando os locais. `node scripts/verificar-publicacao.mjs` compara hashes dos arquivos e o acesso direto às rotas; `node scripts/verificar-responsividade.mjs` verifica dez telas em 390, 768 e 1440 px e na largura CSS equivalente a 1440 px com zoom de 200%.
+Para executar E2E na publicação, defina `URL_APLICACAO=https://kurio-jungle.vercel.app` antes de `npm test`. Os resultados são gravados em `relatorios/publicacao/`, preservando os locais. `node scripts/verificar-publicacao.mjs` compara hashes dos arquivos e o acesso direto às rotas; `node scripts/verificar-responsividade.mjs` verifica dez telas em 320, 360, 390, 414, 768 e 1440 px e na largura CSS equivalente a 1440 px com zoom de 200%.
 
 O workflow em `.github/workflows/verificar.yml` instala pelo lockfile e executa tipos, lint, formatação, build e testes. Os relatórios e traces são anexados à execução do GitHub Actions.
 

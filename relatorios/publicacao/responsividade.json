@@ -3,6 +3,146 @@
   "verificacoes": [
     {
       "caminho": "/",
+      "largura": 320,
+      "contexto": "viewport padrão",
+      "conteudo": 320,
+      "viewport": 320
+    },
+    {
+      "caminho": "/nft/1",
+      "largura": 320,
+      "contexto": "viewport padrão",
+      "conteudo": 320,
+      "viewport": 320
+    },
+    {
+      "caminho": "/carrinho",
+      "largura": 320,
+      "contexto": "viewport padrão",
+      "conteudo": 320,
+      "viewport": 320
+    },
+    {
+      "caminho": "/pagamento",
+      "largura": 320,
+      "contexto": "viewport padrão",
+      "conteudo": 320,
+      "viewport": 320
+    },
+    {
+      "caminho": "/login",
+      "largura": 320,
+      "contexto": "viewport padrão",
+      "conteudo": 320,
+      "viewport": 320
+    },
+    {
+      "caminho": "/cadastro",
+      "largura": 320,
+      "contexto": "viewport padrão",
+      "conteudo": 320,
+      "viewport": 320
+    },
+    {
+      "caminho": "/perfil",
+      "largura": 320,
+      "contexto": "viewport padrão",
+      "conteudo": 320,
+      "viewport": 320
+    },
+    {
+      "caminho": "/carteiras",
+      "largura": 320,
+      "contexto": "viewport padrão",
+      "conteudo": 320,
+      "viewport": 320
+    },
+    {
+      "caminho": "/pedidos",
+      "largura": 320,
+      "contexto": "viewport padrão",
+      "conteudo": 320,
+      "viewport": 320
+    },
+    {
+      "caminho": "/pedido/KUR-00001",
+      "largura": 320,
+      "contexto": "viewport padrão",
+      "conteudo": 320,
+      "viewport": 320
+    },
+    {
+      "caminho": "/",
+      "largura": 360,
+      "contexto": "viewport padrão",
+      "conteudo": 360,
+      "viewport": 360
+    },
+    {
+      "caminho": "/nft/1",
+      "largura": 360,
+      "contexto": "viewport padrão",
+      "conteudo": 360,
+      "viewport": 360
+    },
+    {
+      "caminho": "/carrinho",
+      "largura": 360,
+      "contexto": "viewport padrão",
+      "conteudo": 360,
+      "viewport": 360
+    },
+    {
+      "caminho": "/pagamento",
+      "largura": 360,
+      "contexto": "viewport padrão",
+      "conteudo": 360,
+      "viewport": 360
+    },
+    {
+      "caminho": "/login",
+      "largura": 360,
+      "contexto": "viewport padrão",
+      "conteudo": 360,
+      "viewport": 360
+    },
+    {
+      "caminho": "/cadastro",
+      "largura": 360,
+      "contexto": "viewport padrão",
+      "conteudo": 360,
+      "viewport": 360
+    },
+    {
+      "caminho": "/perfil",
+      "largura": 360,
+      "contexto": "viewport padrão",
+      "conteudo": 360,
+      "viewport": 360
+    },
+    {
+      "caminho": "/carteiras",
+      "largura": 360,
+      "contexto": "viewport padrão",
+      "conteudo": 360,
+      "viewport": 360
+    },
+    {
+      "caminho": "/pedidos",
+      "largura": 360,
+      "contexto": "viewport padrão",
+      "conteudo": 360,
+      "viewport": 360
+    },
+    {
+      "caminho": "/pedido/KUR-00001",
+      "largura": 360,
+      "contexto": "viewport padrão",
+      "conteudo": 360,
+      "viewport": 360
+    },
+    {
+      "caminho": "/",
       "largura": 390,
       "contexto": "viewport padrão",
       "conteudo": 390,
@@ -70,6 +210,76 @@
       "contexto": "viewport padrão",
       "conteudo": 390,
       "viewport": 390
+    },
+    {
+      "caminho": "/",
+      "largura": 414,
+      "contexto": "viewport padrão",
+      "conteudo": 414,
+      "viewport": 414
+    },
+    {
+      "caminho": "/nft/1",
+      "largura": 414,
+      "contexto": "viewport padrão",
+      "conteudo": 414,
+      "viewport": 414
+    },
+    {
+      "caminho": "/carrinho",
+      "largura": 414,
+      "contexto": "viewport padrão",
+      "conteudo": 414,
+      "viewport": 414
+    },
+    {
+      "caminho": "/pagamento",
+      "largura": 414,
+      "contexto": "viewport padrão",
+      "conteudo": 414,
+      "viewport": 414
+    },
+    {
+      "caminho": "/login",
+      "largura": 414,
+      "contexto": "viewport padrão",
+      "conteudo": 414,
+      "viewport": 414
+    },
+    {
+      "caminho": "/cadastro",
+      "largura": 414,
+      "contexto": "viewport padrão",
+      "conteudo": 414,
+      "viewport": 414
+    },
+    {
+      "caminho": "/perfil",
+      "largura": 414,
+      "contexto": "viewport padrão",
+      "conteudo": 414,
+      "viewport": 414
+    },
+    {
+      "caminho": "/carteiras",
+      "largura": 414,
+      "contexto": "viewport padrão",
+      "conteudo": 414,
+      "viewport": 414
+    },
+    {
+      "caminho": "/pedidos",
+      "largura": 414,
+      "contexto": "viewport padrão",
+      "conteudo": 414,
+      "viewport": 414
+    },
+    {
+      "caminho": "/pedido/KUR-00001",
+      "largura": 414,
+      "contexto": "viewport padrão",
+      "conteudo": 414,
+      "viewport": 414
     },
     {
       "caminho": "/",
